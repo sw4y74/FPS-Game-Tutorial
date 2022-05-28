@@ -15,7 +15,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 
 	[SerializeField] float mouseSensitivity, sprintSpeed, walkSpeed, jumpForce, smoothTime;
 
-	[SerializeField] Item[] items;
+	[SerializeField] SingleShotGun[] items;
 
 	int itemIndex;
 	int previousItemIndex = -1;
@@ -46,6 +46,8 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 	{
 		if(PV.IsMine)
 		{
+			Cursor.lockState = CursorLockMode.Locked;
+			Cursor.visible = false;
 			EquipItem(0);
 		}
 		else
@@ -96,11 +98,18 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 				EquipItem(itemIndex - 1);
 			}
 		}
-
-		if(Input.GetMouseButtonDown(0))
-		{
-			items[itemIndex].Use();
-		}
+ 		
+		if (items[itemIndex].automatic) {
+			if(Input.GetMouseButton(0) && items[itemIndex].allowFire)
+			{
+				items[itemIndex].Use();
+			}
+		} else {
+			if (Input.GetMouseButtonDown(0) && items[itemIndex].allowFire)
+			{
+				items[itemIndex].Use();
+			}
+		}		
 
 		if(transform.position.y < -10f) // Die if you fall out of the world
 		{

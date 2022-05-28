@@ -9,6 +9,12 @@ public class SingleShotGun : Gun
 
 	PhotonView PV;
 
+	public bool automatic;
+	public float fireRate;
+	public bool allowFire = true;
+
+	[SerializeField] private Recoil Recoil;
+
 	void Awake()
 	{
 		PV = GetComponent<PhotonView>();
@@ -16,18 +22,39 @@ public class SingleShotGun : Gun
 
 	public override void Use()
 	{
-		Shoot();
+		StartCoroutine(Shoot());
 	}
 
-	void Shoot()
+	IEnumerator Shoot()
 	{
-		Ray ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f));
+		allowFire = false;
+		float accuracyX = 0.5f;
+		float accuracyY = 0.5f;
+		float randX = Random.Range(-3, 3)/20f;
+		float randY = Random.Range(-3, 3)/20f;
+
+		Debug.Log(randX);
+		Debug.Log(randY);
+
+		if (true) { // NO TRIGGER YET - TODO
+			accuracyX += randX;
+			accuracyY += randY;
+		}
+
+		Debug.Log(accuracyX);
+		Debug.Log(accuracyY);
+
+
+		Ray ray = cam.ViewportPointToRay(new Vector3(accuracyX, accuracyY));
 		ray.origin = cam.transform.position;
 		if(Physics.Raycast(ray, out RaycastHit hit))
 		{
 			hit.collider.gameObject.GetComponent<IDamageable>()?.TakeDamage(((GunInfo)itemInfo).damage);
 			PV.RPC("RPC_Shoot", RpcTarget.All, hit.point, hit.normal);
 		}
+		Recoil.RecoilFire();
+		yield return new WaitForSeconds(fireRate/100);
+		allowFire = true;
 	}
 
 	[PunRPC]
