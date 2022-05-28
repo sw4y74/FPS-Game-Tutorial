@@ -36,10 +36,10 @@ public class SingleShotGun : Gun
 		Debug.Log(randX);
 		Debug.Log(randY);
 
-		if (true) { // NO TRIGGER YET - TODO
-			accuracyX += randX;
-			accuracyY += randY;
-		}
+		// if (true) { // NO TRIGGER YET - TODO
+		// 	accuracyX += randX;
+		// 	accuracyY += randY;
+		// }
 
 		Debug.Log(accuracyX);
 		Debug.Log(accuracyY);

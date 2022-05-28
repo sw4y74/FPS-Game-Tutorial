@@ -3283,10 +3283,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   recoilX: -2
-  recoilY: 2
+  recoilY: 1.2
   recoilZ: 0.1
-  snappiness: 6
-  returnSpeed: 2
+  snappiness: 10
+  returnSpeed: 7
 --- !u!1 &6212280972055894344
 GameObject:
   m_ObjectHideFlags: 0
