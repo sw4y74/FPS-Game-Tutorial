@@ -21,7 +21,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 	int previousItemIndex = -1;
 
 	float verticalLookRotation;
-	bool grounded;
+	[SerializeField] bool grounded = true;
 	Vector3 smoothMoveVelocity;
 	Vector3 moveAmount;
 
@@ -76,7 +76,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 			}
 		}
 
-		if(Input.GetAxisRaw("Mouse ScrollWheel") > 0f)
+		if(Input.GetAxisRaw("Mouse ScrollWheel") < 0f)
 		{
 			if(itemIndex >= items.Length - 1)
 			{
@@ -87,7 +87,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 				EquipItem(itemIndex + 1);
 			}
 		}
-		else if(Input.GetAxisRaw("Mouse ScrollWheel") < 0f)
+		else if(Input.GetAxisRaw("Mouse ScrollWheel") > 0f)
 		{
 			if(itemIndex <= 0)
 			{
