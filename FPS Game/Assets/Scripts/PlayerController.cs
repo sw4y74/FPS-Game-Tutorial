@@ -13,17 +13,25 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 
 	[SerializeField] GameObject cameraHolder;
 
+	[SerializeField] GameObject viewModel;
+	[SerializeField] GameObject localViewModel;
+
 	[SerializeField] float mouseSensitivity, sprintSpeed, walkSpeed, jumpForce, smoothTime;
 
-	[SerializeField] SingleShotGun[] items;
+	[SerializeField] GameObject itemHolder;
+	[SerializeField] GameObject itemHolderMP;
+	SingleShotGun[] items;
+	SingleShotGun[] itemsMP;
 
 	int itemIndex;
 	int previousItemIndex = -1;
 
 	float verticalLookRotation;
-	[SerializeField] bool grounded = true;
+	public bool grounded = true;
+	public bool isMoving;
 	Vector3 smoothMoveVelocity;
 	Vector3 moveAmount;
+	Vector3 lastPosition;
 
 	Rigidbody rb;
 
@@ -40,12 +48,16 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 		PV = GetComponent<PhotonView>();
 
 		playerManager = PhotonView.Find((int)PV.InstantiationData[0]).GetComponent<PlayerManager>();
+
+		items = itemHolder.GetComponentsInChildren<SingleShotGun>();
+		itemsMP = itemHolderMP.GetComponentsInChildren<SingleShotGun>();
 	}
 
 	void Start()
 	{
 		if(PV.IsMine)
 		{
+			viewModel.SetActive(false);
 			Cursor.lockState = CursorLockMode.Locked;
 			Cursor.visible = false;
 			EquipItem(0);
@@ -55,6 +67,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 			Destroy(GetComponentInChildren<Camera>().gameObject);
 			Destroy(rb);
 			Destroy(ui);
+			localViewModel.SetActive(false);
 		}
 	}
 
@@ -115,6 +128,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 		{
 			Die();
 		}
+
 	}
 
 	void Look()
@@ -132,6 +146,15 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 		Vector3 moveDir = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
 
 		moveAmount = Vector3.SmoothDamp(moveAmount, moveDir * (Input.GetKey(KeyCode.LeftShift) ? sprintSpeed : walkSpeed), ref smoothMoveVelocity, smoothTime);
+		
+		float strafeThreshold = 0.2f;
+
+		bool horizontal = Input.GetAxis("Horizontal") > strafeThreshold || Input.GetAxis("Horizontal") < -strafeThreshold;
+ 		bool vertical = Input.GetAxis("Vertical") > strafeThreshold || Input.GetAxis("Vertical") < -strafeThreshold;
+
+		if (horizontal || vertical) {
+			isMoving = true;
+		} else isMoving = false;
 	}
 
 	void Jump()
@@ -150,10 +173,12 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 		itemIndex = _index;
 
 		items[itemIndex].itemGameObject.SetActive(true);
+		itemsMP[itemIndex].itemGameObject.SetActive(true);
 
 		if(previousItemIndex != -1)
 		{
 			items[previousItemIndex].itemGameObject.SetActive(false);
+			itemsMP[previousItemIndex].itemGameObject.SetActive(false);
 		}
 
 		previousItemIndex = itemIndex;

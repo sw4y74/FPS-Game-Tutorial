@@ -7,9 +7,9 @@ public class Recoil : MonoBehaviour
     private Vector3 targetRotation;
 
     //hipfire
-    [SerializeField] private float recoilX;
-    [SerializeField] private float recoilY;
-    [SerializeField] private float recoilZ;
+    // [SerializeField] private float recoilX;
+    // [SerializeField] private float recoilY;
+    // [SerializeField] private float recoilZ;
 
     //settings
     [SerializeField] private float snappiness;
@@ -27,7 +27,7 @@ public class Recoil : MonoBehaviour
         transform.localRotation = Quaternion.Euler(currentRotation);
     }
 
-    public void RecoilFire() {
+    public void RecoilFire(float recoilX, float recoilY, float recoilZ) {
         targetRotation += new Vector3(recoilX, Random.Range(-recoilY, recoilY), Random.Range(-recoilZ, recoilZ));
     }
 }

@@ -14,6 +14,10 @@ public class SingleShotGun : Gun
 	public bool allowFire = true;
 
 	[SerializeField] private Recoil Recoil;
+	//hipfire
+    [SerializeField] private float recoilX;
+    [SerializeField] private float recoilY;
+    [SerializeField] private float recoilZ;
 
 	void Awake()
 	{
@@ -30,16 +34,20 @@ public class SingleShotGun : Gun
 		allowFire = false;
 		float accuracyX = 0.5f;
 		float accuracyY = 0.5f;
-		float randX = Random.Range(-3, 3)/20f;
-		float randY = Random.Range(-3, 3)/20f;
+		float randX = Random.Range(-2, 2)/20f;
+		float randY = Random.Range(-2, 2)/20f;
 
 		Debug.Log(randX);
 		Debug.Log(randY);
 
-		// if (true) { // NO TRIGGER YET - TODO
-		// 	accuracyX += randX;
-		// 	accuracyY += randY;
-		// }
+		bool isMoving = transform.root.gameObject.GetComponent<PlayerController>().isMoving;
+		bool grounded = transform.root.gameObject.GetComponent<PlayerController>().grounded;
+		Debug.Log(isMoving || !grounded);
+
+		if (isMoving || !grounded) { // NO TRIGGER YET - TODO
+			accuracyX += randX;
+			accuracyY += randY;
+		}
 
 		Debug.Log(accuracyX);
 		Debug.Log(accuracyY);
@@ -52,7 +60,7 @@ public class SingleShotGun : Gun
 			hit.collider.gameObject.GetComponent<IDamageable>()?.TakeDamage(((GunInfo)itemInfo).damage);
 			PV.RPC("RPC_Shoot", RpcTarget.All, hit.point, hit.normal);
 		}
-		Recoil.RecoilFire();
+		Recoil.RecoilFire(recoilX, recoilY, recoilZ);
 		yield return new WaitForSeconds(fireRate/100);
 		allowFire = true;
 	}
