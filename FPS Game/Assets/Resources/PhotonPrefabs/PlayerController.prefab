@@ -4542,12 +4542,12 @@ PrefabInstance:
     - target: {fileID: 4761716021253521893, guid: 78129ba4169a5e749b56dc37e69483c9,
         type: 3}
       propertyPath: recoilX
-      value: -5
+      value: -4
       objectReference: {fileID: 0}
     - target: {fileID: 4761716021253521893, guid: 78129ba4169a5e749b56dc37e69483c9,
         type: 3}
       propertyPath: recoilY
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4761716021253521893, guid: 78129ba4169a5e749b56dc37e69483c9,
         type: 3}
@@ -4597,7 +4597,7 @@ PrefabInstance:
     - target: {fileID: 7403882360334182154, guid: 78129ba4169a5e749b56dc37e69483c9,
         type: 3}
       propertyPath: recoilY
-      value: 6
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 7403882360334182154, guid: 78129ba4169a5e749b56dc37e69483c9,
         type: 3}
@@ -4682,12 +4682,12 @@ PrefabInstance:
     - target: {fileID: 8465788910951625856, guid: 78129ba4169a5e749b56dc37e69483c9,
         type: 3}
       propertyPath: recoilX
-      value: -6
+      value: -12
       objectReference: {fileID: 0}
     - target: {fileID: 8465788910951625856, guid: 78129ba4169a5e749b56dc37e69483c9,
         type: 3}
       propertyPath: recoilY
-      value: 6
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 8465788910951625856, guid: 78129ba4169a5e749b56dc37e69483c9,
         type: 3}
