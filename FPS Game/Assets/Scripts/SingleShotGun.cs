@@ -37,27 +37,26 @@ public class SingleShotGun : Gun
 		float randX = Random.Range(-2, 2)/20f;
 		float randY = Random.Range(-2, 2)/20f;
 
-		Debug.Log(randX);
-		Debug.Log(randY);
-
 		bool isMoving = transform.root.gameObject.GetComponent<PlayerController>().isMoving;
 		bool grounded = transform.root.gameObject.GetComponent<PlayerController>().grounded;
-		Debug.Log(isMoving || !grounded);
 
 		if (isMoving || !grounded) { // NO TRIGGER YET - TODO
 			accuracyX += randX;
 			accuracyY += randY;
 		}
 
-		Debug.Log(accuracyX);
-		Debug.Log(accuracyY);
-
-
 		Ray ray = cam.ViewportPointToRay(new Vector3(accuracyX, accuracyY));
 		ray.origin = cam.transform.position;
 		if(Physics.Raycast(ray, out RaycastHit hit))
 		{
-			hit.collider.gameObject.GetComponent<IDamageable>()?.TakeDamage(((GunInfo)itemInfo).damage);
+			float damage = ((GunInfo)itemInfo).damage;
+			if (hit.collider is SphereCollider) {
+				damage *= 3;
+			}
+			if (hit.collider is BoxCollider) {
+				yield return null;
+			}
+			hit.collider.gameObject.GetComponent<IDamageable>()?.TakeDamage(damage);
 			PV.RPC("RPC_Shoot", RpcTarget.All, hit.point, hit.normal);
 		}
 		Recoil.RecoilFire(recoilX, recoilY, recoilZ);

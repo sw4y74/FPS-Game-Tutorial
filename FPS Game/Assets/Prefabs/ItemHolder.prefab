@@ -528,6 +528,9 @@ MonoBehaviour:
   fireRate: 6
   allowFire: 1
   Recoil: {fileID: 0}
+  recoilX: 0
+  recoilY: 0
+  recoilZ: 0
 --- !u!114 &1568442641813974044
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -604,6 +607,9 @@ MonoBehaviour:
   fireRate: 8
   allowFire: 1
   Recoil: {fileID: 0}
+  recoilX: 0
+  recoilY: 0
+  recoilZ: 0
 --- !u!114 &951040176805678011
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -733,7 +739,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemInfo: {fileID: 11400000, guid: 7d265224a6a25bb449941c374d0946a4, type: 2}
-  itemGameObject: {fileID: 0}
+  itemGameObject: {fileID: 2067782404934018597}
   bulletImpactPrefab: {fileID: 6521945633980296980, guid: e53c980aac40f714e8037076227eeeec,
     type: 3}
   cam: {fileID: 0}
@@ -741,6 +747,9 @@ MonoBehaviour:
   fireRate: 7
   allowFire: 1
   Recoil: {fileID: 0}
+  recoilX: 0
+  recoilY: 0
+  recoilZ: 0
 --- !u!114 &6517137631993284163
 MonoBehaviour:
   m_ObjectHideFlags: 0

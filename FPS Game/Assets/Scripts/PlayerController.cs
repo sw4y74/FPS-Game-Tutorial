@@ -39,6 +39,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 
 	const float maxHealth = 100f;
 	float currentHealth = maxHealth;
+	public SphereCollider headCollider;
 
 	PlayerManager playerManager;
 
@@ -57,6 +58,8 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 	{
 		if(PV.IsMine)
 		{
+			Destroy(headCollider);
+			mouseSensitivity = RoomManager.Instance.sensitivity / 10;
 			viewModel.SetActive(false);
 			Cursor.lockState = CursorLockMode.Locked;
 			Cursor.visible = false;
@@ -147,7 +150,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 
 		moveAmount = Vector3.SmoothDamp(moveAmount, moveDir * (Input.GetKey(KeyCode.LeftShift) ? sprintSpeed : walkSpeed), ref smoothMoveVelocity, smoothTime);
 		
-		float strafeThreshold = 0.2f;
+		float strafeThreshold = 0.6f;
 
 		bool horizontal = Input.GetAxis("Horizontal") > strafeThreshold || Input.GetAxis("Horizontal") < -strafeThreshold;
  		bool vertical = Input.GetAxis("Vertical") > strafeThreshold || Input.GetAxis("Vertical") < -strafeThreshold;
