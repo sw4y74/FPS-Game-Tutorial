@@ -19,6 +19,8 @@ public class SingleShotGun : Gun
     [SerializeField] private float recoilY;
     [SerializeField] private float recoilZ;
 
+	[SerializeField] private AudioClip gunSound;
+
 	void Awake()
 	{
 		PV = GetComponent<PhotonView>();
@@ -40,7 +42,7 @@ public class SingleShotGun : Gun
 		bool isMoving = transform.root.gameObject.GetComponent<PlayerController>().isMoving;
 		bool grounded = transform.root.gameObject.GetComponent<PlayerController>().grounded;
 
-		if (isMoving || !grounded) { // NO TRIGGER YET - TODO
+		if (isMoving || !grounded) {
 			accuracyX += randX;
 			accuracyY += randY;
 		}
@@ -49,16 +51,32 @@ public class SingleShotGun : Gun
 		ray.origin = cam.transform.position;
 		if(Physics.Raycast(ray, out RaycastHit hit))
 		{
-			float damage = ((GunInfo)itemInfo).damage;
-			if (hit.collider is SphereCollider) {
-				damage *= 3;
+			if (!(hit.collider is BoxCollider))
+			{
+				if (hit.collider.CompareTag("Player"))
+				{
+					if (hit.collider is SphereCollider)
+					{
+						transform.root.gameObject.GetComponent<Hitmarker>().ShowHitHS();
+					} else transform.root.gameObject.GetComponent<Hitmarker>().ShowHit();
+
+				}
+
+				float damage = ((GunInfo)itemInfo).damage;
+				if (hit.collider is SphereCollider)
+				{
+					damage *= 3;
+				}
+				if (hit.collider is BoxCollider)
+				{
+					damage = 0;
+				}
+				hit.collider.gameObject.GetComponent<IDamageable>()?.TakeDamage(damage);
 			}
-			if (hit.collider is BoxCollider) {
-				yield return null;
-			}
-			hit.collider.gameObject.GetComponent<IDamageable>()?.TakeDamage(damage);
-			PV.RPC("RPC_Shoot", RpcTarget.All, hit.point, hit.normal);
 		}
+
+		PV.RPC("RPC_Shoot", RpcTarget.All, hit.point, hit.normal);
+
 		Recoil.RecoilFire(recoilX, recoilY, recoilZ);
 		yield return new WaitForSeconds(fireRate/100);
 		allowFire = true;
@@ -67,6 +85,10 @@ public class SingleShotGun : Gun
 	[PunRPC]
 	void RPC_Shoot(Vector3 hitPosition, Vector3 hitNormal)
 	{
+        AudioSource gunAudioSource = transform.root.gameObject.GetComponent<PlayerController>().gunAudioSource;
+
+		gunAudioSource.PlayOneShot(gunSound);
+
 		Collider[] colliders = Physics.OverlapSphere(hitPosition, 0.3f);
 		if(colliders.Length != 0)
 		{

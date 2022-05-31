@@ -521,7 +521,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemInfo: {fileID: 11400000, guid: b948f55e8aaf426499330066ef7bea24, type: 2}
   itemGameObject: {fileID: 285294947702318539}
-  bulletImpactPrefab: {fileID: 6521945633980296980, guid: e53c980aac40f714e8037076227eeeec,
+  bulletImpactPrefab: {fileID: 6521945633980296980, guid: 794ff6a8eb713d24cb1273ac24b3f7fb,
     type: 3}
   cam: {fileID: 0}
   automatic: 1
@@ -531,6 +531,7 @@ MonoBehaviour:
   recoilX: 0
   recoilY: 0
   recoilZ: 0
+  gunSound: {fileID: 8300000, guid: 001ad1d686e736e48bb0c2eb47f120cd, type: 3}
 --- !u!114 &1568442641813974044
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -600,7 +601,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemInfo: {fileID: 11400000, guid: faedfac47be255447ae44e48a73a1423, type: 2}
   itemGameObject: {fileID: 9018468903786672592}
-  bulletImpactPrefab: {fileID: 6521945633980296980, guid: e53c980aac40f714e8037076227eeeec,
+  bulletImpactPrefab: {fileID: 6521945633980296980, guid: 794ff6a8eb713d24cb1273ac24b3f7fb,
     type: 3}
   cam: {fileID: 0}
   automatic: 0
@@ -610,6 +611,7 @@ MonoBehaviour:
   recoilX: 0
   recoilY: 0
   recoilZ: 0
+  gunSound: {fileID: 8300000, guid: 001ad1d686e736e48bb0c2eb47f120cd, type: 3}
 --- !u!114 &951040176805678011
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -740,7 +742,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemInfo: {fileID: 11400000, guid: 7d265224a6a25bb449941c374d0946a4, type: 2}
   itemGameObject: {fileID: 2067782404934018597}
-  bulletImpactPrefab: {fileID: 6521945633980296980, guid: e53c980aac40f714e8037076227eeeec,
+  bulletImpactPrefab: {fileID: 6521945633980296980, guid: 794ff6a8eb713d24cb1273ac24b3f7fb,
     type: 3}
   cam: {fileID: 0}
   automatic: 0
@@ -750,6 +752,7 @@ MonoBehaviour:
   recoilX: 0
   recoilY: 0
   recoilZ: 0
+  gunSound: {fileID: 8300000, guid: 001ad1d686e736e48bb0c2eb47f120cd, type: 3}
 --- !u!114 &6517137631993284163
 MonoBehaviour:
   m_ObjectHideFlags: 0

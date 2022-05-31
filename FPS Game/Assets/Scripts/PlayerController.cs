@@ -20,6 +20,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 
 	[SerializeField] GameObject itemHolder;
 	[SerializeField] GameObject itemHolderMP;
+	public AudioSource gunAudioSource;
 	SingleShotGun[] items;
 	SingleShotGun[] itemsMP;
 
