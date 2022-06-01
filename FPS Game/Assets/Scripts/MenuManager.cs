@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class MenuManager : MonoBehaviour
+
+
+
 {
 	public static MenuManager Instance;
 
@@ -44,4 +47,9 @@ public class MenuManager : MonoBehaviour
 	{
 		menu.Close();
 	}
+
+	public void QuitGame()
+		{
+			Application.Quit();
+		}
 }
