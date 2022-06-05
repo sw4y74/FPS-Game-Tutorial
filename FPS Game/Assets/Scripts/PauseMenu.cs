@@ -40,7 +40,8 @@ public class PauseMenu : MonoBehaviour
 
     public void LoadMenu()
     {
-        SceneManager.LoadScene("Menu");
+        Destroy(RoomManager.Instance.gameObject);
+        StartCoroutine(Launcher.Instance.DisconnectAndLoad());
     }
 
     public void QuitGame()

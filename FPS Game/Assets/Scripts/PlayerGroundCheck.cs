@@ -14,7 +14,12 @@ public class PlayerGroundCheck : MonoBehaviour
 	void OnTriggerEnter(Collider other)
 	{
 		if(other.gameObject == playerController.gameObject)
+        {
+			Debug.Log(other.gameObject);
 			return;
+		}
+			
+		Debug.Log(other.gameObject);
 
 		playerController.SetGroundedState(true);
 	}

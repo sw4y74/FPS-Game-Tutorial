@@ -49,30 +49,37 @@ public class SingleShotGun : Gun
 
 		Ray ray = cam.ViewportPointToRay(new Vector3(accuracyX, accuracyY));
 		ray.origin = cam.transform.position;
-		if(Physics.Raycast(ray, out RaycastHit hit))
+		int layerMask = 1 << 10;
+		layerMask = ~layerMask;
+
+		if (Physics.Raycast(ray, out RaycastHit hit, 2000f, layerMask))
 		{
-			if (!(hit.collider is BoxCollider))
+			Debug.Log(hit.collider.tag);
+
+			if (hit.collider.CompareTag("Player"))
 			{
-				if (hit.collider.CompareTag("Player"))
-				{
-					if (hit.collider is SphereCollider)
-					{
-						transform.root.gameObject.GetComponent<Hitmarker>().ShowHitHS();
-					} else transform.root.gameObject.GetComponent<Hitmarker>().ShowHit();
-
-				}
-
-				float damage = ((GunInfo)itemInfo).damage;
 				if (hit.collider is SphereCollider)
 				{
-					damage *= 3;
+					transform.root.gameObject.GetComponent<Hitmarker>().ShowHitHS();
 				}
-				if (hit.collider is BoxCollider)
-				{
-					damage = 0;
-				}
-				hit.collider.gameObject.GetComponent<IDamageable>()?.TakeDamage(damage);
+				else transform.root.gameObject.GetComponent<Hitmarker>().ShowHit();
+
 			}
+
+			float damage = ((GunInfo)itemInfo).damage;
+
+			if (hit.collider is SphereCollider)
+			{
+				damage *= 3;
+			}
+
+			if (hit.collider is BoxCollider)
+			{
+				damage = 0;
+			}
+
+			hit.collider.gameObject.GetComponent<IDamageable>()?.TakeDamage(damage);
+
 		}
 
 		PV.RPC("RPC_Shoot", RpcTarget.All, hit.point, hit.normal);
@@ -92,6 +99,9 @@ public class SingleShotGun : Gun
 		Collider[] colliders = Physics.OverlapSphere(hitPosition, 0.3f);
 		if(colliders.Length != 0)
 		{
+			Quaternion rotation = hitNormal == Vector3.zero
+                                  ? Quaternion.identity
+                                  : Quaternion.LookRotation(hitNormal);
 			GameObject bulletImpactObj = Instantiate(bulletImpactPrefab, hitPosition + hitNormal * 0.001f, Quaternion.LookRotation(hitNormal, Vector3.up) * bulletImpactPrefab.transform.rotation);
 			Destroy(bulletImpactObj, 10f);
 			bulletImpactObj.transform.SetParent(colliders[0].transform);

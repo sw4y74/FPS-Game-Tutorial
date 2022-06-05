@@ -28,13 +28,19 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 	int previousItemIndex = -1;
 
 	float verticalLookRotation;
+	public Transform groundCheck;
+	public float groundDistance;
+	public LayerMask groundMask;
 	public bool grounded = true;
 	public bool isMoving;
 	Vector3 smoothMoveVelocity;
 	Vector3 moveAmount;
-	Vector3 lastPosition;
 
 	Rigidbody rb;
+	public CharacterController controller;
+
+	Vector3 velocity;
+	public float gravity = -16.81f;
 
 	PhotonView PV;
 
@@ -46,7 +52,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 
 	void Awake()
 	{
-		rb = GetComponent<Rigidbody>();
+		//rb = GetComponent<Rigidbody>();
 		PV = GetComponent<PhotonView>();
 
 		playerManager = PhotonView.Find((int)PV.InstantiationData[0]).GetComponent<PlayerManager>();
@@ -65,11 +71,13 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 			Cursor.lockState = CursorLockMode.Locked;
 			Cursor.visible = false;
 			EquipItem(0);
+			gameObject.layer = LayerMask.NameToLayer("LocalPlayer");
 		}
 		else
 		{
 			Destroy(GetComponentInChildren<Camera>().gameObject);
-			Destroy(rb);
+			//Destroy(rb);
+			Destroy(controller);
 			Destroy(ui);
 			localViewModel.SetActive(false);
 		}
@@ -146,6 +154,39 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 	}
 
 	void Move()
+    {
+		grounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
+
+		if (grounded && velocity.y < 0)
+        {
+			velocity.y = -2f;
+        }
+
+		float x = Input.GetAxis("Horizontal");
+		float z = Input.GetAxis("Vertical");
+		float strafeThreshold = 0.6f;
+
+		Vector3 move = transform.right * x + transform.forward * z;
+		moveAmount = Vector3.SmoothDamp(moveAmount, move * (Input.GetKey(KeyCode.LeftShift) ? sprintSpeed : walkSpeed), ref smoothMoveVelocity, smoothTime);
+
+		controller.Move(moveAmount * Time.deltaTime);
+
+		velocity.y += gravity * Time.deltaTime;
+
+		controller.Move(velocity * Time.deltaTime);
+
+		bool movingHorizontally = x > strafeThreshold || x < -strafeThreshold;
+		bool movingVertically = z > strafeThreshold || z < -strafeThreshold;
+
+		if (movingHorizontally || movingVertically)
+		{
+			isMoving = true;
+		}
+		else isMoving = false;
+
+	}
+
+	void Move2()
 	{
 		Vector3 moveDir = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
 
@@ -165,7 +206,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 	{
 		if(Input.GetKeyDown(KeyCode.Space) && grounded)
 		{
-			rb.AddForce(transform.up * jumpForce);
+			velocity.y = Mathf.Sqrt(jumpForce * -2f * gravity);
 		}
 	}
 
@@ -213,7 +254,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 		if(!PV.IsMine)
 			return;
 
-		rb.MovePosition(rb.position + transform.TransformDirection(moveAmount) * Time.fixedDeltaTime);
+		//rb.MovePosition(rb.position + transform.TransformDirection(moveAmount) * Time.fixedDeltaTime);
 	}
 
 	public void TakeDamage(float damage)
