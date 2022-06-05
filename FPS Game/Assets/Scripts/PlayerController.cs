@@ -35,6 +35,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 	public bool isMoving;
 	Vector3 smoothMoveVelocity;
 	Vector3 moveAmount;
+	PauseMenu pauseMenu;
 
 	Rigidbody rb;
 	public CharacterController controller;
@@ -54,6 +55,8 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 	{
 		//rb = GetComponent<Rigidbody>();
 		PV = GetComponent<PhotonView>();
+
+		pauseMenu = FindObjectOfType<PauseMenu>();
 
 		playerManager = PhotonView.Find((int)PV.InstantiationData[0]).GetComponent<PlayerManager>();
 
@@ -88,53 +91,60 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 		if(!PV.IsMine)
 			return;
 
-		Look();
-		Move();
-		Jump();
-
-		for(int i = 0; i < items.Length; i++)
+		if (!pauseMenu.GameIsPaused)
 		{
-			if(Input.GetKeyDown((i + 1).ToString()))
+
+			Look();
+			Move();
+			Jump();
+
+			for (int i = 0; i < items.Length; i++)
 			{
-				EquipItem(i);
-				break;
+				if (Input.GetKeyDown((i + 1).ToString()))
+				{
+					EquipItem(i);
+					break;
+				}
 			}
-		}
 
-		if(Input.GetAxisRaw("Mouse ScrollWheel") < 0f)
-		{
-			if(itemIndex >= items.Length - 1)
+			if (Input.GetAxisRaw("Mouse ScrollWheel") < 0f)
 			{
-				EquipItem(0);
+				if (itemIndex >= items.Length - 1)
+				{
+					EquipItem(0);
+				}
+				else
+				{
+					EquipItem(itemIndex + 1);
+				}
+			}
+			else if (Input.GetAxisRaw("Mouse ScrollWheel") > 0f)
+			{
+				if (itemIndex <= 0)
+				{
+					EquipItem(items.Length - 1);
+				}
+				else
+				{
+					EquipItem(itemIndex - 1);
+				}
+			}
+
+			if (items[itemIndex].automatic)
+			{
+				if (Input.GetMouseButton(0) && items[itemIndex].allowFire)
+				{
+					items[itemIndex].Use();
+				}
 			}
 			else
 			{
-				EquipItem(itemIndex + 1);
+				if (Input.GetMouseButtonDown(0) && items[itemIndex].allowFire)
+				{
+					items[itemIndex].Use();
+				}
 			}
 		}
-		else if(Input.GetAxisRaw("Mouse ScrollWheel") > 0f)
-		{
-			if(itemIndex <= 0)
-			{
-				EquipItem(items.Length - 1);
-			}
-			else
-			{
-				EquipItem(itemIndex - 1);
-			}
-		}
- 		
-		if (items[itemIndex].automatic) {
-			if(Input.GetMouseButton(0) && items[itemIndex].allowFire)
-			{
-				items[itemIndex].Use();
-			}
-		} else {
-			if (Input.GetMouseButtonDown(0) && items[itemIndex].allowFire)
-			{
-				items[itemIndex].Use();
-			}
-		}		
 
 		if(transform.position.y < -10f) // Die if you fall out of the world
 		{

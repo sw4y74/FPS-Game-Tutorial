@@ -110,9 +110,9 @@ public class Launcher : MonoBehaviourPunCallbacks
 
 	public IEnumerator DisconnectAndLoad()
     {
-		PhotonNetwork.LeaveRoom();
+		PhotonNetwork.Disconnect();
 
-		while (PhotonNetwork.InRoom)
+		while (PhotonNetwork.IsConnected)
 			yield return null;
 		SceneManager.LoadScene("Menu");
     }
