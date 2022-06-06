@@ -29,9 +29,32 @@ public class PlayerManager : MonoBehaviour
 		controller = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "PlayerController"), spawnpoint.position, spawnpoint.rotation, 0, new object[] { PV.ViewID });
 	}
 
-	public void Die()
-	{
+	IEnumerator DieRoutine()
+    {
+		//destroy mp viewmodel through network
+		PV.RPC("RPC_DestroyViewModel", RpcTarget.All);
+
+		yield return new WaitForSeconds(3f);
+
 		PhotonNetwork.Destroy(controller);
 		CreateController();
+	}
+
+	public void Die()
+	{
+		StartCoroutine(DieRoutine());
+		//PhotonNetwork.Destroy(controller);
+		//CreateController();
+	}
+
+	[PunRPC]
+	void RPC_DestroyViewModel()
+    {
+		//something weird is happening here
+		Debug.Log("RPC_DestroyVM");
+		Debug.Log(controller.GetComponent<PlayerController>().itemIndex);
+		controller.GetComponent<PlayerController>().viewModel.gameObject.SetActive(false);
+		//controller.GetComponent<PlayerController>().viewModel.gameObject.SetActive(false);
+		Destroy(controller.GetComponent<PlayerController>());
 	}
 }

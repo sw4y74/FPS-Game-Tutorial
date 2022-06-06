@@ -9,9 +9,12 @@ public class SingleShotGun : Gun
 
 	PhotonView PV;
 
+	public int index;
 	public bool automatic;
 	public float fireRate;
 	public bool allowFire = true;
+	public int maxAmmo;
+	public int currentAmmo;
 
 	[SerializeField] private Recoil Recoil;
 	//hipfire
@@ -20,27 +23,44 @@ public class SingleShotGun : Gun
     [SerializeField] private float recoilZ;
 
 	[SerializeField] private AudioClip gunSound;
+    public float reloadSpeed = 2f;
+    private bool reloading;
+	Coroutine reloadRoutine = null;
 
 	void Awake()
 	{
 		PV = GetComponent<PhotonView>();
+		currentAmmo = maxAmmo;
 	}
 
 	public override void Use()
 	{
-		StartCoroutine(Shoot());
+		if (currentAmmo > 0 && !reloading)
+		{
+			StartCoroutine(Shoot());
+		}
+	}
+	public void Reload()
+	{
+		if (currentAmmo < maxAmmo && !reloading)
+		{
+			reloadRoutine = StartCoroutine(ReloadCoroutine());
+		}
 	}
 
 	IEnumerator Shoot()
 	{
 		allowFire = false;
+
+		PlayerController rootController = transform.root.gameObject.GetComponent<PlayerController>();
+
 		float accuracyX = 0.5f;
 		float accuracyY = 0.5f;
 		float randX = Random.Range(-2, 2)/20f;
 		float randY = Random.Range(-2, 2)/20f;
 
-		bool isMoving = transform.root.gameObject.GetComponent<PlayerController>().isMoving;
-		bool grounded = transform.root.gameObject.GetComponent<PlayerController>().grounded;
+		bool isMoving = rootController.isMoving;
+		bool grounded = rootController.grounded;
 
 		if (isMoving || !grounded) {
 			accuracyX += randX;
@@ -52,9 +72,16 @@ public class SingleShotGun : Gun
 		int layerMask = 1 << 10;
 		layerMask = ~layerMask;
 
+		//ammo
+		currentAmmo--;
+		rootController.UpdateAmmoUI();
+		if (currentAmmo == 0)
+        {
+			Reload();
+        }
+
 		if (Physics.Raycast(ray, out RaycastHit hit, 2000f, layerMask))
 		{
-			Debug.Log(hit.collider.tag);
 
 			if (hit.collider.CompareTag("Player"))
 			{
@@ -92,7 +119,9 @@ public class SingleShotGun : Gun
 	[PunRPC]
 	void RPC_Shoot(Vector3 hitPosition, Vector3 hitNormal)
 	{
-        AudioSource gunAudioSource = transform.root.gameObject.GetComponent<PlayerController>().gunAudioSource;
+		PlayerController root = transform.root.gameObject.GetComponent<PlayerController>();
+
+		AudioSource gunAudioSource = root.gunAudioSource;
 
 		gunAudioSource.PlayOneShot(gunSound);
 
@@ -102,9 +131,37 @@ public class SingleShotGun : Gun
 			Quaternion rotation = hitNormal == Vector3.zero
                                   ? Quaternion.identity
                                   : Quaternion.LookRotation(hitNormal);
-			GameObject bulletImpactObj = Instantiate(bulletImpactPrefab, hitPosition + hitNormal * 0.001f, Quaternion.LookRotation(hitNormal, Vector3.up) * bulletImpactPrefab.transform.rotation);
+			GameObject bulletImpactObj = Instantiate(bulletImpactPrefab, hitPosition + hitNormal * 0.001f, rotation * bulletImpactPrefab.transform.rotation);
 			Destroy(bulletImpactObj, 10f);
 			bulletImpactObj.transform.SetParent(colliders[0].transform);
 		}
+	}
+
+    void Update()
+    {
+		//stop reloading when weapon switched
+        if (reloading)
+        {
+			PlayerController root = transform.root.gameObject.GetComponent<PlayerController>();
+			if (root.itemIndex != index)
+            {
+				StopCoroutine(reloadRoutine);
+				reloading = false;
+            }
+        }
+    }
+
+    IEnumerator ReloadCoroutine()
+    {
+		PlayerController root = transform.root.gameObject.GetComponent<PlayerController>();
+
+		Debug.Log("Reloading");
+		reloading = true;
+
+		yield return new WaitForSeconds(reloadSpeed);
+
+		currentAmmo = maxAmmo;
+		reloading = false;
+		root.UpdateAmmoUI();
 	}
 }

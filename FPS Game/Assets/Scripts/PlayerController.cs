@@ -4,6 +4,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
+
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
@@ -13,19 +15,22 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 
 	[SerializeField] GameObject cameraHolder;
 
-	[SerializeField] GameObject viewModel;
+	public GameObject viewModel;
 	[SerializeField] GameObject localViewModel;
 
 	[SerializeField] float mouseSensitivity, sprintSpeed, walkSpeed, jumpForce, smoothTime;
 
 	[SerializeField] GameObject itemHolder;
 	[SerializeField] GameObject itemHolderMP;
+	[SerializeField] Animator GunsAnimator;
 	public AudioSource gunAudioSource;
 	SingleShotGun[] items;
 	SingleShotGun[] itemsMP;
 
-	int itemIndex;
+	public int itemIndex;
 	int previousItemIndex = -1;
+
+	[SerializeField] TMP_Text ammoText;
 
 	float verticalLookRotation;
 	public Transform groundCheck;
@@ -75,6 +80,10 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 			Cursor.visible = false;
 			EquipItem(0);
 			gameObject.layer = LayerMask.NameToLayer("LocalPlayer");
+			for (int i = 0; i < items.Length; i++)
+			{
+				items[i].index = i;
+			}
 		}
 		else
 		{
@@ -143,6 +152,11 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 				{
 					items[itemIndex].Use();
 				}
+			}
+
+			if (Input.GetKeyDown(KeyCode.R))
+            {
+				items[itemIndex].Reload();
 			}
 		}
 
@@ -243,6 +257,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 			Hashtable hash = new Hashtable();
 			hash.Add("itemIndex", itemIndex);
 			PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
+			UpdateAmmoUI();
 		}
 	}
 
@@ -287,6 +302,12 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 			Die();
 		}
 	}
+
+	public void UpdateAmmoUI()
+    {
+		SingleShotGun gun = items[itemIndex];
+		ammoText.text = gun.currentAmmo + "/" + gun.maxAmmo;
+    }
 
 	void Die()
 	{

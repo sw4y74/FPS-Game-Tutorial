@@ -36,6 +36,7 @@ MonoBehaviour:
   - RPC_Shoot
   - RPC_TakeDamage
   - RPC_Footsteps
+  - RPC_DestroyViewModel
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1
