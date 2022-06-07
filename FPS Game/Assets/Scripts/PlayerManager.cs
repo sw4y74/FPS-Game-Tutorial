@@ -31,12 +31,15 @@ public class PlayerManager : MonoBehaviour
 
 	IEnumerator DieRoutine()
     {
-		//destroy mp viewmodel through network
-		PV.RPC("RPC_DestroyViewModel", RpcTarget.All);
+		//PV.RPC("RPC_DestroyViewModel", RpcTarget.Others);
+		Transform cameraTransform = controller.GetComponent<PlayerController>().firstPersonCamera.transform;
+		PhotonNetwork.Destroy(controller);
+
+		GameObject.FindGameObjectWithTag("DeathCam").transform.position = cameraTransform.position;
+		GameObject.FindGameObjectWithTag("DeathCam").transform.rotation = cameraTransform.rotation;
 
 		yield return new WaitForSeconds(3f);
 
-		PhotonNetwork.Destroy(controller);
 		CreateController();
 	}
 
@@ -45,16 +48,5 @@ public class PlayerManager : MonoBehaviour
 		StartCoroutine(DieRoutine());
 		//PhotonNetwork.Destroy(controller);
 		//CreateController();
-	}
-
-	[PunRPC]
-	void RPC_DestroyViewModel()
-    {
-		//something weird is happening here
-		Debug.Log("RPC_DestroyVM");
-		Debug.Log(controller.GetComponent<PlayerController>().itemIndex);
-		controller.GetComponent<PlayerController>().viewModel.gameObject.SetActive(false);
-		//controller.GetComponent<PlayerController>().viewModel.gameObject.SetActive(false);
-		Destroy(controller.GetComponent<PlayerController>());
 	}
 }

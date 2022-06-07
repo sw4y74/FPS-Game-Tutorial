@@ -55,6 +55,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 	public SphereCollider headCollider;
 
 	PlayerManager playerManager;
+	public Camera firstPersonCamera;
 
 	void Awake()
 	{

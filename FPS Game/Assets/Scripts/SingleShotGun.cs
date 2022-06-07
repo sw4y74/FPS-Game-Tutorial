@@ -22,6 +22,9 @@ public class SingleShotGun : Gun
     [SerializeField] private float recoilY;
     [SerializeField] private float recoilZ;
 
+	[SerializeField] private Kickback Kickback;
+	[SerializeField] private float kickbackZ;
+
 	[SerializeField] private AudioClip gunSound;
     public float reloadSpeed = 2f;
     private bool reloading;
@@ -112,6 +115,7 @@ public class SingleShotGun : Gun
 		PV.RPC("RPC_Shoot", RpcTarget.All, hit.point, hit.normal);
 
 		Recoil.RecoilFire(recoilX, recoilY, recoilZ);
+		Kickback.KickbackFire(kickbackZ);
 		yield return new WaitForSeconds(fireRate/100);
 		allowFire = true;
 	}

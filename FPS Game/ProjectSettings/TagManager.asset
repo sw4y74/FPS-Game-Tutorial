@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - LocalPlayer
+  - DeathCam
   layers:
   - Default
   - TransparentFX
