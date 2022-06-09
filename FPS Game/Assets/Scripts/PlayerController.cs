@@ -56,6 +56,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 
 	PlayerManager playerManager;
 	public Camera firstPersonCamera;
+	KillFeed killFeed;
 
 	void Awake()
 	{
@@ -68,6 +69,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 
 		items = itemHolder.GetComponentsInChildren<SingleShotGun>();
 		itemsMP = itemHolderMP.GetComponentsInChildren<SingleShotGun>();
+		killFeed = FindObjectOfType<KillFeed>();
 	}
 
 	void Start()
@@ -163,7 +165,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 
 		if(transform.position.y < -10f) // Die if you fall out of the world
 		{
-			Die();
+			Die("gravity");
 		}
 
 	}
@@ -283,13 +285,13 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 		//rb.MovePosition(rb.position + transform.TransformDirection(moveAmount) * Time.fixedDeltaTime);
 	}
 
-	public void TakeDamage(float damage)
+	public void TakeDamage(float damage, string damageDealer)
 	{
-		PV.RPC("RPC_TakeDamage", RpcTarget.All, damage);
+		PV.RPC("RPC_TakeDamage", RpcTarget.All, damage, damageDealer);
 	}
 
 	[PunRPC]
-	void RPC_TakeDamage(float damage)
+	void RPC_TakeDamage(float damage, string damageDealer)
 	{
 		if(!PV.IsMine)
 			return;
@@ -300,8 +302,15 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 
 		if(currentHealth <= 0)
 		{
-			Die();
+			PV.RPC("RPC_AddKillFeedItem", RpcTarget.All, damageDealer, PV.Owner.NickName);
+			Die(damageDealer);
 		}
+	}
+
+	[PunRPC]
+	void RPC_AddKillFeedItem(string damageDealer, string targetPlayer)
+	{
+		killFeed.AddKillFeedItem(damageDealer, targetPlayer);
 	}
 
 	public void UpdateAmmoUI()
@@ -310,8 +319,8 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 		ammoText.text = gun.currentAmmo + "/" + gun.maxAmmo;
     }
 
-	void Die()
+	void Die(string killer)
 	{
-		playerManager.Die();
+		playerManager.Die(killer);
 	}
 }

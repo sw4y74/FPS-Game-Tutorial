@@ -43,6 +43,7 @@ public class SingleShotGun : Gun
 			StartCoroutine(Shoot());
 		}
 	}
+
 	public void Reload()
 	{
 		if (currentAmmo < maxAmmo && !reloading)
@@ -56,6 +57,7 @@ public class SingleShotGun : Gun
 		allowFire = false;
 
 		PlayerController rootController = transform.root.gameObject.GetComponent<PlayerController>();
+		string damageDealer = PV.Owner.NickName;
 
 		float accuracyX = 0.5f;
 		float accuracyY = 0.5f;
@@ -108,7 +110,7 @@ public class SingleShotGun : Gun
 				damage = 0;
 			}
 
-			hit.collider.gameObject.GetComponent<IDamageable>()?.TakeDamage(damage);
+			hit.collider.gameObject.GetComponent<IDamageable>()?.TakeDamage(damage, damageDealer);
 
 		}
 
