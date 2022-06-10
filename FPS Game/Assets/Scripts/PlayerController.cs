@@ -58,6 +58,8 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 	public Camera firstPersonCamera;
 	KillFeed killFeed;
 
+	[SerializeField] Animator playerAnimator;
+
 	void Awake()
 	{
 		//rb = GetComponent<Rigidbody>();
@@ -78,7 +80,21 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 		{
 			Destroy(headCollider);
 			mouseSensitivity = RoomManager.Instance.sensitivity / 10;
-			viewModel.SetActive(false);
+			//viewModel.SetActive(false);
+
+			foreach (Transform child in viewModel.transform)
+            {
+				if (child.GetComponent<SkinnedMeshRenderer>())
+                {
+					child.GetComponent<SkinnedMeshRenderer>().enabled = false;
+                }
+				if (child.name.Equals("ItemHolderMP"))
+                {
+					child.gameObject.SetActive(false);
+                }
+				print("Foreach loop: " + child);
+			}
+
 			Cursor.lockState = CursorLockMode.Locked;
 			Cursor.visible = false;
 			EquipItem(0);
@@ -208,9 +224,13 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 		if (movingHorizontally || movingVertically)
 		{
 			isMoving = true;
+			playerAnimator.SetBool("run", true);
 		}
-		else isMoving = false;
-
+		else
+		{
+			isMoving = false;
+			playerAnimator.SetBool("run", false);
+		}
 	}
 
 	void Move2()
