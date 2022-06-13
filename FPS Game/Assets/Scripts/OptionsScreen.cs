@@ -19,6 +19,12 @@ public class OptionsScreen : MonoBehaviour
         sensitivityLabel.text = RoomManager.Instance.sensitivity.ToString("F1");
         selectedResolution = 0;
         UpdateResLabel();
+        if (PlayerPrefs.HasKey("sensitivity"))
+        {
+            sensitivitySlider.value = PlayerPrefs.GetFloat("sensitivity");
+            OnChangeSensitivity();
+        }
+        ApplyGraphics();
     }
 
     public void ResLeft() 
@@ -55,6 +61,12 @@ public class OptionsScreen : MonoBehaviour
     {
         sensitivityLabel.text = sensitivitySlider.value.ToString("F1");
         RoomManager.Instance.sensitivity = sensitivitySlider.value;
+        if (GameObject.FindGameObjectWithTag("LocalPlayer"))
+        {
+            PlayerController pc = GameObject.FindGameObjectWithTag("LocalPlayer").GetComponent<PlayerController>();
+            pc.ChangeSensitivity(sensitivitySlider.value);
+        }
+        PlayerPrefs.SetFloat("sensitivity", sensitivitySlider.value);
     }
 }
 

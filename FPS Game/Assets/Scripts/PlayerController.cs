@@ -14,11 +14,12 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 	[SerializeField] GameObject ui;
 
 	[SerializeField] GameObject cameraHolder;
+	[SerializeField] Transform[] syncRotationObjects;
 
 	public GameObject viewModel;
 	[SerializeField] GameObject localViewModel;
-
-	[SerializeField] float mouseSensitivity, sprintSpeed, walkSpeed, jumpForce, smoothTime;
+	public float mouseSensitivity;
+	[SerializeField] float sprintSpeed, walkSpeed, jumpForce, smoothTime;
 
 	[SerializeField] GameObject itemHolder;
 	[SerializeField] GameObject itemHolderMP;
@@ -38,6 +39,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 	public LayerMask groundMask;
 	public bool grounded = true;
 	public bool isMoving;
+	public bool isSneaking;
 	Vector3 smoothMoveVelocity;
 	Vector3 moveAmount;
 	PauseMenu pauseMenu;
@@ -79,26 +81,25 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 		if(PV.IsMine)
 		{
 			Destroy(headCollider);
-			mouseSensitivity = RoomManager.Instance.sensitivity / 10;
-			//viewModel.SetActive(false);
 
+			ChangeSensitivity(RoomManager.Instance.sensitivity);
+
+			//turn off MP viewModel renderers and gunHolder
 			foreach (Transform child in viewModel.transform)
             {
 				if (child.GetComponent<SkinnedMeshRenderer>())
                 {
 					child.GetComponent<SkinnedMeshRenderer>().enabled = false;
                 }
-				if (child.name.Equals("ItemHolderMP"))
-                {
-					child.gameObject.SetActive(false);
-                }
-				print("Foreach loop: " + child);
 			}
+
+			itemHolderMP.SetActive(false);
 
 			Cursor.lockState = CursorLockMode.Locked;
 			Cursor.visible = false;
 			EquipItem(0);
 			gameObject.layer = LayerMask.NameToLayer("LocalPlayer");
+			gameObject.tag = "LocalPlayer";
 			for (int i = 0; i < items.Length; i++)
 			{
 				items[i].index = i;
@@ -107,7 +108,6 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 		else
 		{
 			Destroy(GetComponentInChildren<Camera>().gameObject);
-			//Destroy(rb);
 			Destroy(controller);
 			Destroy(ui);
 			localViewModel.SetActive(false);
@@ -194,6 +194,10 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 		verticalLookRotation = Mathf.Clamp(verticalLookRotation, -90f, 90f);
 
 		cameraHolder.transform.localEulerAngles = Vector3.left * verticalLookRotation;
+		foreach(Transform obj in syncRotationObjects)
+        {
+			obj.localEulerAngles = Vector3.left * verticalLookRotation;
+		}
 	}
 
 	void Move()
@@ -205,12 +209,16 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 			velocity.y = -2f;
         }
 
-		float x = Input.GetAxis("Horizontal");
-		float z = Input.GetAxis("Vertical");
+		float movementX = Input.GetAxis("Horizontal");
+		float movementY = Input.GetAxis("Vertical");
 		float strafeThreshold = 0.6f;
 
-		Vector3 move = transform.right * x + transform.forward * z;
+		Vector3 move = transform.right * movementX + transform.forward * movementY;
 		moveAmount = Vector3.SmoothDamp(moveAmount, move * (Input.GetKey(KeyCode.LeftShift) ? sprintSpeed : walkSpeed), ref smoothMoveVelocity, smoothTime);
+
+		if (Input.GetKey(KeyCode.LeftShift)) 
+			isSneaking = true;
+		else isSneaking = false;
 
 		controller.Move(moveAmount * Time.deltaTime);
 
@@ -218,8 +226,8 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 
 		controller.Move(velocity * Time.deltaTime);
 
-		bool movingHorizontally = x > strafeThreshold || x < -strafeThreshold;
-		bool movingVertically = z > strafeThreshold || z < -strafeThreshold;
+		bool movingHorizontally = movementX > strafeThreshold || movementX < -strafeThreshold;
+		bool movingVertically = movementY > strafeThreshold || movementY < -strafeThreshold;
 
 		if (movingHorizontally || movingVertically)
 		{
@@ -231,22 +239,6 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 			isMoving = false;
 			playerAnimator.SetBool("run", false);
 		}
-	}
-
-	void Move2()
-	{
-		Vector3 moveDir = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
-
-		moveAmount = Vector3.SmoothDamp(moveAmount, moveDir * (Input.GetKey(KeyCode.LeftShift) ? sprintSpeed : walkSpeed), ref smoothMoveVelocity, smoothTime);
-		
-		float strafeThreshold = 0.6f;
-
-		bool horizontal = Input.GetAxis("Horizontal") > strafeThreshold || Input.GetAxis("Horizontal") < -strafeThreshold;
- 		bool vertical = Input.GetAxis("Vertical") > strafeThreshold || Input.GetAxis("Vertical") < -strafeThreshold;
-
-		if (horizontal || vertical) {
-			isMoving = true;
-		} else isMoving = false;
 	}
 
 	void Jump()
@@ -342,5 +334,10 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 	void Die(string killer)
 	{
 		playerManager.Die(killer);
+	}
+
+	public void ChangeSensitivity(float value)
+    {
+		mouseSensitivity = value / 10;
 	}
 }

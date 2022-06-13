@@ -6,6 +6,7 @@ TagManager:
   tags:
   - LocalPlayer
   - DeathCam
+  - ItemHolderMP
   layers:
   - Default
   - TransparentFX

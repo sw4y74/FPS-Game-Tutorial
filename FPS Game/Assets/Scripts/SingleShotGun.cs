@@ -9,7 +9,8 @@ public class SingleShotGun : Gun
 
 	PhotonView PV;
 
-	public int index;
+	[Header("Weapon properties")]
+	[System.NonSerialized] public int index;
 	public bool automatic;
 	public float fireRate;
 	public bool allowFire = true;
@@ -17,16 +18,26 @@ public class SingleShotGun : Gun
 	public int currentAmmo;
 
 	[SerializeField] private Recoil Recoil;
-	//hipfire
+	
+	[Header("Recoil values")]
     [SerializeField] private float recoilX;
     [SerializeField] private float recoilY;
     [SerializeField] private float recoilZ;
 
 	[SerializeField] private Kickback Kickback;
+	
+	[Header("Kickback values")]
 	[SerializeField] private float kickbackZ;
 
+	[Header("Weapon accuracy in movement")]
+	[SerializeField] private float movementAccuracy = 2;
+	[SerializeField] private float jumpAccuracy = 2;
+
+	[Header("Sound")]
 	[SerializeField] private AudioClip gunSound;
-    public float reloadSpeed = 2f;
+
+	[Header("Reload properties")]
+	public float reloadSpeed = 2f;
     private bool reloading;
 	Coroutine reloadRoutine = null;
 
@@ -56,21 +67,37 @@ public class SingleShotGun : Gun
 	{
 		allowFire = false;
 
+		GunInfo gun = ((GunInfo)itemInfo);
+
 		PlayerController rootController = transform.root.gameObject.GetComponent<PlayerController>();
 		string damageDealer = PV.Owner.NickName;
 
 		float accuracyX = 0.5f;
 		float accuracyY = 0.5f;
-		float randX = Random.Range(-2, 2)/20f;
-		float randY = Random.Range(-2, 2)/20f;
+		float randX = Random.Range(-movementAccuracy, movementAccuracy)/10;
+		float randY = Random.Range(-movementAccuracy, movementAccuracy)/10;
+		float jRandX = Random.Range(-jumpAccuracy, jumpAccuracy) / 10;
+		float jRandY = Random.Range(-jumpAccuracy, jumpAccuracy) / 10;
 
 		bool isMoving = rootController.isMoving;
 		bool grounded = rootController.grounded;
+		bool isSneaking = rootController.isSneaking;
 
-		if (isMoving || !grounded) {
+		if (!grounded)
+		{
+			accuracyX += jRandX;
+			accuracyY += jRandY;
+		} else if (isMoving)
+		{
 			accuracyX += randX;
 			accuracyY += randY;
 		}
+		
+		if (grounded && isMoving && isSneaking)
+        {
+			accuracyX = 0.5f + randX / 2;
+			accuracyY = 0.5f + randY / 2;
+        }
 
 		Ray ray = cam.ViewportPointToRay(new Vector3(accuracyX, accuracyY));
 		ray.origin = cam.transform.position;
@@ -98,7 +125,7 @@ public class SingleShotGun : Gun
 
 			}
 
-			float damage = ((GunInfo)itemInfo).damage;
+			float damage = gun.damage;
 
 			if (hit.collider is SphereCollider)
 			{
