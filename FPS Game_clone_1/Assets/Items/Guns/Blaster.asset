@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Blaster
   damage: 40
+  weaponType: 1

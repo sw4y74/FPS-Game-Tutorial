@@ -101,6 +101,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 			EquipItem(0);
 			gameObject.layer = LayerMask.NameToLayer("LocalPlayer");
 			gameObject.tag = "LocalPlayer";
+
 			for (int i = 0; i < items.Length; i++)
 			{
 				items[i].index = i;
@@ -355,4 +356,9 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
     {
 		mouseSensitivity = value / 10;
 	}
+
+	public void ToggleWeaponRender(bool toggle)
+    {
+		items[itemIndex].transform.Find("root").gameObject.SetActive(toggle);
+    }
 }
