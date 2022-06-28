@@ -40,7 +40,7 @@ public class SingleShotGun : Gun
 
 	[Header("Reload properties")]
 	public float reloadSpeed = 2f;
-    private bool reloading;
+    public bool reloading;
 	Coroutine reloadRoutine = null;
 	Coroutine shootRoutine = null;
 
@@ -63,6 +63,8 @@ public class SingleShotGun : Gun
 	{
 		if (currentAmmo < maxAmmo && !reloading)
 		{
+			StopCoroutine(shootRoutine);
+			allowFire = true;
 			reloadRoutine = StartCoroutine(ReloadCoroutine());
 		}
 	}

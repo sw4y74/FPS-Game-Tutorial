@@ -19,7 +19,7 @@ public class SniperScope : MonoBehaviour
 
     void Update()
     {
-        if (GetComponent<SingleShotGun>().currentlyEquipped && GetComponent<SingleShotGun>().allowFire && Input.GetMouseButtonDown(1))
+        if (GetComponent<SingleShotGun>().currentlyEquipped && GetComponent<SingleShotGun>().allowFire && !GetComponent<SingleShotGun>().reloading && Input.GetMouseButtonDown(1))
         {
             ToggleScope(!scopeOn);
         }
