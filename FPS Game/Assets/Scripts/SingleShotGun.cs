@@ -8,6 +8,7 @@ public class SingleShotGun : Gun
 	[SerializeField] Camera cam;
 
 	PhotonView PV;
+	PlayerController root;
 
 	[Header("Weapon properties")]
 	[System.NonSerialized] public int index;
@@ -16,6 +17,7 @@ public class SingleShotGun : Gun
 	public bool allowFire = true;
 	public int maxAmmo;
 	public int currentAmmo;
+	public bool currentlyEquipped = false;
 
 	[SerializeField] private Recoil Recoil;
 	
@@ -40,18 +42,20 @@ public class SingleShotGun : Gun
 	public float reloadSpeed = 2f;
     private bool reloading;
 	Coroutine reloadRoutine = null;
+	Coroutine shootRoutine = null;
 
 	void Awake()
 	{
 		PV = GetComponent<PhotonView>();
 		currentAmmo = maxAmmo;
+		root = transform.root.gameObject.GetComponent<PlayerController>();
 	}
 
 	public override void Use()
 	{
 		if (currentAmmo > 0 && !reloading)
 		{
-			StartCoroutine(Shoot());
+			shootRoutine = StartCoroutine(Shoot());
 		}
 	}
 
@@ -67,10 +71,15 @@ public class SingleShotGun : Gun
 	{
 		allowFire = false;
 
-		GunInfo gun = ((GunInfo)itemInfo);
+		bool scopeEnabled = false;
 
-		PlayerController rootController = transform.root.gameObject.GetComponent<PlayerController>();
-		string damageDealer = PV.Owner.NickName;
+		if (GetComponent<SniperScope>() && GetComponent<SniperScope>().scopeOn)
+		{
+			GetComponent<SniperScope>().ToggleScope(false);
+			scopeEnabled = true;
+		}
+
+		GunInfo gun = ((GunInfo)itemInfo);
 
 		float accuracyX = 0.5f;
 		float accuracyY = 0.5f;
@@ -79,9 +88,9 @@ public class SingleShotGun : Gun
 		float jRandX = Random.Range(-jumpAccuracy, jumpAccuracy) / 10;
 		float jRandY = Random.Range(-jumpAccuracy, jumpAccuracy) / 10;
 
-		bool isMoving = rootController.isMoving;
-		bool grounded = rootController.grounded;
-		bool isSneaking = rootController.isSneaking;
+		bool isMoving = root.isMoving;
+		bool grounded = root.grounded;
+		bool isSneaking = root.isSneaking;
 
 		if (!grounded)
 		{
@@ -106,7 +115,7 @@ public class SingleShotGun : Gun
 
 		//ammo
 		currentAmmo--;
-		rootController.UpdateAmmoUI();
+		root.UpdateAmmoUI();
 		if (currentAmmo == 0)
         {
 			Reload();
@@ -146,14 +155,20 @@ public class SingleShotGun : Gun
 		Recoil.RecoilFire(recoilX, recoilY, recoilZ);
 		Kickback.KickbackFire(kickbackZ);
 		yield return new WaitForSeconds(fireRate/100);
+
+		if (GetComponent<SniperScope>() && !GetComponent<SniperScope>().scopeOn && scopeEnabled)
+		{
+			GetComponent<SniperScope>().ToggleScope(true);
+
+		}
+
+		scopeEnabled = false;
 		allowFire = true;
 	}
 
 	[PunRPC]
 	void RPC_Shoot(Vector3 hitPosition, Vector3 hitNormal)
 	{
-		PlayerController root = transform.root.gameObject.GetComponent<PlayerController>();
-
 		AudioSource gunAudioSource = root.gunAudioSource;
 
 		gunAudioSource.PlayOneShot(gunSound);
@@ -175,18 +190,25 @@ public class SingleShotGun : Gun
 		//stop reloading when weapon switched
         if (reloading)
         {
-			PlayerController root = transform.root.gameObject.GetComponent<PlayerController>();
 			if (root.itemIndex != index)
             {
 				StopCoroutine(reloadRoutine);
 				reloading = false;
             }
         }
+
+		if (!allowFire)
+        {
+			if (root.itemIndex != index)
+			{
+				StopCoroutine(shootRoutine);
+				allowFire = true;
+			}
+		}
     }
 
     IEnumerator ReloadCoroutine()
     {
-		PlayerController root = transform.root.gameObject.GetComponent<PlayerController>();
 
 		reloading = true;
 
@@ -195,5 +217,33 @@ public class SingleShotGun : Gun
 		currentAmmo = maxAmmo;
 		reloading = false;
 		root.UpdateAmmoUI();
+	}
+
+	public void OnEquip()
+    {
+		currentlyEquipped = true;
+		if (GetComponent<SniperScope>())
+		{
+			root.ChangePlayerSpeed(root.walkSpeed * 0.8f);
+		}
+
+		Debug.Log("Equipped "+itemInfo.itemName);
+    }
+
+	public void OnUnequip()
+    {
+		currentlyEquipped = false;
+
+		if (GetComponent<SniperScope>()) 
+
+		if (GetComponent<SniperScope>()) {
+
+			root.ChangePlayerSpeed(root.originalWalkSpeed);
+
+			if (GetComponent<SniperScope>().scopeOn) GetComponent<SniperScope>().ToggleScope(false);
+
+		}
+
+		Debug.Log("Unequipped " + itemInfo.itemName);
 	}
 }

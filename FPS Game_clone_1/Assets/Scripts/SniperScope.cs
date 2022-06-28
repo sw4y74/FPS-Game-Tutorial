@@ -7,28 +7,38 @@ public class SniperScope : MonoBehaviour
     [SerializeField] GameObject sniperScope;
     [SerializeField] GameObject playerCam;
     [SerializeField] GameObject crosshair;
+    float originalSensitivity;
 
-    bool scopeOn = false;
+    public bool scopeOn = false;
 
     void Start()
     {
-        playerCam = transform.root.gameObject.GetComponent<PlayerController>().firstPersonCamera.gameObject;
+        PlayerController root = transform.root.gameObject.GetComponent<PlayerController>();
+        originalSensitivity = root.mouseSensitivity * 10;
     }
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(1))
+        if (GetComponent<SingleShotGun>().currentlyEquipped && GetComponent<SingleShotGun>().allowFire && Input.GetMouseButtonDown(1))
         {
-            ToggleScope(scopeOn);
+            ToggleScope(!scopeOn);
         }
     }
 
-    void ToggleScope(bool toggle)
+    public void ToggleScope(bool toggle)
     {
-        crosshair.SetActive(toggle);
-        transform.root.gameObject.GetComponent<PlayerController>().ToggleWeaponRender(toggle);
-        playerCam.GetComponent<Camera>().fieldOfView = toggle ? 75 : 20;
-        sniperScope.SetActive(!toggle);
+        PlayerController root = transform.root.gameObject.GetComponent<PlayerController>();
+
+        Debug.Log(toggle);
+        float sensitivity = toggle ? root.mouseSensitivity * 10 / 4 : originalSensitivity;
+        Debug.Log(sensitivity);
+
+        root.ChangeSensitivity(sensitivity);
+
+        crosshair.SetActive(!toggle);
+        transform.root.gameObject.GetComponent<PlayerController>().ToggleWeaponRender(!toggle);
+        playerCam.GetComponent<Camera>().fieldOfView = !toggle ? 75 : 20;
+        sniperScope.SetActive(toggle);
         scopeOn = !scopeOn;
     }
 }

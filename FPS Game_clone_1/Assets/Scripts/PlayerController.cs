@@ -20,7 +20,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 	public GameObject viewModel;
 	[SerializeField] GameObject localViewModel;
 	public float mouseSensitivity;
-	[SerializeField] float sprintSpeed, walkSpeed, jumpForce, smoothTime;
+	public float sprintSpeed, walkSpeed, originalWalkSpeed, jumpForce, smoothTime;
 
 	[SerializeField] GameObject itemHolder;
 	[SerializeField] GameObject itemHolderMP;
@@ -83,7 +83,10 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 		{
 			Destroy(headCollider);
 
-			ChangeSensitivity(RoomManager.Instance.sensitivity);
+			if (PlayerPrefs.HasKey("sensitivity"))
+			{
+				ChangeSensitivity(PlayerPrefs.GetFloat("sensitivity"));
+			}
 
 			//turn off MP viewModel renderers and gunHolder
 			foreach (Transform child in viewModel.transform)
@@ -262,11 +265,13 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 
 		items[itemIndex].itemGameObject.SetActive(true);
 		itemsMP[itemIndex].itemGameObject.SetActive(true);
+		items[itemIndex].OnEquip();
 
-		if(previousItemIndex != -1)
+		if (previousItemIndex != -1)
 		{
 			items[previousItemIndex].itemGameObject.SetActive(false);
 			itemsMP[previousItemIndex].itemGameObject.SetActive(false);
+			items[previousItemIndex].OnUnequip();
 		}
 
 		previousItemIndex = itemIndex;
@@ -360,5 +365,10 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 	public void ToggleWeaponRender(bool toggle)
     {
 		items[itemIndex].transform.Find("root").gameObject.SetActive(toggle);
+    }
+
+	public void ChangePlayerSpeed(float value)
+    {
+		walkSpeed = value;
     }
 }
