@@ -27,7 +27,10 @@ public class SingleShotGun : Gun
     [SerializeField] private float recoilZ;
 
 	[SerializeField] private Kickback Kickback;
-	
+
+	[SerializeField] private bool firstShootAccurate;
+	private float recoilCooldown = 0f;
+
 	[Header("Kickback values")]
 	[SerializeField] private float kickbackZ;
 
@@ -75,12 +78,6 @@ public class SingleShotGun : Gun
 
 		bool scopeEnabled = false;
 
-		if (GetComponent<SniperScope>() && GetComponent<SniperScope>().scopeOn)
-		{
-			GetComponent<SniperScope>().ToggleScope(false);
-			scopeEnabled = true;
-		}
-
 		GunInfo gun = ((GunInfo)itemInfo);
 
 		float accuracyX = 0.5f;
@@ -109,6 +106,28 @@ public class SingleShotGun : Gun
 			accuracyX = 0.5f + randX / 2;
 			accuracyY = 0.5f + randY / 2;
         }
+
+		if (firstShootAccurate && recoilCooldown == 0f)
+        {
+			accuracyX = 0.5f;
+			accuracyY = 0.5f;
+			recoilCooldown = 5f;
+		}
+
+		if (GetComponent<SniperScope>())
+        {
+			accuracyX = 0.5f + Random.Range(-1.5f, 1.5f) / 10;
+			accuracyY = 0.5f + Random.Range(-1.5f, 1.5f) / 10;
+
+			if (GetComponent<SniperScope>().scopeOn)
+            {
+				accuracyX = 0.5f;
+				accuracyY = 0.5f;
+
+				GetComponent<SniperScope>().ToggleScope(false);
+				scopeEnabled = true;
+			}
+		}
 
 		Ray ray = cam.ViewportPointToRay(new Vector3(accuracyX, accuracyY));
 		ray.origin = cam.transform.position;
@@ -158,7 +177,7 @@ public class SingleShotGun : Gun
 		Kickback.KickbackFire(kickbackZ);
 		yield return new WaitForSeconds(fireRate/100);
 
-		if (GetComponent<SniperScope>() && !GetComponent<SniperScope>().scopeOn && scopeEnabled)
+		if (GetComponent<SniperScope>() && !GetComponent<SniperScope>().scopeOn && !reloading && scopeEnabled)
 		{
 			GetComponent<SniperScope>().ToggleScope(true);
 
@@ -201,12 +220,18 @@ public class SingleShotGun : Gun
 
 		if (!allowFire)
         {
+			if (recoilCooldown > 0f)
+            {
+				recoilCooldown -= 0.1f;
+			}
+
 			if (root.itemIndex != index)
 			{
 				StopCoroutine(shootRoutine);
 				allowFire = true;
 			}
 		}
+		
     }
 
     IEnumerator ReloadCoroutine()

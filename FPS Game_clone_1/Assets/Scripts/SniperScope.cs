@@ -19,6 +19,12 @@ public class SniperScope : MonoBehaviour
 
     void Update()
     {
+        if (GetComponent<SingleShotGun>().currentlyEquipped)
+        {
+            crosshair.SetActive(false);
+        }
+        else crosshair.SetActive(true);
+
         if (GetComponent<SingleShotGun>().currentlyEquipped && GetComponent<SingleShotGun>().allowFire && !GetComponent<SingleShotGun>().reloading && Input.GetMouseButtonDown(1))
         {
             ToggleScope(!scopeOn);
@@ -29,13 +35,10 @@ public class SniperScope : MonoBehaviour
     {
         PlayerController root = transform.root.gameObject.GetComponent<PlayerController>();
 
-        Debug.Log(toggle);
-        float sensitivity = toggle ? root.mouseSensitivity * 10 / 4 : originalSensitivity;
-        Debug.Log(sensitivity);
+        float sensitivity = toggle ? root.mouseSensitivity * 10 * 0.25f : originalSensitivity;
 
         root.ChangeSensitivity(sensitivity);
 
-        crosshair.SetActive(!toggle);
         transform.root.gameObject.GetComponent<PlayerController>().ToggleWeaponRender(!toggle);
         playerCam.GetComponent<Camera>().fieldOfView = !toggle ? 75 : 20;
         sniperScope.SetActive(toggle);
