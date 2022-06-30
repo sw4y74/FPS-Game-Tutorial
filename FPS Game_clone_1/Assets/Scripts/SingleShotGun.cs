@@ -66,6 +66,11 @@ public class SingleShotGun : Gun
 	{
 		if (currentAmmo < maxAmmo && !reloading)
 		{
+			if (GetComponent<SniperScope>() && GetComponent<SniperScope>().scopeOn)
+			{
+				GetComponent<SniperScope>().ToggleScope(false);
+			}
+
 			StopCoroutine(shootRoutine);
 			allowFire = true;
 			reloadRoutine = StartCoroutine(ReloadCoroutine());
@@ -107,11 +112,15 @@ public class SingleShotGun : Gun
 			accuracyY = 0.5f + randY / 2;
         }
 
-		if (firstShootAccurate && recoilCooldown == 0f)
+		if (firstShootAccurate)
         {
-			accuracyX = 0.5f;
-			accuracyY = 0.5f;
-			recoilCooldown = 5f;
+			if (recoilCooldown == 0f)
+            {
+				accuracyX = 0.5f;
+				accuracyY = 0.5f;
+			}
+
+			recoilCooldown = fireRate / 1.5f;
 		}
 
 		if (GetComponent<SniperScope>())
@@ -220,16 +229,18 @@ public class SingleShotGun : Gun
 
 		if (!allowFire)
         {
-			if (recoilCooldown > 0f)
-            {
-				recoilCooldown -= 0.1f;
-			}
-
 			if (root.itemIndex != index)
 			{
 				StopCoroutine(shootRoutine);
 				allowFire = true;
 			}
+		} else
+        {
+			if (recoilCooldown > 0f)
+			{
+				recoilCooldown -= 0.1f;
+			}
+			else if (recoilCooldown < 0f) recoilCooldown = 0f;
 		}
 		
     }

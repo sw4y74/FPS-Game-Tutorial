@@ -20,7 +20,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 	public GameObject viewModel;
 	[SerializeField] GameObject localViewModel;
 	public float mouseSensitivity;
-	public float sprintSpeed, walkSpeed, originalWalkSpeed, jumpForce, smoothTime;
+	public float sprintSpeed, walkSpeed, originalWalkSpeed, originalSprintSpeed, jumpForce, smoothTime;
 
 	[SerializeField] GameObject itemHolder;
 	[SerializeField] GameObject itemHolderMP;
@@ -216,12 +216,21 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 			velocity.y = -2f;
         }
 
+		if (!grounded)
+        {
+			smoothTime = 0.03f * 15;
+        } else
+        {
+			smoothTime = 0.03f;
+		}
+
 		float movementX = Input.GetAxis("Horizontal");
 		float movementY = Input.GetAxis("Vertical");
 		float strafeThreshold = 0.6f;
 
 		Vector3 move = transform.right * movementX + transform.forward * movementY;
-		moveAmount = Vector3.SmoothDamp(moveAmount, move * (Input.GetKey(KeyCode.LeftShift) ? sprintSpeed : walkSpeed), ref smoothMoveVelocity, smoothTime);
+		Vector3 inputs = Vector3.ClampMagnitude(move, 1f);
+		moveAmount = Vector3.SmoothDamp(moveAmount, inputs * (Input.GetKey(KeyCode.LeftShift) ? sprintSpeed : walkSpeed), ref smoothMoveVelocity, smoothTime);
 
 		if (Input.GetKey(KeyCode.LeftShift)) 
 			isSneaking = true;
