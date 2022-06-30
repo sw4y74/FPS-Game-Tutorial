@@ -24,6 +24,9 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 
 	[SerializeField] GameObject itemHolder;
 	[SerializeField] GameObject itemHolderMP;
+	[SerializeField] GameObject arms;
+	[SerializeField] GameObject reloadPos;
+	[SerializeField] GameObject armsPos;
 	[SerializeField] Animator GunsAnimator;
 	public AudioSource gunAudioSource;
 	SingleShotGun[] items;
@@ -149,7 +152,6 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 				}
 				else
 				{
-					Debug.Log(PhotonNetwork.LocalPlayer.GetScore());
 					EquipItem(itemIndex + 1);
 				}
 			}
@@ -380,4 +382,25 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
     {
 		walkSpeed = value;
     }
+
+	public IEnumerator LerpArmsReloadPosition(bool toggle)
+    {
+		float timeElapsed = 0;
+		float lerpDuration = 0.3f;
+
+		Vector3 a = toggle ? armsPos.transform.localPosition : reloadPos.transform.localPosition;
+		Vector3 b = toggle ? reloadPos.transform.localPosition : armsPos.transform.localPosition;
+
+		while (timeElapsed < lerpDuration)
+		{
+			arms.transform.localPosition = Vector3.Lerp(a, b, (timeElapsed / lerpDuration));
+			timeElapsed += Time.deltaTime;
+
+			// Yield here
+			yield return null;
+		}
+		// Make sure we got there
+		arms.transform.localPosition = b;
+		yield return null;
+	}
 }

@@ -73,6 +73,7 @@ public class SingleShotGun : Gun
 
 			StopCoroutine(shootRoutine);
 			allowFire = true;
+			
 			reloadRoutine = StartCoroutine(ReloadCoroutine());
 		}
 	}
@@ -223,6 +224,7 @@ public class SingleShotGun : Gun
 			if (root.itemIndex != index)
             {
 				StopCoroutine(reloadRoutine);
+				StartCoroutine(root.LerpArmsReloadPosition(false));
 				reloading = false;
             }
         }
@@ -247,10 +249,15 @@ public class SingleShotGun : Gun
 
     IEnumerator ReloadCoroutine()
     {
-
 		reloading = true;
 
-		yield return new WaitForSeconds(reloadSpeed);
+		StartCoroutine(root.LerpArmsReloadPosition(true));
+
+		yield return new WaitForSeconds(reloadSpeed * 0.8f);
+
+		StartCoroutine(root.LerpArmsReloadPosition(false));
+
+		yield return new WaitForSeconds(reloadSpeed - reloadSpeed * 0.8f);
 
 		currentAmmo = maxAmmo;
 		reloading = false;
@@ -259,6 +266,8 @@ public class SingleShotGun : Gun
 
 	public void OnEquip()
     {
+		//root.MoveArmsReloadPosition(true);
+		StartCoroutine(root.LerpArmsReloadPosition(false));
 		currentlyEquipped = true;
 		if (GetComponent<SniperScope>())
 		{
