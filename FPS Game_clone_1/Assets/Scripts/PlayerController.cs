@@ -128,6 +128,11 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 		if(!PV.IsMine)
 			return;
 
+		if (grounded && velocity.y < 0)
+		{
+			velocity.y = -2f;
+		}
+
 		if (!pauseMenu.GameIsPaused)
 		{
 
@@ -213,17 +218,14 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
     {
 		grounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
 
-		if (grounded && velocity.y < 0)
-        {
-			velocity.y = -2f;
-        }
-
 		if (!grounded)
         {
 			smoothTime = 0.03f * 15;
-        } else
+			controller.stepOffset = 0f;
+		} else
         {
 			smoothTime = 0.03f;
+			controller.stepOffset = 0.7f;
 		}
 
 		float movementX = Input.GetAxis("Horizontal");
