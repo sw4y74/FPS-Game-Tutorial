@@ -655,7 +655,7 @@ MonoBehaviour:
   viewModel: {fileID: 2873040350550396998}
   localViewModel: {fileID: 4460622666282892428}
   mouseSensitivity: 3
-  sprintSpeed: 3
+  sprintSpeed: 4
   walkSpeed: 6
   originalWalkSpeed: 6
   originalSprintSpeed: 0

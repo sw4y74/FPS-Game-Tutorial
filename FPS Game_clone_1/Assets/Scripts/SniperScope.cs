@@ -37,6 +37,8 @@ public class SniperScope : MonoBehaviour
 
         float sensitivity = toggle ? root.mouseSensitivity * 10 * 0.25f : originalSensitivity;
 
+        root.ChangePlayerSpeed(toggle ? root.walkSpeed * 0.5f : root.originalWalkSpeed);
+
         root.ChangeSensitivity(sensitivity);
 
         transform.root.gameObject.GetComponent<PlayerController>().ToggleWeaponRender(!toggle);

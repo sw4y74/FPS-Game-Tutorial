@@ -115,7 +115,7 @@ public class SingleShotGun : Gun
 
 		if (firstShootAccurate)
         {
-			if (recoilCooldown == 0f)
+			if (recoilCooldown == 0f && grounded)
             {
 				accuracyX = 0.5f;
 				accuracyY = 0.5f;
@@ -126,16 +126,25 @@ public class SingleShotGun : Gun
 
 		if (GetComponent<SniperScope>())
         {
-			accuracyX = 0.5f + Random.Range(-1.5f, 1.5f) / 10;
-			accuracyY = 0.5f + Random.Range(-1.5f, 1.5f) / 10;
+			// noscope
+			accuracyX = 0.5f + Random.Range(-0.6f, 0.6f) / 10;
+			accuracyY = 0.5f + Random.Range(-0.6f, 0.6f) / 10;
 
 			if (GetComponent<SniperScope>().scopeOn)
             {
-				accuracyX = 0.5f;
-				accuracyY = 0.5f;
-
 				GetComponent<SniperScope>().ToggleScope(false);
 				scopeEnabled = true;
+
+				if (root.grounded)
+                {
+					accuracyX = 0.5f;
+					accuracyY = 0.5f;
+				} else
+                {
+					accuracyX = 0.5f + Random.Range(-1.5f, 1.5f) / 10;
+					accuracyY = 0.5f + Random.Range(-1.5f, 1.5f) / 10;
+				}
+
 			}
 		}
 

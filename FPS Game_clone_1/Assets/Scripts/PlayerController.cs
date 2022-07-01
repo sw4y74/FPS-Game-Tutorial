@@ -220,7 +220,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 
 		if (!grounded)
         {
-			smoothTime = 0.03f * 15;
+			smoothTime = 0.03f * 7;
 			controller.stepOffset = 0f;
 		} else
         {
