@@ -1559,9 +1559,6 @@ MonoBehaviour:
     SynchronizeType: 2
     Name: run
   - Type: 1
-    SynchronizeType: 0
-    Name: direction
-  - Type: 1
     SynchronizeType: 2
     Name: directionX
   - Type: 1
