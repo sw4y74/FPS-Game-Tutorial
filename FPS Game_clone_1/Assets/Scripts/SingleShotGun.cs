@@ -128,8 +128,15 @@ public class SingleShotGun : Gun
 		if (GetComponent<SniperScope>())
         {
 			// noscope
-			accuracyX = 0.5f + Random.Range(-noScopeAccuracy, noScopeAccuracy) / 10;
-			accuracyY = 0.5f + Random.Range(-noScopeAccuracy, noScopeAccuracy) / 10;
+			if (grounded && !isMoving)
+            {
+				accuracyX = 0.5f + Random.Range(-noScopeAccuracy, noScopeAccuracy) / 10;
+				accuracyY = 0.5f + Random.Range(-noScopeAccuracy, noScopeAccuracy) / 10;
+			} else
+            {
+				accuracyX = 0.5f + Random.Range(-noScopeAccuracy*3, noScopeAccuracy*3) / 10;
+				accuracyY = 0.5f + Random.Range(-noScopeAccuracy*3, noScopeAccuracy*3) / 10;
+			}
 
 			if (GetComponent<SniperScope>().scopeOn)
             {
@@ -281,7 +288,7 @@ public class SingleShotGun : Gun
 		currentlyEquipped = true;
 		if (GetComponent<SniperScope>())
 		{
-			root.ChangePlayerSpeed(root.walkSpeed * 0.8f);
+			root.ChangePlayerSpeed(root.walkSpeed * 0.9f);
 		}
 
 		Debug.Log("Equipped "+itemInfo.itemName);
@@ -290,8 +297,6 @@ public class SingleShotGun : Gun
 	public void OnUnequip()
     {
 		currentlyEquipped = false;
-
-		if (GetComponent<SniperScope>()) 
 
 		if (GetComponent<SniperScope>()) {
 

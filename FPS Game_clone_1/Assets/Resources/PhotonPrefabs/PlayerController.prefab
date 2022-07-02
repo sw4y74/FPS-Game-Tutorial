@@ -5019,7 +5019,7 @@ PrefabInstance:
     - target: {fileID: 834828689822099473, guid: 093653c4f9ba6a946a4a29c995383310,
         type: 3}
       propertyPath: recoilX
-      value: -7
+      value: -11
       objectReference: {fileID: 0}
     - target: {fileID: 834828689822099473, guid: 093653c4f9ba6a946a4a29c995383310,
         type: 3}
@@ -5034,7 +5034,7 @@ PrefabInstance:
     - target: {fileID: 834828689822099473, guid: 093653c4f9ba6a946a4a29c995383310,
         type: 3}
       propertyPath: kickbackZ
-      value: 0.15
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 834828689822099473, guid: 093653c4f9ba6a946a4a29c995383310,
         type: 3}
@@ -5250,6 +5250,16 @@ PrefabInstance:
         type: 3}
       propertyPath: firstShootAccurate
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8352006439735504245, guid: 093653c4f9ba6a946a4a29c995383310,
+        type: 3}
+      propertyPath: fireRate
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 8352006439735504245, guid: 093653c4f9ba6a946a4a29c995383310,
+        type: 3}
+      propertyPath: kickbackZ
+      value: 0.12
       objectReference: {fileID: 0}
     - target: {fileID: 8821298977221026291, guid: 093653c4f9ba6a946a4a29c995383310,
         type: 3}

@@ -290,8 +290,6 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 			itemsMP[previousItemIndex].itemGameObject.SetActive(false);
 		}
 
-		previousItemIndex = itemIndex;
-
 		if(PV.IsMine)
 		{
 			if (previousItemIndex != -1)
@@ -304,6 +302,8 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 			PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
 			UpdateAmmoUI();
 		}
+
+		previousItemIndex = itemIndex;
 	}
 
 	public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
