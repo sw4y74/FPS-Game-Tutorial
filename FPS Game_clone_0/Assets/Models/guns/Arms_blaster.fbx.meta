@@ -1,0 +1,223 @@
+fileFormatVersion: 2
+guid: 5019dd5805eb7d4408942c989e32af44
+ModelImporter:
+  serializedVersion: 20101
+  internalIDToNameTable:
+  - first:
+      74: -1422011007694221501
+    second: Armature|ArmatureAction.001
+  - first:
+      74: -1559071518392153964
+    second: Armature|Cube.001Action
+  - first:
+      74: 5922712533297259479
+    second: Armature|Cube.001Action.001
+  - first:
+      74: 7190651497361647703
+    second: Armature|Cube.001Action.002
+  - first:
+      74: -6127564871317802525
+    second: Armature|Cube.001Action.003
+  - first:
+      74: 6183173347266617953
+    second: Armature|Cube.001Action.004
+  - first:
+      74: 3885143579319322157
+    second: Armature|Cube.001Action.005
+  - first:
+      74: 4828028426687900610
+    second: Armature|Cube.002Action
+  - first:
+      74: -7674904370128968613
+    second: Armature|Cube.002Action.001
+  - first:
+      74: 5449073193131188545
+    second: Armature|CubeAction
+  - first:
+      74: 783080663221867442
+    second: Armature|CubeAction.001
+  - first:
+      74: 271997525282036724
+    second: Armature|CylinderAction
+  - first:
+      74: 2986386761548156804
+    second: Armature|CylinderAction.001
+  - first:
+      74: -751813995980742648
+    second: Armature|EmptyAction
+  - first:
+      74: -7110847364494964349
+    second: Armature|glovesAction
+  - first:
+      74: -1700395082545123446
+    second: pistol2|Cube.001Action
+  - first:
+      74: -2454202421063528426
+    second: pistol2|Cube.001Action.001
+  - first:
+      74: -2483514118849790921
+    second: pistol2|Cube.001Action.002
+  - first:
+      74: -5646543621307222581
+    second: pistol2|Cube.001Action.003
+  - first:
+      74: 155807679304516641
+    second: pistol2|Cube.001Action.004
+  - first:
+      74: -8538057738378455263
+    second: pistol2|Cube.001Action.005
+  - first:
+      74: 7936907072099615891
+    second: pistol2|Cube.002Action
+  - first:
+      74: 6334605926820216536
+    second: pistol2|Cube.002Action.001
+  - first:
+      74: -8322054295565008469
+    second: pistol2|CubeAction
+  - first:
+      74: 8429751648103258259
+    second: pistol2|CubeAction.001
+  - first:
+      74: -2892709581345395605
+    second: pistol2|CylinderAction
+  - first:
+      74: -6318268416575105807
+    second: pistol2|CylinderAction.001
+  - first:
+      74: -990872906720029087
+    second: pistol2|EmptyAction
+  - first:
+      74: 5853485430103928156
+    second: pistol2|glovesAction
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material
+    second: {fileID: 2100000, guid: f36b89c1b12539840a84b14d0467c212, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material.001
+    second: {fileID: 2100000, guid: 9ac6b0b6c0a68764b8378aaf9e54d9d5, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material.002
+    second: {fileID: 2100000, guid: e2464ab798e663c47b03243857702c27, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material.003
+    second: {fileID: 2100000, guid: e30c29128a26bcb41bc2c94652c7f5e3, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material.004
+    second: {fileID: 2100000, guid: c231fff861f5a9948afb83df67c3ffaa, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material.005
+    second: {fileID: 2100000, guid: 383b2a648d0f9aa4c92f26e7d3f1dad2, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material.006
+    second: {fileID: 2100000, guid: aaa876dfa4168cc4a84058ad72bd0788, type: 2}
+  materials:
+    materialImportMode: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 0
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    fileIdsGeneration: 2
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    keepQuads: 0
+    weldVertices: 1
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    meshOptimizationFlags: -1
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 1
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 1
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 1
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 2
+  humanoidOversampling: 1
+  avatarSetup: 0
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

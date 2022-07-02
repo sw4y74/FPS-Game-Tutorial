@@ -249,15 +249,20 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 		bool movingHorizontally = movementX > strafeThreshold || movementX < -strafeThreshold;
 		bool movingVertically = movementY > strafeThreshold || movementY < -strafeThreshold;
 
+		playerAnimator.SetFloat("directionX", movementX);
+		playerAnimator.SetFloat("directionY", movementY);
+
+		
+
 		if (movingHorizontally || movingVertically)
 		{
 			isMoving = true;
-			playerAnimator.SetBool("run", true);
+			//playerAnimator.SetBool("run", true);
 		}
 		else
 		{
 			isMoving = false;
-			playerAnimator.SetBool("run", false);
+			//playerAnimator.SetBool("run", false);
 		}
 	}
 
@@ -278,19 +283,22 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 
 		items[itemIndex].itemGameObject.SetActive(true);
 		itemsMP[itemIndex].itemGameObject.SetActive(true);
-		items[itemIndex].OnEquip();
 
 		if (previousItemIndex != -1)
 		{
 			items[previousItemIndex].itemGameObject.SetActive(false);
 			itemsMP[previousItemIndex].itemGameObject.SetActive(false);
-			items[previousItemIndex].OnUnequip();
 		}
 
 		previousItemIndex = itemIndex;
 
 		if(PV.IsMine)
 		{
+			if (previousItemIndex != -1)
+			{
+				items[previousItemIndex].OnUnequip();
+			}
+			items[itemIndex].OnEquip();
 			Hashtable hash = new Hashtable();
 			hash.Add("itemIndex", itemIndex);
 			PhotonNetwork.LocalPlayer.SetCustomProperties(hash);

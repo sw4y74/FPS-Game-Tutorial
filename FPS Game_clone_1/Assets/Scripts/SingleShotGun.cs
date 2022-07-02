@@ -34,9 +34,10 @@ public class SingleShotGun : Gun
 	[Header("Kickback values")]
 	[SerializeField] private float kickbackZ;
 
-	[Header("Weapon accuracy in movement")]
+	[Header("Weapon accuracy")]
 	[SerializeField] private float movementAccuracy = 2;
 	[SerializeField] private float jumpAccuracy = 2;
+	[SerializeField] private float noScopeAccuracy = 0.6f;
 
 	[Header("Sound")]
 	[SerializeField] private AudioClip gunSound;
@@ -127,8 +128,8 @@ public class SingleShotGun : Gun
 		if (GetComponent<SniperScope>())
         {
 			// noscope
-			accuracyX = 0.5f + Random.Range(-0.6f, 0.6f) / 10;
-			accuracyY = 0.5f + Random.Range(-0.6f, 0.6f) / 10;
+			accuracyX = 0.5f + Random.Range(-noScopeAccuracy, noScopeAccuracy) / 10;
+			accuracyY = 0.5f + Random.Range(-noScopeAccuracy, noScopeAccuracy) / 10;
 
 			if (GetComponent<SniperScope>().scopeOn)
             {
