@@ -38,6 +38,7 @@ public class SingleShotGun : Gun
 	[SerializeField] private float movementAccuracy = 2;
 	[SerializeField] private float jumpAccuracy = 2;
 	[SerializeField] private float noScopeAccuracy = 0.6f;
+	[SerializeField] private float crouchAccuracyModifier = 3;
 
 	[Header("Sound")]
 	[SerializeField] private AudioClip gunSound;
@@ -48,7 +49,7 @@ public class SingleShotGun : Gun
 	Coroutine reloadRoutine = null;
 	Coroutine shootRoutine = null;
 
-	void Awake()
+    void Awake()
 	{
 		PV = GetComponent<PhotonView>();
 		currentAmmo = maxAmmo;
@@ -97,6 +98,7 @@ public class SingleShotGun : Gun
 		bool isMoving = root.isMoving;
 		bool grounded = root.grounded;
 		bool isSneaking = root.isSneaking;
+		bool isCrouching = root.GetComponent<Crouch>().isCrouching;
 
 		if (!grounded)
 		{
@@ -108,10 +110,10 @@ public class SingleShotGun : Gun
 			accuracyY += randY;
 		}
 		
-		if (grounded && isMoving && isSneaking)
+		if (grounded && isMoving && isCrouching)
         {
-			accuracyX = 0.5f + randX / 2;
-			accuracyY = 0.5f + randY / 2;
+			accuracyX = 0.5f + randX / crouchAccuracyModifier;
+			accuracyY = 0.5f + randY / crouchAccuracyModifier;
         }
 
 		if (firstShootAccurate)
@@ -134,8 +136,14 @@ public class SingleShotGun : Gun
 				accuracyY = 0.5f + Random.Range(-noScopeAccuracy, noScopeAccuracy) / 10;
 			} else
             {
-				accuracyX = 0.5f + Random.Range(-noScopeAccuracy*3, noScopeAccuracy*3) / 10;
-				accuracyY = 0.5f + Random.Range(-noScopeAccuracy*3, noScopeAccuracy*3) / 10;
+				accuracyX = 0.5f + Random.Range(-noScopeAccuracy * 3, noScopeAccuracy * 3) / 10;
+				accuracyY = 0.5f + Random.Range(-noScopeAccuracy * 3, noScopeAccuracy * 3) / 10;
+			}
+
+			if (grounded && isCrouching)
+            {
+				accuracyX = 0.5f + Random.Range(-noScopeAccuracy * 0.6f, noScopeAccuracy * 0.6f) / 10;
+				accuracyY = 0.5f + Random.Range(-noScopeAccuracy * 0.6f, noScopeAccuracy * 0.6f) / 10;
 			}
 
 			if (GetComponent<SniperScope>().scopeOn)
@@ -299,8 +307,8 @@ public class SingleShotGun : Gun
 		currentlyEquipped = false;
 
 		if (GetComponent<SniperScope>()) {
-
-			root.ChangePlayerSpeed(root.originalWalkSpeed);
+			if (!root.GetComponent<Crouch>().isCrouching)
+				root.ChangePlayerSpeed(root.originalWalkSpeed);
 
 			if (GetComponent<SniperScope>().scopeOn) GetComponent<SniperScope>().ToggleScope(false);
 

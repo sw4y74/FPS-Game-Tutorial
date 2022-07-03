@@ -46,7 +46,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 	public bool isSneaking;
 	Vector3 smoothMoveVelocity;
 	Vector3 moveAmount;
-	PauseMenu pauseMenu;
+	public PauseMenu pauseMenu;
 
 	Rigidbody rb;
 	public CharacterController controller;
@@ -64,7 +64,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 	public Camera firstPersonCamera;
 	KillFeed killFeed;
 
-	[SerializeField] Animator playerAnimator;
+	PlayerAnimController animationController;
 
 	void Awake()
 	{
@@ -78,6 +78,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 		items = itemHolder.GetComponentsInChildren<SingleShotGun>();
 		itemsMP = itemHolderMP.GetComponentsInChildren<SingleShotGun>();
 		killFeed = FindObjectOfType<KillFeed>();
+		animationController = GetComponent<PlayerAnimController>();
 	}
 
 	void Start()
@@ -135,10 +136,10 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 
 		if (!pauseMenu.GameIsPaused)
 		{
-
 			Look();
 			Move();
 			Jump();
+			GetComponent<Crouch>().CrouchToggler();
 
 			for (int i = 0; i < items.Length; i++)
 			{
@@ -193,7 +194,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 			}
 		}
 
-		if(transform.position.y < -10f) // Die if you fall out of the world
+		if (transform.position.y < -10f) // Die if you fall out of the world
 		{
 			Die();
 		}
@@ -249,20 +250,15 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 		bool movingHorizontally = movementX > strafeThreshold || movementX < -strafeThreshold;
 		bool movingVertically = movementY > strafeThreshold || movementY < -strafeThreshold;
 
-		playerAnimator.SetFloat("directionX", movementX);
-		playerAnimator.SetFloat("directionY", movementY);
-
-		
+		animationController.MovementAnimation(movementX, movementY);
 
 		if (movingHorizontally || movingVertically)
 		{
 			isMoving = true;
-			//playerAnimator.SetBool("run", true);
 		}
 		else
 		{
 			isMoving = false;
-			//playerAnimator.SetBool("run", false);
 		}
 	}
 
@@ -413,4 +409,9 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 		arms.transform.localPosition = b;
 		yield return null;
 	}
+
+	public GameObject CurrentlyEquippedItem()
+    {
+		return items[itemIndex].gameObject;
+    }
 }
