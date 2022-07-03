@@ -21,7 +21,13 @@ public class Crouch : MonoBehaviour
             GetComponent<CharacterController>().height = 1.2f;
             GetComponent<CharacterController>().center = new Vector3(GetComponent<CharacterController>().center.x, -0.3f, GetComponent<CharacterController>().center.z);
 
-            pc.ChangePlayerSpeed(pc.walkSpeed * 0.5f);
+            if (pc.CurrentlyEquippedItem().GetComponent<SniperScope>())
+            {
+                if (!pc.CurrentlyEquippedItem().GetComponent<SniperScope>().scopeOn) pc.ChangePlayerSpeed(pc.walkSpeed * 0.5f);
+            }
+            else pc.ChangePlayerSpeed(pc.walkSpeed * 0.5f);
+
+
 
             Vector3 posA = new Vector3(0f, 0.766f, 0f);
             Vector3 posB = new Vector3(0f, 0.310f, 0f);
@@ -45,8 +51,7 @@ public class Crouch : MonoBehaviour
 
                 if (pc.CurrentlyEquippedItem().GetComponent<SniperScope>())
                 {
-                    if (pc.CurrentlyEquippedItem().GetComponent<SniperScope>().scopeOn) pc.ChangePlayerSpeed(pc.originalWalkSpeed * 0.5f);
-                    else pc.ChangePlayerSpeed(pc.originalWalkSpeed * 0.9f);
+                    if (!pc.CurrentlyEquippedItem().GetComponent<SniperScope>().scopeOn) pc.ChangePlayerSpeed(pc.originalWalkSpeed * 0.9f);
                 }
                 else pc.ChangePlayerSpeed(pc.originalWalkSpeed);
 
@@ -65,7 +70,7 @@ public class Crouch : MonoBehaviour
     IEnumerator LerpPosition(Vector3 a, Vector3 b)
     {
         float timeElapsed = 0;
-        float lerpDuration = 0.3f;
+        float lerpDuration = 0.15f;
 
         while (timeElapsed < lerpDuration)
         {
