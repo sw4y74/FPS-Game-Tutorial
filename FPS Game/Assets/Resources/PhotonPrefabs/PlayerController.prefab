@@ -724,6 +724,7 @@ MonoBehaviour:
   grounded: 0
   isMoving: 0
   isSneaking: 0
+  pauseMenu: {fileID: 0}
   controller: {fileID: 9186214440057998566}
   gravity: -15
   headCollider: {fileID: 7992050842530995354}
@@ -779,6 +780,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7e457b01b03e99479d7c3491cdf9b25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isCrouching: 0
   cameraRecoil: {fileID: 8913202309253582004}
 --- !u!82 &4381022798693771027
 AudioSource:

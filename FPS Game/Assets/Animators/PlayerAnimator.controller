@@ -17,9 +17,9 @@ AnimatorStateTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 0.26811105
-  m_TransitionOffset: 8.866507
-  m_ExitTime: 0
+  m_TransitionDuration: 0.09790472
+  m_TransitionOffset: 8.866505
+  m_ExitTime: 8.321074e-10
   m_HasExitTime: 1
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
@@ -57,24 +57,7 @@ BlendTree:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Blend Tree
-  m_Childs:
-  - serializedVersion: 2
-    m_Motion: {fileID: -1422011007694221501, guid: cce2956093beea948b75565f3ef58eaf,
-      type: 3}
-    m_Threshold: 0
-    m_Position: {x: 0, y: 0}
-    m_TimeScale: 1
-    m_CycleOffset: 0
-    m_DirectBlendParameter: directionX
-    m_Mirror: 0
-  - serializedVersion: 2
-    m_Motion: {fileID: 0}
-    m_Threshold: 1
-    m_Position: {x: 0, y: 0}
-    m_TimeScale: 1
-    m_CycleOffset: 0
-    m_DirectBlendParameter: directionX
-    m_Mirror: 0
+  m_Childs: []
   m_BlendParameter: directionX
   m_BlendParameterY: directionX
   m_MinThreshold: 0
@@ -90,7 +73,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Idle
-  m_Speed: 1
+  m_Speed: 2
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 7074125215464390597}
@@ -172,9 +155,9 @@ AnimatorStateTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 0.04021359
+  m_TransitionDuration: 0.0028326025
   m_TransitionOffset: 0
-  m_ExitTime: 0.9219563
+  m_ExitTime: 0.000000020214644
   m_HasExitTime: 1
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
