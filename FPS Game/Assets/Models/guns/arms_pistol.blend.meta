@@ -1,14 +1,11 @@
 fileFormatVersion: 2
-guid: 6bec7d0f172621d4bbcc9ff4f1fd10b4
+guid: fea49620d52fdbe4fae8b12d9a4c81f4
 ModelImporter:
   serializedVersion: 20101
   internalIDToNameTable:
   - first:
-      74: -1422011007694221501
-    second: Armature|ArmatureAction.001
-  - first:
-      74: 5913450859964912952
-    second: SMG_a|SMG_aAction
+      74: -623603649343465320
+    second: Scene
   externalObjects: {}
   materials:
     materialImportMode: 1

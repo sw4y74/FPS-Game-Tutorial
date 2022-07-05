@@ -1,41 +1,11 @@
 fileFormatVersion: 2
-guid: 1744d444c66fa9b468a8c2839789af2c
+guid: 4bb381225538ced4da1fa7268b437d55
 ModelImporter:
   serializedVersion: 20101
   internalIDToNameTable:
   - first:
-      74: -1422011007694221501
-    second: Armature|ArmatureAction.001
-  - first:
-      74: 5449073193131188545
-    second: Armature|CubeAction
-  - first:
-      74: -7110847364494964349
-    second: Armature|glovesAction
-  - first:
-      74: -3468602385828206427
-    second: Armature|Mesh.001Action
-  - first:
-      74: -6849574254013206226
-    second: Armature|Mesh.004Action
-  - first:
-      74: 2864781929951322795
-    second: Armature|MeshAction
-  - first:
-      74: -8322054295565008469
-    second: pistol2|CubeAction
-  - first:
-      74: 5853485430103928156
-    second: pistol2|glovesAction
-  - first:
-      74: 4231669873986689105
-    second: pistol2|Mesh.001Action
-  - first:
-      74: -2012036227704618300
-    second: pistol2|Mesh.004Action
-  - first:
-      74: -4968065624338649738
-    second: pistol2|MeshAction
+      74: -623603649343465320
+    second: Scene
   externalObjects: {}
   materials:
     materialImportMode: 1
@@ -106,7 +76,7 @@ ModelImporter:
     blendShapeNormalImportMode: 1
     normalSmoothingSource: 0
   referencedClips: []
-  importAnimation: 0
+  importAnimation: 1
   humanDescription:
     serializedVersion: 3
     human: []

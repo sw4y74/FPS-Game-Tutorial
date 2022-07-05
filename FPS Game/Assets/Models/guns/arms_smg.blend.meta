@@ -1,23 +1,11 @@
 fileFormatVersion: 2
-guid: eb46bdf541d9a9e4ea712110e00eb800
+guid: e6223491c497f42489a827ad79c80631
 ModelImporter:
   serializedVersion: 20101
   internalIDToNameTable:
   - first:
-      74: -1422011007694221501
-    second: Armature|ArmatureAction.001
-  - first:
-      74: 271997525282036724
-    second: Armature|CylinderAction
-  - first:
-      74: -7110847364494964349
-    second: Armature|glovesAction
-  - first:
-      74: 8239124769878717789
-    second: sniper_rifle|CylinderAction
-  - first:
-      74: 7579833009730509740
-    second: sniper_rifle|glovesAction
+      74: -623603649343465320
+    second: Scene
   externalObjects: {}
   materials:
     materialImportMode: 1

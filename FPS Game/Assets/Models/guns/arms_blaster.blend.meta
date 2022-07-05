@@ -1,23 +1,11 @@
 fileFormatVersion: 2
-guid: bd463cd5badb9f44a9877ecde9f53bc7
+guid: bd889ebdf24db504e9ca3685eba8950f
 ModelImporter:
   serializedVersion: 20101
   internalIDToNameTable:
   - first:
-      74: -5412805660428829853
-    second: pistol|glovesAction
-  - first:
-      74: 8356386623831621297
-    second: pistol|pistolAction.001
-  - first:
-      74: -1422011007694221501
-    second: Armature|ArmatureAction.001
-  - first:
-      74: -7110847364494964349
-    second: Armature|glovesAction
-  - first:
-      74: -1345333204195424625
-    second: Armature|pistolAction.001
+      74: -623603649343465320
+    second: Scene
   externalObjects: {}
   materials:
     materialImportMode: 1
