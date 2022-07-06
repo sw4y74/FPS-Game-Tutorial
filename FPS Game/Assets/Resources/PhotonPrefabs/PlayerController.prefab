@@ -2091,7 +2091,6 @@ MonoBehaviour:
   armsPos: {fileID: 4271459290375772670}
   GunsAnimator: {fileID: 0}
   gunAudioSource: {fileID: 2430679136952116067}
-  itemIndex: 0
   ammoText: {fileID: 8653075398708270596}
   groundCheck: {fileID: 8665984376191428457}
   groundDistance: 0.3
