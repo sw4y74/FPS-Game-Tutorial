@@ -405,26 +405,9 @@ MonoBehaviour:
   bulletImpactPrefab: {fileID: 6521945633980296980, guid: 794ff6a8eb713d24cb1273ac24b3f7fb,
     type: 3}
   cam: {fileID: 1488053957094389952}
-  gun: {fileID: 0}
-  automatic: 0
-  fireRate: 15
   allowFire: 1
-  maxAmmo: 10
-  currentAmmo: 0
-  currentlyEquipped: 0
   Recoil: {fileID: 4263803701383608840}
-  recoilX: -7
-  recoilY: 3
-  recoilZ: 0.01
   Kickback: {fileID: 0}
-  firstShootAccurate: 0
-  kickbackZ: 0.2
-  movementAccuracy: 1
-  jumpAccuracy: 1.3
-  noScopeAccuracy: 0.6
-  crouchAccuracyModifier: 3
-  gunSound: {fileID: 8300000, guid: 01cc4ecd5e2630d4883c01dbd52f493a, type: 3}
-  reloadSpeed: 2
   reloading: 0
 --- !u!114 &4000331780875304075
 MonoBehaviour:
@@ -2100,6 +2083,7 @@ MonoBehaviour:
   walkSpeed: 7
   jumpForce: 1.4
   smoothTime: 0.03
+  isSprinting: 0
   itemHolder: {fileID: 3026723842465641505}
   itemHolderMP: {fileID: 1276168882743289078}
   arms: {fileID: 5709731288995153073}
@@ -4963,26 +4947,9 @@ MonoBehaviour:
   bulletImpactPrefab: {fileID: 6521945633980296980, guid: 794ff6a8eb713d24cb1273ac24b3f7fb,
     type: 3}
   cam: {fileID: 1488053957094389952}
-  gun: {fileID: 0}
-  automatic: 1
-  fireRate: 6
   allowFire: 1
-  maxAmmo: 0
-  currentAmmo: 0
-  currentlyEquipped: 0
   Recoil: {fileID: 4263803701383608840}
-  recoilX: 0
-  recoilY: 0
-  recoilZ: 0
   Kickback: {fileID: 0}
-  firstShootAccurate: 0
-  kickbackZ: 0
-  movementAccuracy: 2
-  jumpAccuracy: 2
-  noScopeAccuracy: 0.6
-  crouchAccuracyModifier: 3
-  gunSound: {fileID: 8300000, guid: 001ad1d686e736e48bb0c2eb47f120cd, type: 3}
-  reloadSpeed: 2
   reloading: 0
 --- !u!114 &7498343997055280103
 MonoBehaviour:
@@ -5402,26 +5369,9 @@ MonoBehaviour:
   bulletImpactPrefab: {fileID: 6521945633980296980, guid: 794ff6a8eb713d24cb1273ac24b3f7fb,
     type: 3}
   cam: {fileID: 1488053957094389952}
-  gun: {fileID: 0}
-  automatic: 0
-  fireRate: 100
   allowFire: 1
-  maxAmmo: 10
-  currentAmmo: 0
-  currentlyEquipped: 0
   Recoil: {fileID: 4263803701383608840}
-  recoilX: -15
-  recoilY: 3
-  recoilZ: 1
   Kickback: {fileID: 23061467521052727}
-  firstShootAccurate: 0
-  kickbackZ: 0.4
-  movementAccuracy: 3
-  jumpAccuracy: 4
-  noScopeAccuracy: 0.4
-  crouchAccuracyModifier: 3
-  gunSound: {fileID: 8300000, guid: 4a0b1c81758d8fa4685399607aecf5e5, type: 3}
-  reloadSpeed: 2
   reloading: 0
 --- !u!114 &4656909697858275319
 MonoBehaviour:
@@ -5914,26 +5864,9 @@ MonoBehaviour:
   bulletImpactPrefab: {fileID: 6521945633980296980, guid: 794ff6a8eb713d24cb1273ac24b3f7fb,
     type: 3}
   cam: {fileID: 1488053957094389952}
-  gun: {fileID: 0}
-  automatic: 1
-  fireRate: 8
   allowFire: 1
-  maxAmmo: 30
-  currentAmmo: 0
-  currentlyEquipped: 0
   Recoil: {fileID: 4263803701383608840}
-  recoilX: -4
-  recoilY: 2.4
-  recoilZ: 0.01
   Kickback: {fileID: 23061467521052727}
-  firstShootAccurate: 0
-  kickbackZ: 0.05
-  movementAccuracy: 0.45
-  jumpAccuracy: 1
-  noScopeAccuracy: 0.6
-  crouchAccuracyModifier: 3
-  gunSound: {fileID: 8300000, guid: 1a4ac763faa9fa648838aae63ff5b265, type: 3}
-  reloadSpeed: 2
   reloading: 0
 --- !u!114 &8420699996142283822
 MonoBehaviour:
@@ -6345,26 +6278,9 @@ MonoBehaviour:
   bulletImpactPrefab: {fileID: 6521945633980296980, guid: 794ff6a8eb713d24cb1273ac24b3f7fb,
     type: 3}
   cam: {fileID: 1488053957094389952}
-  gun: {fileID: 0}
-  automatic: 0
-  fireRate: 12
   allowFire: 1
-  maxAmmo: 16
-  currentAmmo: 0
-  currentlyEquipped: 0
   Recoil: {fileID: 4263803701383608840}
-  recoilX: -4
-  recoilY: 3
-  recoilZ: 0.01
   Kickback: {fileID: 23061467521052727}
-  firstShootAccurate: 1
-  kickbackZ: 0.12
-  movementAccuracy: 0.4
-  jumpAccuracy: 0.7
-  noScopeAccuracy: 0.6
-  crouchAccuracyModifier: 3
-  gunSound: {fileID: 8300000, guid: f03686e6fe7d47b4cab2ea0d118026f3, type: 3}
-  reloadSpeed: 2
   reloading: 0
 --- !u!114 &4823923109228781864
 MonoBehaviour:
@@ -6814,26 +6730,9 @@ MonoBehaviour:
   bulletImpactPrefab: {fileID: 6521945633980296980, guid: 794ff6a8eb713d24cb1273ac24b3f7fb,
     type: 3}
   cam: {fileID: 1488053957094389952}
-  gun: {fileID: 0}
-  automatic: 1
-  fireRate: 6
   allowFire: 1
-  maxAmmo: 0
-  currentAmmo: 0
-  currentlyEquipped: 0
   Recoil: {fileID: 4263803701383608840}
-  recoilX: 0
-  recoilY: 0
-  recoilZ: 0
   Kickback: {fileID: 0}
-  firstShootAccurate: 0
-  kickbackZ: 0
-  movementAccuracy: 2
-  jumpAccuracy: 2
-  noScopeAccuracy: 0.6
-  crouchAccuracyModifier: 3
-  gunSound: {fileID: 8300000, guid: 001ad1d686e736e48bb0c2eb47f120cd, type: 3}
-  reloadSpeed: 2
   reloading: 0
 --- !u!114 &6577705175303312951
 MonoBehaviour:
@@ -8060,26 +7959,9 @@ MonoBehaviour:
   bulletImpactPrefab: {fileID: 6521945633980296980, guid: 794ff6a8eb713d24cb1273ac24b3f7fb,
     type: 3}
   cam: {fileID: 1488053957094389952}
-  gun: {fileID: 0}
-  automatic: 0
-  fireRate: 16
   allowFire: 1
-  maxAmmo: 10
-  currentAmmo: 0
-  currentlyEquipped: 0
   Recoil: {fileID: 4263803701383608840}
-  recoilX: -11
-  recoilY: 3
-  recoilZ: 0.01
   Kickback: {fileID: 23061467521052727}
-  firstShootAccurate: 1
-  kickbackZ: 0.25
-  movementAccuracy: 1
-  jumpAccuracy: 1.3
-  noScopeAccuracy: 0.6
-  crouchAccuracyModifier: 3
-  gunSound: {fileID: 8300000, guid: 86ca10c07bbc9844a97a8d0b6d6fa6ba, type: 3}
-  reloadSpeed: 2
   reloading: 0
 --- !u!114 &619506900351357081
 MonoBehaviour:
@@ -11998,26 +11880,9 @@ MonoBehaviour:
   bulletImpactPrefab: {fileID: 6521945633980296980, guid: 794ff6a8eb713d24cb1273ac24b3f7fb,
     type: 3}
   cam: {fileID: 1488053957094389952}
-  gun: {fileID: 0}
-  automatic: 0
-  fireRate: 10
   allowFire: 1
-  maxAmmo: 0
-  currentAmmo: 0
-  currentlyEquipped: 0
   Recoil: {fileID: 4263803701383608840}
-  recoilX: 0
-  recoilY: 0
-  recoilZ: 0
   Kickback: {fileID: 0}
-  firstShootAccurate: 0
-  kickbackZ: 0
-  movementAccuracy: 2
-  jumpAccuracy: 2
-  noScopeAccuracy: 0.6
-  crouchAccuracyModifier: 3
-  gunSound: {fileID: 8300000, guid: 4a0b1c81758d8fa4685399607aecf5e5, type: 3}
-  reloadSpeed: 2
   reloading: 0
 --- !u!114 &7678383743924878969
 MonoBehaviour:

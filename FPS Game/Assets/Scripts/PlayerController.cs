@@ -34,7 +34,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 	SingleShotGun[] itemsMP;
 	[System.NonSerialized] public bool aimingDownSights = false;
 
-	public int itemIndex;
+	[System.NonSerialized] public int itemIndex;
 	int previousItemIndex = -1;
 
 	[SerializeField] TMP_Text ammoText;
@@ -237,6 +237,8 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 
 		Vector3 move = transform.right * movementX + transform.forward * movementY;
 		Vector3 inputs = Vector3.ClampMagnitude(move, 1f);
+		bool movingHorizontally = movementX > strafeThreshold || movementX < -strafeThreshold;
+		bool movingVertically = movementY > strafeThreshold || movementY < -strafeThreshold;
 
 		// Define player speed in cases
 		if (GetComponent<Crouch>().isCrouching || aimingDownSights)
@@ -246,12 +248,15 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 			else playerActualSpeed = walkSpeed * 0.5f;
 
 		}
-		else if (Input.GetKey(KeyCode.LeftShift))
+		else if (Input.GetKey(KeyCode.LeftShift) && (movingHorizontally || movingVertically) && grounded)
 		{
 			playerActualSpeed = sprintSpeed * (1 - CurrentlyEquippedItem().gun.weight / 100);
-        } else
-        {
+			isSprinting = true;
+		}
+		else
+        {			
 			playerActualSpeed = walkSpeed * (1 - CurrentlyEquippedItem().gun.weight / 100);
+			isSprinting = false;
 		}
 
 		moveAmount = Vector3.SmoothDamp(moveAmount, inputs * playerActualSpeed, ref smoothMoveVelocity, smoothTime);
@@ -262,21 +267,18 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 
 		controller.Move(velocity * Time.deltaTime);
 
-		bool movingHorizontally = movementX > strafeThreshold || movementX < -strafeThreshold;
-		bool movingVertically = movementY > strafeThreshold || movementY < -strafeThreshold;
-
 		animationController.MovementAnimation(movementX, movementY);
+
 
 		if (movingHorizontally || movingVertically)
 		{
 			isMoving = true;
-			if (Input.GetKey(KeyCode.LeftShift)) isSprinting = true;
 		}
 		else
 		{
 			isMoving = false;
-			if (!Input.GetKey(KeyCode.LeftShift)) isSprinting = false;
 		}
+
 	}
 
 	void Jump()

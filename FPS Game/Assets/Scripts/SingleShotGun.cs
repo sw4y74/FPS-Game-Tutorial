@@ -12,10 +12,10 @@ public class SingleShotGun : Gun
 
 	[Header("Weapon properties")]
 	[System.NonSerialized] public int index;
-	public GunInfo gun;
+	[System.NonSerialized] public GunInfo gun;
 	public bool allowFire = true;
-	public int currentAmmo;
-	public bool currentlyEquipped = false;
+	[System.NonSerialized] public int currentAmmo;
+	[System.NonSerialized] public bool currentlyEquipped = false;
 
 	[SerializeField] private Recoil Recoil;
 
@@ -38,7 +38,7 @@ public class SingleShotGun : Gun
 
 	public override void Use()
 	{
-		if (currentAmmo > 0 && !reloading)
+		if (currentAmmo > 0 && !reloading && !root.isSprinting)
 		{
 			shootRoutine = StartCoroutine(Shoot());
 		}

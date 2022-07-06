@@ -14,3 +14,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Rifle
   damage: 120
+  weaponType: 0
+  weight: 10
+  automatic: 0
+  fireRate: 100
+  maxAmmo: 10
+  firstShootAccurate: 0
+  recoilX: -15
+  recoilY: 3
+  recoilZ: 1
+  kickbackZ: 0.4
+  movementAccuracy: 3
+  jumpAccuracy: 4
+  noScopeAccuracy: 0.4
+  crouchAccuracyModifier: 3
+  gunSound: {fileID: 8300000, guid: 4a0b1c81758d8fa4685399607aecf5e5, type: 3}
+  reloadSpeed: 2
