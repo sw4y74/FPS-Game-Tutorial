@@ -723,6 +723,7 @@ MonoBehaviour:
   bulletImpactPrefab: {fileID: 6521945633980296980, guid: 794ff6a8eb713d24cb1273ac24b3f7fb,
     type: 3}
   cam: {fileID: 1488053957094389952}
+  gun: {fileID: 0}
   automatic: 0
   fireRate: 15
   allowFire: 1
@@ -3568,8 +3569,6 @@ MonoBehaviour:
   mouseSensitivity: 3
   sprintSpeed: 10
   walkSpeed: 7
-  originalWalkSpeed: 6
-  originalSprintSpeed: 0
   jumpForce: 1.4
   smoothTime: 0.03
   itemHolder: {fileID: 3026723842465641505}
@@ -3588,7 +3587,6 @@ MonoBehaviour:
     m_Bits: 512
   grounded: 0
   isMoving: 0
-  isSneaking: 0
   pauseMenu: {fileID: 0}
   controller: {fileID: 9186214440057998566}
   gravity: -15
@@ -9188,6 +9186,7 @@ MonoBehaviour:
   bulletImpactPrefab: {fileID: 6521945633980296980, guid: 794ff6a8eb713d24cb1273ac24b3f7fb,
     type: 3}
   cam: {fileID: 1488053957094389952}
+  gun: {fileID: 0}
   automatic: 1
   fireRate: 6
   allowFire: 1
@@ -9590,6 +9589,7 @@ MonoBehaviour:
   bulletImpactPrefab: {fileID: 6521945633980296980, guid: 794ff6a8eb713d24cb1273ac24b3f7fb,
     type: 3}
   cam: {fileID: 1488053957094389952}
+  gun: {fileID: 0}
   automatic: 0
   fireRate: 100
   allowFire: 1
@@ -10336,6 +10336,7 @@ MonoBehaviour:
   bulletImpactPrefab: {fileID: 6521945633980296980, guid: 794ff6a8eb713d24cb1273ac24b3f7fb,
     type: 3}
   cam: {fileID: 1488053957094389952}
+  gun: {fileID: 0}
   automatic: 1
   fireRate: 8
   allowFire: 1
@@ -10985,6 +10986,7 @@ MonoBehaviour:
   bulletImpactPrefab: {fileID: 6521945633980296980, guid: 794ff6a8eb713d24cb1273ac24b3f7fb,
     type: 3}
   cam: {fileID: 1488053957094389952}
+  gun: {fileID: 0}
   automatic: 0
   fireRate: 12
   allowFire: 1
@@ -11457,6 +11459,7 @@ MonoBehaviour:
   bulletImpactPrefab: {fileID: 6521945633980296980, guid: 794ff6a8eb713d24cb1273ac24b3f7fb,
     type: 3}
   cam: {fileID: 1488053957094389952}
+  gun: {fileID: 0}
   automatic: 1
   fireRate: 6
   allowFire: 1
@@ -13715,6 +13718,7 @@ MonoBehaviour:
   bulletImpactPrefab: {fileID: 6521945633980296980, guid: 794ff6a8eb713d24cb1273ac24b3f7fb,
     type: 3}
   cam: {fileID: 1488053957094389952}
+  gun: {fileID: 0}
   automatic: 0
   fireRate: 16
   allowFire: 1
@@ -19680,6 +19684,7 @@ MonoBehaviour:
   bulletImpactPrefab: {fileID: 6521945633980296980, guid: 794ff6a8eb713d24cb1273ac24b3f7fb,
     type: 3}
   cam: {fileID: 1488053957094389952}
+  gun: {fileID: 0}
   automatic: 0
   fireRate: 10
   allowFire: 1

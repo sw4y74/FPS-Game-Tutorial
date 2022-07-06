@@ -12,39 +12,18 @@ public class SingleShotGun : Gun
 
 	[Header("Weapon properties")]
 	[System.NonSerialized] public int index;
-	public bool automatic;
-	public float fireRate;
+	public GunInfo gun;
 	public bool allowFire = true;
-	public int maxAmmo;
 	public int currentAmmo;
 	public bool currentlyEquipped = false;
 
 	[SerializeField] private Recoil Recoil;
-	
-	[Header("Recoil values")]
-    [SerializeField] private float recoilX;
-    [SerializeField] private float recoilY;
-    [SerializeField] private float recoilZ;
 
 	[SerializeField] private Kickback Kickback;
 
-	[SerializeField] private bool firstShootAccurate;
 	private float recoilCooldown = 0f;
 
-	[Header("Kickback values")]
-	[SerializeField] private float kickbackZ;
-
-	[Header("Weapon accuracy")]
-	[SerializeField] private float movementAccuracy = 2;
-	[SerializeField] private float jumpAccuracy = 2;
-	[SerializeField] private float noScopeAccuracy = 0.6f;
-	[SerializeField] private float crouchAccuracyModifier = 3;
-
-	[Header("Sound")]
-	[SerializeField] private AudioClip gunSound;
-
 	[Header("Reload properties")]
-	public float reloadSpeed = 2f;
     public bool reloading;
 	Coroutine reloadRoutine = null;
 	Coroutine shootRoutine = null;
@@ -52,8 +31,9 @@ public class SingleShotGun : Gun
     void Awake()
 	{
 		PV = GetComponent<PhotonView>();
-		currentAmmo = maxAmmo;
 		root = transform.root.gameObject.GetComponent<PlayerController>();
+		gun = (GunInfo)itemInfo; // EXAMPLE OF GETTING HIGHER INTERFACE WITH THE LOWER INTERFACE
+		currentAmmo = gun.maxAmmo;
 	}
 
 	public override void Use()
@@ -66,7 +46,7 @@ public class SingleShotGun : Gun
 
 	public void Reload()
 	{
-		if (currentAmmo < maxAmmo && !reloading)
+		if (currentAmmo < gun.maxAmmo && !reloading)
 		{
 			if (GetComponent<SniperScope>() && GetComponent<SniperScope>().scopeOn)
 			{
@@ -86,19 +66,19 @@ public class SingleShotGun : Gun
 
 		bool scopeEnabled = false;
 
-		GunInfo gun = ((GunInfo)itemInfo);
+		Debug.Log(gun.weaponType.ToString());
 
 		float accuracyX = 0.5f;
 		float accuracyY = 0.5f;
-		float randX = Random.Range(-movementAccuracy, movementAccuracy)/10;
-		float randY = Random.Range(-movementAccuracy, movementAccuracy)/10;
-		float jRandX = Random.Range(-jumpAccuracy, jumpAccuracy) / 10;
-		float jRandY = Random.Range(-jumpAccuracy, jumpAccuracy) / 10;
+		float randX = Random.Range(-gun.movementAccuracy, gun.movementAccuracy)/10;
+		float randY = Random.Range(-gun.movementAccuracy, gun.movementAccuracy)/10;
+		float jRandX = Random.Range(-gun.jumpAccuracy, gun.jumpAccuracy) / 10;
+		float jRandY = Random.Range(-gun.jumpAccuracy, gun.jumpAccuracy) / 10;
 
 		bool isMoving = root.isMoving;
 		bool grounded = root.grounded;
-		bool isSneaking = root.isSneaking;
 		bool isCrouching = root.GetComponent<Crouch>().isCrouching;
+		bool adsOn = root.aimingDownSights;
 
 		if (!grounded)
 		{
@@ -112,11 +92,11 @@ public class SingleShotGun : Gun
 		
 		if (grounded && isMoving && isCrouching)
         {
-			accuracyX = 0.5f + randX / crouchAccuracyModifier;
-			accuracyY = 0.5f + randY / crouchAccuracyModifier;
+			accuracyX = 0.5f + randX / gun.crouchAccuracyModifier;
+			accuracyY = 0.5f + randY / gun.crouchAccuracyModifier;
         }
 
-		if (firstShootAccurate)
+		if (gun.firstShootAccurate)
         {
 			if (recoilCooldown == 0f && grounded)
             {
@@ -124,29 +104,29 @@ public class SingleShotGun : Gun
 				accuracyY = 0.5f;
 			}
 
-			recoilCooldown = fireRate / 1.5f;
+			recoilCooldown = gun.fireRate / 1.5f;
 		}
 
-		if (GetComponent<SniperScope>())
+		if (gun.weaponType.Equals(WeaponType.sniperRifle))
         {
 			// noscope
 			if (grounded && !isMoving)
             {
-				accuracyX = 0.5f + Random.Range(-noScopeAccuracy, noScopeAccuracy) / 10;
-				accuracyY = 0.5f + Random.Range(-noScopeAccuracy, noScopeAccuracy) / 10;
+				accuracyX = 0.5f + Random.Range(-gun.noScopeAccuracy, gun.noScopeAccuracy) / 10;
+				accuracyY = 0.5f + Random.Range(-gun.noScopeAccuracy, gun.noScopeAccuracy) / 10;
 			} else
             {
-				accuracyX = 0.5f + Random.Range(-noScopeAccuracy * 3, noScopeAccuracy * 3) / 10;
-				accuracyY = 0.5f + Random.Range(-noScopeAccuracy * 3, noScopeAccuracy * 3) / 10;
+				accuracyX = 0.5f + Random.Range(-gun.noScopeAccuracy * 3, gun.noScopeAccuracy * 3) / 10;
+				accuracyY = 0.5f + Random.Range(-gun.noScopeAccuracy * 3, gun.noScopeAccuracy * 3) / 10;
 			}
 
 			if (grounded && isCrouching)
             {
-				accuracyX = 0.5f + Random.Range(-noScopeAccuracy * 0.6f, noScopeAccuracy * 0.6f) / 10;
-				accuracyY = 0.5f + Random.Range(-noScopeAccuracy * 0.6f, noScopeAccuracy * 0.6f) / 10;
+				accuracyX = 0.5f + Random.Range(-gun.noScopeAccuracy * 0.6f, gun.noScopeAccuracy * 0.6f) / 10;
+				accuracyY = 0.5f + Random.Range(-gun.noScopeAccuracy * 0.6f, gun.noScopeAccuracy * 0.6f) / 10;
 			}
 
-			if (GetComponent<SniperScope>().scopeOn)
+			if (adsOn)
             {
 				GetComponent<SniperScope>().ToggleScope(false);
 				scopeEnabled = true;
@@ -208,11 +188,11 @@ public class SingleShotGun : Gun
 
 		PV.RPC("RPC_Shoot", RpcTarget.All, hit.point, hit.normal);
 
-		Recoil.RecoilFire(recoilX, recoilY, recoilZ);
-		Kickback.KickbackFire(kickbackZ);
-		yield return new WaitForSeconds(fireRate/100);
+		Recoil.RecoilFire(gun.recoilX, gun.recoilY, gun.recoilZ);
+		Kickback.KickbackFire(gun.kickbackZ);
+		yield return new WaitForSeconds(gun.fireRate/100);
 
-		if (GetComponent<SniperScope>() && !GetComponent<SniperScope>().scopeOn && !reloading && scopeEnabled)
+		if (gun.weaponType.Equals(WeaponType.sniperRifle) && !GetComponent<SniperScope>().scopeOn && !reloading && scopeEnabled)
 		{
 			GetComponent<SniperScope>().ToggleScope(true);
 
@@ -227,7 +207,7 @@ public class SingleShotGun : Gun
 	{
 		AudioSource gunAudioSource = root.gunAudioSource;
 
-		gunAudioSource.PlayOneShot(gunSound);
+		gunAudioSource.PlayOneShot(gun.gunSound);
 
 		Collider[] colliders = Physics.OverlapSphere(hitPosition, 0.3f);
 		if(colliders.Length != 0)
@@ -278,28 +258,22 @@ public class SingleShotGun : Gun
 
 		StartCoroutine(root.LerpArmsReloadPosition(true));
 
-		yield return new WaitForSeconds(reloadSpeed * 0.8f);
+		yield return new WaitForSeconds(gun.reloadSpeed * 0.8f);
 
 		StartCoroutine(root.LerpArmsReloadPosition(false));
 
-		yield return new WaitForSeconds(reloadSpeed - reloadSpeed * 0.8f);
+		yield return new WaitForSeconds(gun.reloadSpeed - gun.reloadSpeed * 0.8f);
 
-		currentAmmo = maxAmmo;
+		currentAmmo = gun.maxAmmo;
 		reloading = false;
 		root.UpdateAmmoUI();
 	}
 
 	public void OnEquip()
     {
-		//root.MoveArmsReloadPosition(true);
 		StartCoroutine(root.LerpArmsReloadPosition(false));
 		currentlyEquipped = true;
-		if (GetComponent<SniperScope>())
-		{
-			root.ChangePlayerSpeed(root.walkSpeed * 0.9f);
-		}
 
-		Debug.Log("Equipped "+itemInfo.itemName);
     }
 
 	public void OnUnequip()
@@ -307,13 +281,8 @@ public class SingleShotGun : Gun
 		currentlyEquipped = false;
 
 		if (GetComponent<SniperScope>()) {
-			if (!root.GetComponent<Crouch>().isCrouching)
-				root.ChangePlayerSpeed(root.originalWalkSpeed);
-
 			if (GetComponent<SniperScope>().scopeOn) GetComponent<SniperScope>().ToggleScope(false);
-
 		}
 
-		Debug.Log("Unequipped " + itemInfo.itemName);
 	}
 }

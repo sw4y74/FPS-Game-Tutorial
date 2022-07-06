@@ -29,7 +29,7 @@ public class Footsteps : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (pc.grounded && !pc.isSneaking && pc.isMoving && GetComponent<AudioSource>().isPlaying == false)
+        if (pc.grounded && !pc.GetComponent<Crouch>().isCrouching && pc.isMoving && GetComponent<AudioSource>().isPlaying == false)
         {
             float randA = Random.Range(0.8f, 1);
             float randB = Random.Range(0.8f, 1.1f);

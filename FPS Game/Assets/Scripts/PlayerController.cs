@@ -20,7 +20,8 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 	public GameObject viewModel;
 	[SerializeField] GameObject localViewModel;
 	public float mouseSensitivity;
-	public float sprintSpeed, walkSpeed, originalWalkSpeed, originalSprintSpeed, jumpForce, smoothTime;
+	public float sprintSpeed, walkSpeed, jumpForce, smoothTime;
+	public bool isSprinting = false;
 
 	[SerializeField] GameObject itemHolder;
 	[SerializeField] GameObject itemHolderMP;
@@ -31,6 +32,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 	public AudioSource gunAudioSource;
 	SingleShotGun[] items;
 	SingleShotGun[] itemsMP;
+	[System.NonSerialized] public bool aimingDownSights = false;
 
 	public int itemIndex;
 	int previousItemIndex = -1;
@@ -43,7 +45,6 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 	public LayerMask groundMask;
 	public bool grounded = true;
 	public bool isMoving;
-	public bool isSneaking;
 	Vector3 smoothMoveVelocity;
 	Vector3 moveAmount;
 	public PauseMenu pauseMenu;
@@ -173,7 +174,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 				}
 			}
 
-			if (items[itemIndex].automatic)
+			if (items[itemIndex].gun.automatic)
 			{
 				if (Input.GetMouseButton(0) && items[itemIndex].allowFire)
 				{
@@ -232,14 +233,28 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 		float movementX = Input.GetAxis("Horizontal");
 		float movementY = Input.GetAxis("Vertical");
 		float strafeThreshold = 0.6f;
+		float playerActualSpeed = walkSpeed;
 
 		Vector3 move = transform.right * movementX + transform.forward * movementY;
 		Vector3 inputs = Vector3.ClampMagnitude(move, 1f);
-		moveAmount = Vector3.SmoothDamp(moveAmount, inputs * (Input.GetKey(KeyCode.LeftShift) ? sprintSpeed : walkSpeed), ref smoothMoveVelocity, smoothTime);
 
-		if (Input.GetKey(KeyCode.LeftShift)) 
-			isSneaking = true;
-		else isSneaking = false;
+		// Define player speed in cases
+		if (GetComponent<Crouch>().isCrouching || aimingDownSights)
+        {
+			if (GetComponent<Crouch>().isCrouching && aimingDownSights)
+				playerActualSpeed = walkSpeed * 0.3f;
+			else playerActualSpeed = walkSpeed * 0.5f;
+
+		}
+		else if (Input.GetKey(KeyCode.LeftShift))
+		{
+			playerActualSpeed = sprintSpeed * (1 - CurrentlyEquippedItem().gun.weight / 100);
+        } else
+        {
+			playerActualSpeed = walkSpeed * (1 - CurrentlyEquippedItem().gun.weight / 100);
+		}
+
+		moveAmount = Vector3.SmoothDamp(moveAmount, inputs * playerActualSpeed, ref smoothMoveVelocity, smoothTime);
 
 		controller.Move(moveAmount * Time.deltaTime);
 
@@ -255,10 +270,12 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 		if (movingHorizontally || movingVertically)
 		{
 			isMoving = true;
+			if (Input.GetKey(KeyCode.LeftShift)) isSprinting = true;
 		}
 		else
 		{
 			isMoving = false;
+			if (!Input.GetKey(KeyCode.LeftShift)) isSprinting = false;
 		}
 	}
 
@@ -353,7 +370,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 	public void UpdateAmmoUI()
     {
 		SingleShotGun gun = items[itemIndex];
-		ammoText.text = gun.currentAmmo + "/" + gun.maxAmmo;
+		ammoText.text = gun.currentAmmo + "/" + gun.gun.maxAmmo;
     }
 
 	void Die(int photonID = -1)
@@ -384,11 +401,6 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 		items[itemIndex].transform.Find("root").gameObject.SetActive(toggle);
     }
 
-	public void ChangePlayerSpeed(float value)
-    {
-		walkSpeed = value;
-    }
-
 	public IEnumerator LerpArmsReloadPosition(bool toggle)
     {
 		float timeElapsed = 0;
@@ -410,8 +422,8 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 		yield return null;
 	}
 
-	public GameObject CurrentlyEquippedItem()
+	public SingleShotGun CurrentlyEquippedItem()
     {
-		return items[itemIndex].gameObject;
+		return items[itemIndex].GetComponent<SingleShotGun>();
     }
 }

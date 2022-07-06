@@ -6,12 +6,6 @@ public class Crouch : MonoBehaviour
 {
     public bool isCrouching = false;
     [SerializeField] Transform cameraRecoil;
-    PlayerController pc;
-
-    void Start()
-    {
-        pc = GetComponent<PlayerController>();
-    }
 
     public void CrouchToggler()
     {
@@ -21,19 +15,10 @@ public class Crouch : MonoBehaviour
             GetComponent<CharacterController>().height = 1.2f;
             GetComponent<CharacterController>().center = new Vector3(GetComponent<CharacterController>().center.x, -0.3f, GetComponent<CharacterController>().center.z);
 
-            if (pc.CurrentlyEquippedItem().GetComponent<SniperScope>())
-            {
-                if (!pc.CurrentlyEquippedItem().GetComponent<SniperScope>().scopeOn) pc.ChangePlayerSpeed(pc.walkSpeed * 0.5f);
-            }
-            else pc.ChangePlayerSpeed(pc.walkSpeed * 0.5f);
-
-
-
             Vector3 posA = new Vector3(0f, 0.766f, 0f);
             Vector3 posB = new Vector3(0f, 0.310f, 0f);
             StartCoroutine(LerpPosition(posA, posB));
 
-            //cameraRecoil.position = new Vector3(cameraRecoil.position.x, 0.466f, cameraRecoil.position.z);
             isCrouching = true;
             GetComponent<PlayerAnimController>().CrouchAnimationToggle(isCrouching);
         }
@@ -48,13 +33,6 @@ public class Crouch : MonoBehaviour
                 //standup
                 GetComponent<CharacterController>().height = 1.8f;
                 GetComponent<CharacterController>().center = new Vector3(GetComponent<CharacterController>().center.x, 0f, GetComponent<CharacterController>().center.z);
-
-                if (pc.CurrentlyEquippedItem().GetComponent<SniperScope>())
-                {
-                    if (!pc.CurrentlyEquippedItem().GetComponent<SniperScope>().scopeOn) pc.ChangePlayerSpeed(pc.originalWalkSpeed * 0.9f);
-                }
-                else pc.ChangePlayerSpeed(pc.originalWalkSpeed);
-
 
                 Vector3 posA = new Vector3(0f, 0.310f, 0f);
                 Vector3 posB = new Vector3(0f, 0.766f, 0f);

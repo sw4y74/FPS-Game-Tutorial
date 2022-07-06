@@ -41,8 +41,7 @@ public class SniperScope : MonoBehaviour
     {
         float sensitivity = toggle ? root.mouseSensitivity * 10 * 0.25f : originalSensitivity;
 
-        if (!root.GetComponent<Crouch>().isCrouching)
-            root.ChangePlayerSpeed(toggle ? root.walkSpeed * 0.5f : root.originalWalkSpeed * 0.9f);
+        root.aimingDownSights = toggle;
 
         root.ChangeSensitivity(sensitivity);
 
