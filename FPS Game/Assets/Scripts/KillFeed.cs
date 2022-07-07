@@ -26,7 +26,7 @@ public class KillFeed : MonoBehaviour
         Debug.Log(killerName);
         Debug.Log(deadName);
 
-        Destroy(k, 3f);
+        Destroy(k, 5f);
     }
         
 }
