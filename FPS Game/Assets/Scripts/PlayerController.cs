@@ -245,6 +245,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 		// Define player speed in cases
 		if (GetComponent<Crouch>().isCrouching || aimingDownSights)
         {
+			isSprinting = false;
 			if (GetComponent<Crouch>().isCrouching && aimingDownSights)
 				playerActualSpeed = walkSpeed * 0.3f;
 			else playerActualSpeed = walkSpeed * 0.5f;
