@@ -8,6 +8,7 @@ using TMPro;
 using Utilities;
 
 using Hashtable = ExitGames.Client.Photon.Hashtable;
+using System.IO;
 
 public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 {
@@ -64,6 +65,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 	PlayerManager playerManager;
 	public Camera firstPersonCamera;
 	KillFeed killFeed;
+	[SerializeField] GameObject ragdollPlayer;
 
 	PlayerAnimController animationController;
 
@@ -385,6 +387,11 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 			killer = PhotonNetwork.GetPhotonView(photonID).Owner.NickName;
 
 		} else killer = "gravity";
+
+		Vector3 ragdollPosition = new Vector3(transform.position.x, transform.position.y-1, transform.position.z);
+
+		PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "RagdollPlayer"), ragdollPosition, transform.rotation);
+		//Instantiate(ragdollPlayer, transform.position, transform.rotation);
 
 		PV.RPC("RPC_AddKillFeedItem", RpcTarget.All, killer, PV.Owner.NickName);
 

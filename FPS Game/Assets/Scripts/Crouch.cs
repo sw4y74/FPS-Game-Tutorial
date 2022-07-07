@@ -15,8 +15,8 @@ public class Crouch : MonoBehaviour
             GetComponent<CharacterController>().height = 1.2f;
             GetComponent<CharacterController>().center = new Vector3(GetComponent<CharacterController>().center.x, -0.3f, GetComponent<CharacterController>().center.z);
 
-            Vector3 posA = new Vector3(0f, 0.766f, 0f);
-            Vector3 posB = new Vector3(0f, 0.310f, 0f);
+            Vector3 posA = new Vector3(0f, 0f, 0f);
+            Vector3 posB = new Vector3(0f, -0.456f, 0f);
             StartCoroutine(LerpPosition(posA, posB));
 
             isCrouching = true;
@@ -34,8 +34,8 @@ public class Crouch : MonoBehaviour
                 GetComponent<CharacterController>().height = 1.8f;
                 GetComponent<CharacterController>().center = new Vector3(GetComponent<CharacterController>().center.x, 0f, GetComponent<CharacterController>().center.z);
 
-                Vector3 posA = new Vector3(0f, 0.310f, 0f);
-                Vector3 posB = new Vector3(0f, 0.766f, 0f);
+                Vector3 posA = new Vector3(0f, -0.456f, 0f);
+                Vector3 posB = new Vector3(0f, 0f, 0f);
                 StartCoroutine(LerpPosition(posA, posB));
 
                 isCrouching = false;
