@@ -3740,7 +3740,7 @@ Camera:
     height: 1
   near clip plane: 0.01
   far clip plane: 1000
-  field of view: 60
+  field of view: 55
   orthographic: 0
   orthographic size: 5
   m_Depth: 1
@@ -4952,6 +4952,16 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[2]
       value: 
       objectReference: {fileID: 2100000, guid: aaa876dfa4168cc4a84058ad72bd0788, type: 2}
+    - target: {fileID: 5900191650793689539, guid: fea49620d52fdbe4fae8b12d9a4c81f4,
+        type: 3}
+      propertyPath: m_Materials.Array.data[4]
+      value: 
+      objectReference: {fileID: 2100000, guid: e63fa9e74f15f354ab6420c10806e2f1, type: 2}
+    - target: {fileID: 5900191650793689539, guid: fea49620d52fdbe4fae8b12d9a4c81f4,
+        type: 3}
+      propertyPath: m_Materials.Array.data[3]
+      value: 
+      objectReference: {fileID: 2100000, guid: e63fa9e74f15f354ab6420c10806e2f1, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fea49620d52fdbe4fae8b12d9a4c81f4, type: 3}
 --- !u!4 &2961745723528215163 stripped
@@ -5620,6 +5630,16 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[2]
       value: 
       objectReference: {fileID: 2100000, guid: aaa876dfa4168cc4a84058ad72bd0788, type: 2}
+    - target: {fileID: 5900191650793689539, guid: fea49620d52fdbe4fae8b12d9a4c81f4,
+        type: 3}
+      propertyPath: m_Materials.Array.data[4]
+      value: 
+      objectReference: {fileID: 2100000, guid: e63fa9e74f15f354ab6420c10806e2f1, type: 2}
+    - target: {fileID: 5900191650793689539, guid: fea49620d52fdbe4fae8b12d9a4c81f4,
+        type: 3}
+      propertyPath: m_Materials.Array.data[3]
+      value: 
+      objectReference: {fileID: 2100000, guid: e63fa9e74f15f354ab6420c10806e2f1, type: 2}
     - target: {fileID: 6165468296741100277, guid: fea49620d52fdbe4fae8b12d9a4c81f4,
         type: 3}
       propertyPath: m_Layer
