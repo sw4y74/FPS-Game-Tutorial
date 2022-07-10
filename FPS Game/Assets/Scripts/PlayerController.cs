@@ -50,6 +50,14 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 	Vector3 moveAmount;
 	public PauseMenu pauseMenu;
 
+	float m_WeaponBobFactor;
+	Vector3 m_WeaponBobLocalPosition;
+	Vector3 LastCharacterPosition;
+	public float BobFrequency = 10f;
+	public float BobSharpness = 10f;
+	public float DefaultBobAmount = 0.05f;
+	public float AimingBobAmount = 0.02f;
+
 	Rigidbody rb;
 	public CharacterController controller;
 
@@ -69,7 +77,9 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 
 	PlayerAnimController animationController;
 
-	void Awake()
+    public bool IsAiming { get; private set; }
+
+    void Awake()
 	{
 		//rb = GetComponent<Rigidbody>();
 		PV = GetComponent<PhotonView>();
@@ -142,6 +152,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 			Look();
 			Move();
 			Jump();
+			UpdateWeaponBob();
 			GetComponent<Crouch>().CrouchToggler();
 
 			for (int i = 0; i < items.Length; i++)
@@ -202,6 +213,15 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 			Die();
 		}
 
+	}
+
+	void LateUpdate()
+	{
+		if (!pauseMenu.GameIsPaused)
+			UpdateWeaponBob();
+
+		// Set final weapon socket position based on all the combined animation influences
+		itemHolder.transform.localPosition = m_WeaponBobLocalPosition;
 	}
 
 	void Look()
@@ -436,4 +456,40 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
     {
 		return items[itemIndex].GetComponent<SingleShotGun>();
     }
+
+	// Updates the weapon bob animation based on character speed
+	void UpdateWeaponBob()
+	{
+		if (Time.deltaTime > 0f)
+		{
+			Vector3 playerCharacterVelocity =
+				(controller.transform.position - LastCharacterPosition) / Time.deltaTime;
+
+			// calculate a smoothed weapon bob amount based on how close to our max grounded movement velocity we are
+			float characterMovementFactor = 0f;
+			if (grounded)
+			{
+				characterMovementFactor =
+					Mathf.Clamp01(playerCharacterVelocity.magnitude /
+								  (walkSpeed * 2));
+			}
+
+			m_WeaponBobFactor =
+				Mathf.Lerp(m_WeaponBobFactor, characterMovementFactor, BobSharpness * Time.deltaTime);
+
+			// Calculate vertical and horizontal weapon bob values based on a sine function
+			float bobAmount = IsAiming ? AimingBobAmount : DefaultBobAmount;
+			float frequency = BobFrequency;
+			float hBobValue = Mathf.Sin(Time.time * frequency) * bobAmount * m_WeaponBobFactor;
+			float vBobValue = ((Mathf.Sin(Time.time * frequency * 2f) * 0.5f) + 0.5f) * bobAmount *
+							  m_WeaponBobFactor;
+
+			// Apply weapon bob
+			m_WeaponBobLocalPosition.x = hBobValue;
+			m_WeaponBobLocalPosition.y = Mathf.Abs(vBobValue)+0.08f;
+			m_WeaponBobLocalPosition.z = -0.176f;
+
+			LastCharacterPosition = controller.transform.position;
+		}
+	}
 }

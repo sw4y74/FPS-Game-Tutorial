@@ -63,7 +63,7 @@ public class Crosshair : MonoBehaviour
     {
         get
         {
-            if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0)
+            if (player.GetComponent<PlayerController>().isMoving)
             {
                 if (Input.GetKey(KeyCode.LeftShift) == false && !Jumping)
                 {
@@ -85,9 +85,9 @@ public class Crosshair : MonoBehaviour
     {
         get
         {
-            if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0)
+            if (player.GetComponent<PlayerController>().isMoving)
             {
-                if (Input.GetKey(KeyCode.LeftShift) == true && !Jumping)
+                if (player.GetComponent<PlayerController>().isSprinting == true && !Jumping)
                 {
                     return true;
                 }
