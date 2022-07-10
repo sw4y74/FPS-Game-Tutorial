@@ -152,7 +152,6 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 			Look();
 			Move();
 			Jump();
-			UpdateWeaponBob();
 			GetComponent<Crouch>().CrouchToggler();
 
 			for (int i = 0; i < items.Length; i++)
@@ -217,6 +216,9 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 
 	void LateUpdate()
 	{
+		if (!PV.IsMine)
+			return;
+
 		if (!pauseMenu.GameIsPaused)
 			UpdateWeaponBob();
 

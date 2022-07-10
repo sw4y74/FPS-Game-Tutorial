@@ -287,6 +287,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7993072474268786633}
   - component: {fileID: 4860848741791058960}
+  - component: {fileID: 5666821741135809033}
   m_Layer: 0
   m_Name: RagdollPlayer
   m_TagString: Untagged
@@ -332,6 +333,18 @@ MonoBehaviour:
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &5666821741135809033
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1667048936166391591}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1e4cfa8dda5e9d4ea98beccf12897f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1751641983276934100
 GameObject:
   m_ObjectHideFlags: 0
@@ -1252,7 +1265,7 @@ CharacterJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 0, y: 0, z: 1}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -0.0000000037252903, y: 1.241051, z: 0.000000029802326}
+  m_ConnectedAnchor: {x: 0.00000010430813, y: 1.2410513, z: 0.0000000782311}
   serializedVersion: 2
   m_SwingAxis: {x: 1, y: 0, z: 0}
   m_TwistLimitSpring:
@@ -1681,7 +1694,7 @@ CharacterJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 0, y: 0, z: 1}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -0.00000005215407, y: 1.241051, z: 0.000000029802326}
+  m_ConnectedAnchor: {x: 0.00000008940698, y: 1.2410511, z: 0.000000014901163}
   serializedVersion: 2
   m_SwingAxis: {x: 1, y: 0, z: 0}
   m_TwistLimitSpring:
