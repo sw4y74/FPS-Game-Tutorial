@@ -2025,7 +2025,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   smooth: 3
-  swayMultiplier: 2
+  swayMultiplier: 1.5
   player: {fileID: 8997055070651253307}
 --- !u!1 &3078634844913447763
 GameObject:
