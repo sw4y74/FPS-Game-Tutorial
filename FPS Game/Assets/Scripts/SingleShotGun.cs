@@ -66,8 +66,6 @@ public class SingleShotGun : Gun
 
 		bool scopeEnabled = false;
 
-		Debug.Log(gun.weaponType.ToString());
-
 		float accuracyX = 0.5f;
 		float accuracyY = 0.5f;
 		float randX = Random.Range(-gun.movementAccuracy, gun.movementAccuracy)/10;
@@ -159,10 +157,11 @@ public class SingleShotGun : Gun
 
 		if (Physics.Raycast(ray, out RaycastHit hit, 2000f, layerMask))
 		{
+			Hitbox hitbox = hit.collider.gameObject.GetComponent<Hitbox>();
 
-			if (hit.collider.CompareTag("Player"))
+			if (hitbox)
 			{
-				if (hit.collider is SphereCollider)
+				if (hitbox.isHead)
 				{
 					transform.root.gameObject.GetComponent<Hitmarker>().ShowHitHS();
 				}
@@ -172,14 +171,9 @@ public class SingleShotGun : Gun
 
 			float damage = gun.damage;
 
-			if (hit.collider is SphereCollider)
+			if (hitbox && hitbox.isHead)
 			{
 				damage *= 3;
-			}
-
-			if (hit.collider is BoxCollider)
-			{
-				damage = 0;
 			}
 
 			hit.collider.gameObject.GetComponent<IDamageable>()?.TakeDamage(damage, PV.ViewID);
@@ -190,6 +184,7 @@ public class SingleShotGun : Gun
 
 		Recoil.RecoilFire(gun.recoilX, gun.recoilY, gun.recoilZ);
 		Kickback.KickbackFire(gun.kickbackZ);
+
 		yield return new WaitForSeconds(gun.fireRate/100);
 
 		if (gun.weaponType.Equals(WeaponType.sniperRifle) && !GetComponent<SniperScope>().scopeOn && !reloading && scopeEnabled)
