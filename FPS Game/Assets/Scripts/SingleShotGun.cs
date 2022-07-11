@@ -159,9 +159,9 @@ public class SingleShotGun : Gun
 		{
 			Hitbox hitbox = hit.collider.gameObject.GetComponent<Hitbox>();
 
-			if (hit.collider.CompareTag("Player"))
+			if (hitbox)
 			{
-				if (hitbox && hitbox.isHead)
+				if (hitbox.isHead)
 				{
 					transform.root.gameObject.GetComponent<Hitmarker>().ShowHitHS();
 				}
@@ -176,11 +176,6 @@ public class SingleShotGun : Gun
 				damage *= 3;
 			}
 
-			if (hit.collider is BoxCollider)
-			{
-				damage = 0;
-			}
-
 			hit.collider.gameObject.GetComponent<IDamageable>()?.TakeDamage(damage, PV.ViewID);
 
 		}
@@ -189,6 +184,7 @@ public class SingleShotGun : Gun
 
 		Recoil.RecoilFire(gun.recoilX, gun.recoilY, gun.recoilZ);
 		Kickback.KickbackFire(gun.kickbackZ);
+
 		yield return new WaitForSeconds(gun.fireRate/100);
 
 		if (gun.weaponType.Equals(WeaponType.sniperRifle) && !GetComponent<SniperScope>().scopeOn && !reloading && scopeEnabled)

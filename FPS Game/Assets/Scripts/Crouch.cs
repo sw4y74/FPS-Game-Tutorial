@@ -6,6 +6,7 @@ public class Crouch : MonoBehaviour
 {
     public bool isCrouching = false;
     [SerializeField] Transform cameraRecoil;
+    [SerializeField] LayerMask layerToIgnore;
 
     public void CrouchToggler()
     {
@@ -26,20 +27,19 @@ public class Crouch : MonoBehaviour
 
         if (isCrouching && !Input.GetKey(KeyCode.LeftControl)) 
         {
-            var cantStandup = Physics.Raycast(transform.position, Vector3.up, 2f);
 
-            if (!cantStandup)
+            if (!Physics.Raycast(transform.position, Vector3.up, out RaycastHit hit, 2f, ~layerToIgnore))
             {
-                //standup
-                GetComponent<CharacterController>().height = 1.8f;
-                GetComponent<CharacterController>().center = new Vector3(GetComponent<CharacterController>().center.x, 0f, GetComponent<CharacterController>().center.z);
+                    //standup
+                    GetComponent<CharacterController>().height = 1.8f;
+                    GetComponent<CharacterController>().center = new Vector3(GetComponent<CharacterController>().center.x, 0f, GetComponent<CharacterController>().center.z);
 
-                Vector3 posA = new Vector3(0f, -0.456f, 0f);
-                Vector3 posB = new Vector3(0f, 0f, 0f);
-                StartCoroutine(LerpPosition(posA, posB));
+                    Vector3 posA = new Vector3(0f, -0.456f, 0f);
+                    Vector3 posB = new Vector3(0f, 0f, 0f);
+                    StartCoroutine(LerpPosition(posA, posB));
 
-                isCrouching = false;
-                GetComponent<PlayerAnimController>().CrouchAnimationToggle(isCrouching);
+                    isCrouching = false;
+                    GetComponent<PlayerAnimController>().CrouchAnimationToggle(isCrouching);
             }
 
         }

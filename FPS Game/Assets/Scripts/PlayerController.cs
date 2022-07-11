@@ -10,7 +10,7 @@ using Utilities;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 using System.IO;
 
-public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
+public class PlayerController : MonoBehaviourPunCallbacks
 {
 	[SerializeField] Image healthbarImage;
 	[SerializeField] GameObject ui;
@@ -119,7 +119,8 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 			Cursor.lockState = CursorLockMode.Locked;
 			Cursor.visible = false;
 			EquipItem(0);
-			gameObject.layer = LayerMask.NameToLayer("LocalPlayer");
+			//gameObject.layer = LayerMask.NameToLayer("LocalPlayer");
+			SetLayer(10);
 			gameObject.tag = "LocalPlayer";
 
 			for (int i = 0; i < items.Length; i++)
@@ -492,6 +493,21 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 			m_WeaponBobLocalPosition.z = -0.176f;
 
 			LastCharacterPosition = controller.transform.position;
+		}
+	}
+
+	public void SetLayer(int layer, bool includeChildren = true)
+	{
+		if (!gameObject) return;
+		if (!includeChildren)
+		{
+			gameObject.layer = layer;
+			return;
+		}
+
+		foreach (var child in gameObject.GetComponentsInChildren(typeof(Collider), true))
+		{
+			child.gameObject.layer = layer;
 		}
 	}
 }
