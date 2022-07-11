@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: Rifle
   m_EditorClassIdentifier: 
   itemName: Rifle
-  damage: 35
+  damage: 30
   weaponType: 3
-  weight: 5
+  weight: 8
   automatic: 1
   fireRate: 10
   maxAmmo: 30

@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: Shotgun
   damage: 70
   weaponType: 3
-  weight: 5
+  weight: 6
   automatic: 1
   fireRate: 35
   maxAmmo: 5
