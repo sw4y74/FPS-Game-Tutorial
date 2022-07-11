@@ -66,8 +66,6 @@ public class SingleShotGun : Gun
 
 		bool scopeEnabled = false;
 
-		Debug.Log(gun.weaponType.ToString());
-
 		float accuracyX = 0.5f;
 		float accuracyY = 0.5f;
 		float randX = Random.Range(-gun.movementAccuracy, gun.movementAccuracy)/10;
@@ -159,10 +157,11 @@ public class SingleShotGun : Gun
 
 		if (Physics.Raycast(ray, out RaycastHit hit, 2000f, layerMask))
 		{
+			Hitbox hitbox = hit.collider.gameObject.GetComponent<Hitbox>();
 
 			if (hit.collider.CompareTag("Player"))
 			{
-				if (hit.collider is SphereCollider)
+				if (hitbox && hitbox.isHead)
 				{
 					transform.root.gameObject.GetComponent<Hitmarker>().ShowHitHS();
 				}
@@ -172,7 +171,7 @@ public class SingleShotGun : Gun
 
 			float damage = gun.damage;
 
-			if (hit.collider is SphereCollider)
+			if (hitbox && hitbox.isHead)
 			{
 				damage *= 3;
 			}

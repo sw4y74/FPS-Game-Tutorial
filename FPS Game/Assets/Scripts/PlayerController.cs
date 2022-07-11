@@ -98,7 +98,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 	{
 		if(PV.IsMine)
 		{
-			Destroy(headCollider);
+			headCollider.enabled = false;
 
 			if (PlayerPrefs.HasKey("sensitivity"))
 			{

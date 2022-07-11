@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82c2ad346950704498cba8492b0fd389, type: 3}
+  m_Name: Shotgun
+  m_EditorClassIdentifier: 
+  itemName: Shotgun
+  damage: 70
+  weaponType: 3
+  weight: 5
+  automatic: 1
+  fireRate: 35
+  maxAmmo: 5
+  firstShootAccurate: 1
+  recoilX: -15
+  recoilY: 3
+  recoilZ: 1
+  kickbackZ: 0.4
+  movementAccuracy: 0.5
+  jumpAccuracy: 0.5
+  noScopeAccuracy: 0.6
+  crouchAccuracyModifier: 3
+  gunSound: {fileID: 8300000, guid: 1f28403240ebb1545a1c6dfb6e24a7cf, type: 3}
+  reloadSpeed: 2
