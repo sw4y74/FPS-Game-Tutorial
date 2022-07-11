@@ -1322,7 +1322,7 @@ MonoBehaviour:
   isMoving: 0
   pauseMenu: {fileID: 0}
   BobFrequency: 7
-  BobSharpness: 5
+  BobSharpness: 4
   DefaultBobAmount: 0.05
   AimingBobAmount: 0.02
   controller: {fileID: 9186214440057998566}
