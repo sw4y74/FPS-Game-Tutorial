@@ -20,8 +20,8 @@ MonoBehaviour:
   fireRate: 10
   maxAmmo: 30
   firstShootAccurate: 0
-  recoilX: -5
-  recoilY: 2.6
+  recoilX: -6
+  recoilY: 3
   recoilZ: 0.01
   kickbackZ: 0.08
   movementAccuracy: 0.6
