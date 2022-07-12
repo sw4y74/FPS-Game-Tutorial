@@ -61,7 +61,8 @@ public class PlayerController : MonoBehaviourPunCallbacks
 	Rigidbody rb;
 	public CharacterController controller;
 
-	Vector3 velocity;
+	public Vector3 velocity;
+	public Vector3 playerCharacterVelocity;
 	public float gravity = -16.81f;
 
 	PhotonView PV;
@@ -465,7 +466,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
 	{
 		if (Time.deltaTime > 0f)
 		{
-			Vector3 playerCharacterVelocity =
+			playerCharacterVelocity =
 				(controller.transform.position - LastCharacterPosition) / Time.deltaTime;
 
 			// calculate a smoothed weapon bob amount based on how close to our max grounded movement velocity we are
