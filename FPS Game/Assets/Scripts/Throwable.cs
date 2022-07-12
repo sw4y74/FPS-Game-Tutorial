@@ -26,11 +26,12 @@ public class Throwable : MonoBehaviour
     void Throw()
     {
         Vector3 throwDirection = GetComponent<PlayerController>().firstPersonCamera.transform.forward;
+        Vector3 throwDirectionAdjusted = new Vector3(throwDirection.x, throwDirection.y + 0.2f, throwDirection.z);
         Vector3 playerVelocity = GetComponent<PlayerController>().playerCharacterVelocity;
 
         Debug.Log(range + playerVelocity.magnitude / 2);
         amount--;
-        GetComponent<PhotonView>().RPC("RPC_Throw", RpcTarget.All, throwDirection, playerVelocity);
+        GetComponent<PhotonView>().RPC("RPC_Throw", RpcTarget.All, throwDirectionAdjusted, playerVelocity);
     }
 
     [PunRPC]
