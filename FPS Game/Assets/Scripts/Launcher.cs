@@ -5,6 +5,7 @@ using Photon.Pun;
 using TMPro;
 using Photon.Realtime;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 public class Launcher : MonoBehaviourPunCallbacks
 {
@@ -106,6 +107,15 @@ public class Launcher : MonoBehaviourPunCallbacks
 	{
 		MenuManager.Instance.OpenMenu("title");
 	}
+
+	public IEnumerator DisconnectAndLoad()
+    {
+		PhotonNetwork.Disconnect();
+
+		while (PhotonNetwork.IsConnected)
+			yield return null;
+		SceneManager.LoadScene("Menu");
+    }
 
 	public override void OnRoomListUpdate(List<RoomInfo> roomList)
 	{

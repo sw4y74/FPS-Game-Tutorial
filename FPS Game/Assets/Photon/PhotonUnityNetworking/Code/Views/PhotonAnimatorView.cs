@@ -83,6 +83,7 @@ namespace Photon.Pun
         private Animator m_Animator;
 
         private PhotonStreamQueue m_StreamQueue = new PhotonStreamQueue(120);
+        private PhotonView m_PhotonView;
 
         //These fields are only used in the CustomEditor for this script and would trigger a
         //"this variable is never used" warning, which I am suppressing here
@@ -109,7 +110,7 @@ namespace Photon.Pun
         private Vector3 m_ReceiverPosition;
         private float m_LastDeserializeTime;
         private bool m_WasSynchronizeTypeChanged = true;
-        private PhotonView m_PhotonView;
+
 
         /// <summary>
         /// Cached raised triggers that are set to be synchronized in discrete mode. since a Trigger only stay up for less than a frame,

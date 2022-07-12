@@ -13,4 +13,20 @@ MonoBehaviour:
   m_Name: Rifle
   m_EditorClassIdentifier: 
   itemName: Rifle
-  damage: 50
+  damage: 30
+  weaponType: 3
+  weight: 8
+  automatic: 1
+  fireRate: 10
+  maxAmmo: 30
+  firstShootAccurate: 0
+  recoilX: -6
+  recoilY: 3
+  recoilZ: 0.01
+  kickbackZ: 0.08
+  movementAccuracy: 0.6
+  jumpAccuracy: 1.2
+  noScopeAccuracy: 0.6
+  crouchAccuracy: 0.25
+  gunSound: {fileID: 8300000, guid: 8d12be5abd16a5b43b31ba8cce556cf7, type: 3}
+  reloadSpeed: 2

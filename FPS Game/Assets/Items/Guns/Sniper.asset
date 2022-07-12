@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82c2ad346950704498cba8492b0fd389, type: 3}
+  m_Name: Sniper
+  m_EditorClassIdentifier: 
+  itemName: Rifle
+  damage: 120
+  weaponType: 0
+  weight: 10
+  automatic: 0
+  fireRate: 100
+  maxAmmo: 10
+  firstShootAccurate: 0
+  recoilX: -15
+  recoilY: 3
+  recoilZ: 1
+  kickbackZ: 0.4
+  movementAccuracy: 3
+  jumpAccuracy: 4
+  noScopeAccuracy: 0.4
+  crouchAccuracy: 2
+  gunSound: {fileID: 8300000, guid: 4a0b1c81758d8fa4685399607aecf5e5, type: 3}
+  reloadSpeed: 2

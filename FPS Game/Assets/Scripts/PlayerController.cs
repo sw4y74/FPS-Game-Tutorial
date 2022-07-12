@@ -4,57 +4,138 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using Hashtable = ExitGames.Client.Photon.Hashtable;
+using TMPro;
+using Utilities;
 
-public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
+using Hashtable = ExitGames.Client.Photon.Hashtable;
+using System.IO;
+
+public class PlayerController : MonoBehaviourPunCallbacks
 {
 	[SerializeField] Image healthbarImage;
 	[SerializeField] GameObject ui;
 
 	[SerializeField] GameObject cameraHolder;
+	[SerializeField] Transform[] syncRotationObjects;
 
-	[SerializeField] float mouseSensitivity, sprintSpeed, walkSpeed, jumpForce, smoothTime;
+	public GameObject viewModel;
+	[SerializeField] GameObject localViewModel;
+	public float mouseSensitivity;
+	public float sprintSpeed, walkSpeed, jumpForce, smoothTime;
+	public bool isSprinting = false;
 
-	[SerializeField] SingleShotGun[] items;
+	[SerializeField] GameObject itemHolder;
+	[SerializeField] GameObject itemHolderMP;
+	[SerializeField] GameObject arms;
+	[SerializeField] GameObject reloadPos;
+	[SerializeField] GameObject armsPos;
+	[SerializeField] Animator GunsAnimator;
+	public AudioSource gunAudioSource;
+	SingleShotGun[] items;
+	SingleShotGun[] itemsMP;
+	[System.NonSerialized] public bool aimingDownSights = false;
 
-	int itemIndex;
+	[System.NonSerialized] public int itemIndex;
 	int previousItemIndex = -1;
 
+	[SerializeField] TMP_Text ammoText;
+
 	float verticalLookRotation;
-	bool grounded;
+	public Transform groundCheck;
+	public float groundDistance;
+	public LayerMask groundMask;
+	public bool grounded = true;
+	public bool isMoving;
 	Vector3 smoothMoveVelocity;
 	Vector3 moveAmount;
+	public PauseMenu pauseMenu;
+
+	float m_WeaponBobFactor;
+	Vector3 m_WeaponBobLocalPosition;
+	Vector3 LastCharacterPosition;
+	public float BobFrequency = 10f;
+	public float BobSharpness = 10f;
+	public float DefaultBobAmount = 0.05f;
+	public float AimingBobAmount = 0.02f;
 
 	Rigidbody rb;
+	public CharacterController controller;
+
+	public Vector3 velocity;
+	public Vector3 playerCharacterVelocity;
+	public float gravity = -16.81f;
 
 	PhotonView PV;
 
 	const float maxHealth = 100f;
 	float currentHealth = maxHealth;
+	public SphereCollider headCollider;
 
 	PlayerManager playerManager;
+	public Camera firstPersonCamera;
+	KillFeed killFeed;
+	[SerializeField] GameObject ragdollPlayer;
 
-	void Awake()
+	PlayerAnimController animationController;
+
+    public bool IsAiming { get; private set; }
+
+    void Awake()
 	{
-		rb = GetComponent<Rigidbody>();
+		//rb = GetComponent<Rigidbody>();
 		PV = GetComponent<PhotonView>();
 
+		pauseMenu = FindObjectOfType<PauseMenu>();
+
 		playerManager = PhotonView.Find((int)PV.InstantiationData[0]).GetComponent<PlayerManager>();
+
+		items = itemHolder.GetComponentsInChildren<SingleShotGun>();
+		itemsMP = itemHolderMP.GetComponentsInChildren<SingleShotGun>();
+		killFeed = FindObjectOfType<KillFeed>();
+		animationController = GetComponent<PlayerAnimController>();
 	}
 
 	void Start()
 	{
 		if(PV.IsMine)
 		{
+			headCollider.enabled = false;
+
+			if (PlayerPrefs.HasKey("sensitivity"))
+			{
+				ChangeSensitivity(PlayerPrefs.GetFloat("sensitivity"));
+			}
+
+			//turn off MP viewModel renderers and gunHolder
+			foreach (Transform child in viewModel.transform)
+            {
+				if (child.GetComponent<SkinnedMeshRenderer>())
+                {
+					child.GetComponent<SkinnedMeshRenderer>().enabled = false;
+                }
+			}
+
+			itemHolderMP.SetActive(false);
+
 			Cursor.lockState = CursorLockMode.Locked;
 			Cursor.visible = false;
 			EquipItem(0);
+			//gameObject.layer = LayerMask.NameToLayer("LocalPlayer");
+			SetLayer(10);
+			gameObject.tag = "LocalPlayer";
+
+			for (int i = 0; i < items.Length; i++)
+			{
+				items[i].index = i;
+			}
+			Debug.Log(PhotonNetwork.LocalPlayer.GetScore());
 		}
 		else
 		{
 			Destroy(GetComponentInChildren<Camera>().gameObject);
-			Destroy(rb);
+			Destroy(controller);
 			Destroy(ui);
+			localViewModel.SetActive(false);
 		}
 	}
 
@@ -63,58 +144,88 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 		if(!PV.IsMine)
 			return;
 
-		Look();
-		Move();
-		Jump();
-
-		for(int i = 0; i < items.Length; i++)
+		if (grounded && velocity.y < 0)
 		{
-			if(Input.GetKeyDown((i + 1).ToString()))
-			{
-				EquipItem(i);
-				break;
-			}
+			velocity.y = -2f;
 		}
 
-		if(Input.GetAxisRaw("Mouse ScrollWheel") > 0f)
+		if (!pauseMenu.GameIsPaused)
 		{
-			if(itemIndex >= items.Length - 1)
+			Look();
+			Move();
+			Jump();
+			GetComponent<Crouch>().CrouchToggler();
+
+			for (int i = 0; i < items.Length; i++)
 			{
-				EquipItem(0);
+				if (Input.GetKeyDown((i + 1).ToString()))
+				{
+					EquipItem(i);
+					break;
+				}
+			}
+
+			if (Input.GetAxisRaw("Mouse ScrollWheel") < 0f)
+			{
+				if (itemIndex >= items.Length - 1)
+				{
+					EquipItem(0);
+				}
+				else
+				{
+					EquipItem(itemIndex + 1);
+				}
+			}
+			else if (Input.GetAxisRaw("Mouse ScrollWheel") > 0f)
+			{
+				if (itemIndex <= 0)
+				{
+					EquipItem(items.Length - 1);
+				}
+				else
+				{
+					EquipItem(itemIndex - 1);
+				}
+			}
+
+			if (items[itemIndex].gun.automatic)
+			{
+				if (Input.GetMouseButton(0) && items[itemIndex].allowFire)
+				{
+					items[itemIndex].Use();
+				}
 			}
 			else
 			{
-				EquipItem(itemIndex + 1);
+				if (Input.GetMouseButtonDown(0) && items[itemIndex].allowFire)
+				{
+					items[itemIndex].Use();
+				}
 			}
-		}
-		else if(Input.GetAxisRaw("Mouse ScrollWheel") < 0f)
-		{
-			if(itemIndex <= 0)
-			{
-				EquipItem(items.Length - 1);
-			}
-			else
-			{
-				EquipItem(itemIndex - 1);
-			}
-		}
- 		
-		if (items[itemIndex].automatic) {
-			if(Input.GetMouseButton(0) && items[itemIndex].allowFire)
-			{
-				items[itemIndex].Use();
-			}
-		} else {
-			if (Input.GetMouseButtonDown(0) && items[itemIndex].allowFire)
-			{
-				items[itemIndex].Use();
-			}
-		}		
 
-		if(transform.position.y < -10f) // Die if you fall out of the world
+			if (Input.GetKeyDown(KeyCode.R))
+            {
+				items[itemIndex].Reload();
+			}
+		}
+
+		if (transform.position.y < -10f) // Die if you fall out of the world
 		{
 			Die();
 		}
+
+	}
+
+	void LateUpdate()
+	{
+		if (!PV.IsMine)
+			return;
+
+		if (!pauseMenu.GameIsPaused)
+			UpdateWeaponBob();
+
+		// Set final weapon socket position based on all the combined animation influences
+		itemHolder.transform.localPosition = m_WeaponBobLocalPosition;
 	}
 
 	void Look()
@@ -125,20 +236,83 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 		verticalLookRotation = Mathf.Clamp(verticalLookRotation, -90f, 90f);
 
 		cameraHolder.transform.localEulerAngles = Vector3.left * verticalLookRotation;
+		foreach(Transform obj in syncRotationObjects)
+        {
+			obj.localEulerAngles = Vector3.left * verticalLookRotation;
+		}
 	}
 
 	void Move()
-	{
-		Vector3 moveDir = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
+    {
+		grounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
 
-		moveAmount = Vector3.SmoothDamp(moveAmount, moveDir * (Input.GetKey(KeyCode.LeftShift) ? sprintSpeed : walkSpeed), ref smoothMoveVelocity, smoothTime);
+		if (!grounded)
+        {
+			smoothTime = 0.03f * 7;
+			controller.stepOffset = 0f;
+		} else
+        {
+			smoothTime = 0.03f;
+			controller.stepOffset = 0.7f;
+		}
+
+		float movementX = Input.GetAxis("Horizontal");
+		float movementY = Input.GetAxis("Vertical");
+		float strafeThreshold = 0.6f;
+		float playerActualSpeed = walkSpeed;
+
+		Vector3 move = transform.right * movementX + transform.forward * movementY;
+		Vector3 inputs = Vector3.ClampMagnitude(move, 1f);
+		bool movingHorizontally = movementX > strafeThreshold || movementX < -strafeThreshold;
+		bool movingVertically = movementY > strafeThreshold || movementY < -strafeThreshold;
+
+		// Define player speed in cases
+		if (GetComponent<Crouch>().isCrouching || aimingDownSights)
+        {
+			isSprinting = false;
+			if (GetComponent<Crouch>().isCrouching && aimingDownSights)
+				playerActualSpeed = walkSpeed * 0.3f;
+			else playerActualSpeed = walkSpeed * 0.5f;
+
+		}
+		else if (Input.GetKey(KeyCode.LeftShift) && (movingHorizontally || movingVertically) && grounded)
+		{
+			playerActualSpeed = sprintSpeed * (1 - CurrentlyEquippedItem().gun.weight / 100);
+			isSprinting = true;
+		}
+		else
+        {			
+			playerActualSpeed = walkSpeed * (1 - CurrentlyEquippedItem().gun.weight / 100);
+			isSprinting = false;
+		}
+
+		moveAmount = Vector3.SmoothDamp(moveAmount, inputs * playerActualSpeed, ref smoothMoveVelocity, smoothTime);
+
+		controller.Move(moveAmount * Time.deltaTime);
+
+		velocity.y += gravity * Time.deltaTime;
+
+		controller.Move(velocity * Time.deltaTime);
+
+		animationController.MovementAnimation(movementX, movementY);
+
+
+		if (movingHorizontally || movingVertically)
+		{
+			isMoving = true;
+		}
+		else
+		{
+			isMoving = false;
+		}
+
 	}
 
 	void Jump()
 	{
 		if(Input.GetKeyDown(KeyCode.Space) && grounded)
 		{
-			rb.AddForce(transform.up * jumpForce);
+			velocity.y = Mathf.Sqrt(jumpForce * -2f * gravity);
 		}
 	}
 
@@ -150,25 +324,33 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 		itemIndex = _index;
 
 		items[itemIndex].itemGameObject.SetActive(true);
+		itemsMP[itemIndex].itemGameObject.SetActive(true);
 
-		if(previousItemIndex != -1)
+		if (previousItemIndex != -1)
 		{
 			items[previousItemIndex].itemGameObject.SetActive(false);
+			itemsMP[previousItemIndex].itemGameObject.SetActive(false);
 		}
-
-		previousItemIndex = itemIndex;
 
 		if(PV.IsMine)
 		{
+			if (previousItemIndex != -1)
+			{
+				items[previousItemIndex].OnUnequip();
+			}
+			items[itemIndex].OnEquip();
 			Hashtable hash = new Hashtable();
 			hash.Add("itemIndex", itemIndex);
 			PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
+			UpdateAmmoUI();
 		}
+
+		previousItemIndex = itemIndex;
 	}
 
 	public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
 	{
-		if(!PV.IsMine && targetPlayer == PV.Owner)
+		if(changedProps.ContainsKey("itemIndex") && !PV.IsMine && targetPlayer == PV.Owner)
 		{
 			EquipItem((int)changedProps["itemIndex"]);
 		}
@@ -184,16 +366,16 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 		if(!PV.IsMine)
 			return;
 
-		rb.MovePosition(rb.position + transform.TransformDirection(moveAmount) * Time.fixedDeltaTime);
+		//rb.MovePosition(rb.position + transform.TransformDirection(moveAmount) * Time.fixedDeltaTime);
 	}
 
-	public void TakeDamage(float damage)
+	public void TakeDamage(float damage, int photonID)
 	{
-		PV.RPC("RPC_TakeDamage", RpcTarget.All, damage);
+		PV.RPC("RPC_TakeDamage", RpcTarget.All, damage, photonID);
 	}
 
 	[PunRPC]
-	void RPC_TakeDamage(float damage)
+	void RPC_TakeDamage(float damage, int photonID)
 	{
 		if(!PV.IsMine)
 			return;
@@ -204,12 +386,129 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 
 		if(currentHealth <= 0)
 		{
-			Die();
+			Die(photonID);
 		}
 	}
 
-	void Die()
+	[PunRPC]
+	void RPC_AddKillFeedItem(string damageDealer, string targetPlayer)
 	{
-		playerManager.Die();
+		killFeed.AddKillFeedItem(damageDealer, targetPlayer);
+	}
+
+	public void UpdateAmmoUI()
+    {
+		SingleShotGun gun = items[itemIndex];
+		ammoText.text = gun.currentAmmo + "/" + gun.gun.maxAmmo;
+    }
+
+	void Die(int photonID = -1)
+	{
+		string killer;
+
+		if (photonID != -1)
+		{
+			PhotonNetwork.GetPhotonView(photonID).Owner.AddScore(1);
+			killer = PhotonNetwork.GetPhotonView(photonID).Owner.NickName;
+
+		} else killer = "gravity";
+
+		Vector3 ragdollPosition = new Vector3(transform.position.x, transform.position.y-1, transform.position.z);
+
+		PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "RagdollPlayer"), ragdollPosition, transform.rotation);
+		//Instantiate(ragdollPlayer, transform.position, transform.rotation);
+
+		PV.RPC("RPC_AddKillFeedItem", RpcTarget.All, killer, PV.Owner.NickName);
+
+		PhotonNetwork.LocalPlayer.AddDeaths(1);
+		
+		playerManager.Die(killer);
+	}
+
+	public void ChangeSensitivity(float value)
+    {
+		mouseSensitivity = value / 10;
+	}
+
+	public void ToggleWeaponRender(bool toggle)
+    {
+		items[itemIndex].transform.Find("root").gameObject.SetActive(toggle);
+    }
+
+	public IEnumerator LerpArmsReloadPosition(bool toggle)
+    {
+		float timeElapsed = 0;
+		float lerpDuration = 0.3f;
+
+		Vector3 a = toggle ? armsPos.transform.localPosition : reloadPos.transform.localPosition;
+		Vector3 b = toggle ? reloadPos.transform.localPosition : armsPos.transform.localPosition;
+
+		while (timeElapsed < lerpDuration)
+		{
+			arms.transform.localPosition = Vector3.Lerp(a, b, (timeElapsed / lerpDuration));
+			timeElapsed += Time.deltaTime;
+
+			// Yield here
+			yield return null;
+		}
+		// Make sure we got there
+		arms.transform.localPosition = b;
+		yield return null;
+	}
+
+	public SingleShotGun CurrentlyEquippedItem()
+    {
+		return items[itemIndex].GetComponent<SingleShotGun>();
+    }
+
+	// Updates the weapon bob animation based on character speed
+	void UpdateWeaponBob()
+	{
+		if (Time.deltaTime > 0f)
+		{
+			playerCharacterVelocity =
+				(controller.transform.position - LastCharacterPosition) / Time.deltaTime;
+
+			// calculate a smoothed weapon bob amount based on how close to our max grounded movement velocity we are
+			float characterMovementFactor = 0f;
+			if (grounded)
+			{
+				characterMovementFactor =
+					Mathf.Clamp01(playerCharacterVelocity.magnitude /
+								  (walkSpeed * 2));
+			}
+
+			m_WeaponBobFactor =
+				Mathf.Lerp(m_WeaponBobFactor, characterMovementFactor, BobSharpness * Time.deltaTime);
+
+			// Calculate vertical and horizontal weapon bob values based on a sine function
+			float bobAmount = IsAiming ? AimingBobAmount : DefaultBobAmount;
+			float frequency = BobFrequency;
+			float hBobValue = Mathf.Sin(Time.time * frequency) * bobAmount * m_WeaponBobFactor;
+			float vBobValue = ((Mathf.Sin(Time.time * frequency * 2f) * 0.5f) + 0.5f) * bobAmount *
+							  m_WeaponBobFactor;
+
+			// Apply weapon bob
+			m_WeaponBobLocalPosition.x = hBobValue;
+			m_WeaponBobLocalPosition.y = Mathf.Abs(vBobValue)+0.08f;
+			m_WeaponBobLocalPosition.z = -0.176f;
+
+			LastCharacterPosition = controller.transform.position;
+		}
+	}
+
+	public void SetLayer(int layer, bool includeChildren = true)
+	{
+		if (!gameObject) return;
+		if (!includeChildren)
+		{
+			gameObject.layer = layer;
+			return;
+		}
+
+		foreach (var child in gameObject.GetComponentsInChildren(typeof(Collider), true))
+		{
+			child.gameObject.layer = layer;
+		}
 	}
 }

@@ -26,8 +26,20 @@ namespace Photon.Pun
     #if UNITY_EDITOR
     using UnityEditor;
     using System.IO;
-    #endif
+#endif
 
+    public static class RoomProperties
+    {
+        public static string Teams = "Teams";
+    }
+
+    public static class PlayerProperties
+    {
+        public static string Team = "teamIdx";
+        public static string Ready = "rdy";
+        public static string Score = "scr";
+        public static string Deaths = "dth";
+    }
 
     public struct InstantiateParameters
     {
@@ -327,6 +339,215 @@ namespace Photon.Pun
                 return NetworkingClient.LocalPlayer;
             }
         }
+
+        /// <summary>
+        /// Player assigned Team index.
+        /// </summary>
+        /// <param name="player"></param>
+        /// <returns>Team index if assigned,otherwise -1. </returns>
+        public static int GetTeam(this Player player)
+        {
+            return player.GetPropertyValue(PlayerProperties.Team, -1);
+        }
+
+        /// <summary>
+        /// Save Team index to Player properties.
+        /// </summary>
+        /// <param name="player">Target playedr</param>
+        /// <param name="teamIdx">Team index</param>
+        public static void SetTeam(this Player player, int teamIdx)
+        {
+            player.SetPropertyValue(PlayerProperties.Team, teamIdx);
+        }
+
+        /// <summary>
+        /// Compares Team index from LocalPlayer and given Player.
+        /// </summary>
+        /// <param name="player">Target player to check if is friendly or not.</param>
+        /// <returns>True if same team index otherwise false.</returns>
+        public static bool IsFriendly(this Player player)
+        {
+            //var ownTeam = PhotonNetwork.LocalPlayer.GetTeam();
+            //var targetTeam = player.GetTeam();
+            //return ownTeam == targetTeam;
+            return true;
+        }
+
+        #region PlayerReadyState
+
+        public static void SetReady(this Player player, bool value)
+        {
+            player.SetPropertyValue(PlayerProperties.Ready, value);
+        }
+
+        public static bool IsReady(Player player)
+        {
+            return player.GetPropertyValue(PlayerProperties.Ready, false);
+        }
+
+        #endregion
+
+        #region Score
+
+        public static void SetScore(this Player player, int amount)
+        {
+            player.SetPropertyValue(PlayerProperties.Score, amount);
+        }
+
+        public static int GetScore(this Player player)
+        {
+            return player.GetPropertyValue(PlayerProperties.Score, 0);
+        }
+
+        public static void AddScore(this Player player, int amount)
+        {
+            player.AddValueToProperty(PlayerProperties.Score, amount);
+        }
+
+        #endregion
+
+        #region
+        public static void SetDeaths(this Player player, int amount)
+        {
+            player.SetPropertyValue(PlayerProperties.Deaths, amount);
+        }
+
+        public static int GetDeaths(this Player player)
+        {
+            return player.GetPropertyValue(PlayerProperties.Deaths, 0);
+        }
+
+        public static void AddDeaths(this Player player, int amount)
+        {
+            player.AddValueToProperty(PlayerProperties.Deaths, amount);
+        }
+        #endregion
+
+        #region Player
+
+        /// <summary>
+        /// Check Player Properties for a Property Value.
+        /// </summary>
+        /// <param name="player">Photon Player</param>
+        /// <param name="property">Property as string</param>
+        /// <param name="defaultValue">Fallback Value.</param>
+        /// <typeparam name="T">Type</typeparam>
+        /// <returns>Property Value</returns>
+        public static T GetPropertyValue<T>(this Player player, string property, T defaultValue)
+        {
+            if (player.CustomProperties.TryGetValue(property, out var value))
+            {
+                return (T)value;
+            }
+
+            return defaultValue;
+        }
+
+        /// <summary>
+        /// Check Player Properties for a Property Value and set it.
+        /// </summary>
+        /// <param name="player">Photon Player</param>
+        /// <param name="property">Property as string</param>
+        /// <param name="value">Value to set.</param>
+        /// <typeparam name="T">Type</typeparam>
+        public static void SetPropertyValue<T>(this Player player, string property, T value)
+        {
+            var customProp = new Hashtable()
+            {
+                {property, value}
+            };
+            player.SetCustomProperties(customProp);
+        }
+
+        /// <summary>
+        /// Check Player Properties for a Property Value, add given value to it.
+        /// </summary>
+        /// <param name="player">Photon Player</param>
+        /// <param name="property">Property as string</param>
+        /// <param name="value">Value to set.</param>
+        public static void AddValueToProperty(this Player player, string property, int value)
+        {
+            var defaultValue = GetPropertyValue(player, property, 0);
+            defaultValue += value;
+
+            var scoreProp = new Hashtable()
+            {
+                {property, defaultValue}
+            };
+            player.SetCustomProperties(scoreProp);
+        }
+
+        /// <summary>
+        /// Deletes Property if DeleteNullProperties is set to true in Room Options.
+        /// </summary>
+        /// <param name="player">Photon Player</param>
+        /// <param name="property">Property as string</param>
+        public static void DeleteProperty(this Player player, string property)
+        {
+            var customProp = new Hashtable()
+            {
+                {property, null}
+            };
+            player.SetCustomProperties(customProp);
+        }
+
+        #endregion
+
+        #region Room
+
+        /// <summary>
+        /// Check Room Properties for a Property Value.
+        /// </summary>
+        /// <param name="room">Photon Room</param>
+        /// <param name="property">Property as string</param>
+        /// <param name="defaultValue">Fallback Value.</param>
+        /// <typeparam name="T">Type</typeparam>
+        /// <returns>Property Value</returns>
+        public static T GetPropertyValue<T>(Room room, string property, T defaultValue)
+        {
+            if (room.CustomProperties.TryGetValue(property, out var value))
+            {
+                return (T)value;
+            }
+
+            return defaultValue;
+        }
+
+        /// <summary>
+        /// Check Room Properties for a Property Value and set it.
+        /// </summary>
+        /// <param name="room">Photon Room</param>
+        /// <param name="property">Property as string</param>
+        /// <param name="value">Value to set.</param>
+        /// <typeparam name="T">Type</typeparam>
+        public static void SetPropertyValue<T>(Room room, string property, T value)
+        {
+            var customProp = new Hashtable()
+            {
+                {property, value}
+            };
+            room.SetCustomProperties(customProp);
+        }
+
+        /// <summary>
+        /// Check Room Properties for a Property Value, add given value to it.
+        /// </summary>
+        /// <param name="room">Photon Room</param>
+        /// <param name="property">Property as string</param>
+        /// <param name="value">Value to set.</param>
+        public static void AddValueToProperty(Room room, string property, int value)
+        {
+            var defaultValue = GetPropertyValue(room, property, 0);
+            defaultValue += value;
+
+            var scoreProp = new Hashtable()
+            {
+                {property, defaultValue}
+            };
+            room.SetCustomProperties(scoreProp);
+        }
+
+        #endregion
 
         /// <summary>
         /// Set to synchronize the player's nickname with everyone in the room(s) you enter. This sets PhotonNetwork.player.NickName.

@@ -14,3 +14,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Pistol
   damage: 25
+  weaponType: 1
+  weight: 1
+  automatic: 0
+  fireRate: 12
+  maxAmmo: 16
+  firstShootAccurate: 1
+  recoilX: -4
+  recoilY: 3
+  recoilZ: 0.01
+  kickbackZ: 0.08
+  movementAccuracy: 0.4
+  jumpAccuracy: 0.7
+  noScopeAccuracy: 0
+  crouchAccuracy: 0.2
+  gunSound: {fileID: 8300000, guid: f03686e6fe7d47b4cab2ea0d118026f3, type: 3}
+  reloadSpeed: 2
