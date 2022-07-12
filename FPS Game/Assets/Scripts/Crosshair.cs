@@ -12,6 +12,7 @@ public class Crosshair : MonoBehaviour
     public float idleSize = 50f;
     public float walkSize = 75f;
     public float runJumpSize = 125f;
+    public float crouchSize = 60f;
     public float currentSize = 50f;
     public float speed = 10f;
 
@@ -21,6 +22,10 @@ public class Crosshair : MonoBehaviour
         if (Aiming)
         {
             currentSize = Mathf.Lerp(currentSize, aimSize, Time.deltaTime * speed);
+        }
+        else if (Crouching)
+        {
+            currentSize = Mathf.Lerp(currentSize, crouchSize, Time.deltaTime * speed);
         }
         else if (Walking)
         {
@@ -108,6 +113,21 @@ public class Crosshair : MonoBehaviour
         get
         {
             if (player.GetComponent<PlayerController>().grounded == false)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+    }
+
+    bool Crouching
+    {
+        get
+        {
+            if (player.GetComponent<Crouch>().isCrouching == true)
             {
                 return true;
             }

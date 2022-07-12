@@ -26,7 +26,7 @@ MonoBehaviour:
   kickbackZ: 0.08
   movementAccuracy: 0.4
   jumpAccuracy: 0.7
-  noScopeAccuracy: 0.6
-  crouchAccuracyModifier: 3
+  noScopeAccuracy: 0
+  crouchAccuracy: 0.2
   gunSound: {fileID: 8300000, guid: f03686e6fe7d47b4cab2ea0d118026f3, type: 3}
   reloadSpeed: 2

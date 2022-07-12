@@ -7,8 +7,12 @@ public enum WeaponType { sniperRifle, pistol, smg, assaultRifle }
 [CreateAssetMenu(menuName = "FPS/New Gun")]
 public class GunInfo : ItemInfo
 {
+	[Range(0.0f, 200.0f)]
 	public float damage;
+
 	public WeaponType weaponType;
+
+	[Range(0.0f, 50.0f)]
 	public float weight;
 
 	[Header("Weapon properties")]
@@ -26,10 +30,17 @@ public class GunInfo : ItemInfo
 	[SerializeField] public float kickbackZ;
 
 	[Header("Weapon movement accuracy")]
+	[Range(0.0f, 20.0f)]
 	[SerializeField] public float movementAccuracy = 2;
+
+	[Range(0.0f, 20.0f)]
 	[SerializeField] public float jumpAccuracy = 2;
+
+	[Range(0.0f, 20.0f)]
 	[SerializeField] public float noScopeAccuracy = 0.6f;
-	[SerializeField] public float crouchAccuracyModifier = 3;
+
+	[Range(0.0f, 20.0f)]
+	[SerializeField] public float crouchAccuracy = 2;
 
 	[Header("Sound")]
 	[SerializeField] public AudioClip gunSound;

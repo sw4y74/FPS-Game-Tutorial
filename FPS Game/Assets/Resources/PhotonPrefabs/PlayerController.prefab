@@ -4785,8 +4785,9 @@ MonoBehaviour:
   idleSize: 100
   walkSize: 175
   runJumpSize: 250
+  crouchSize: 110
   currentSize: 50
-  speed: 10
+  speed: 8
 --- !u!1 &7924155624639430137
 GameObject:
   m_ObjectHideFlags: 0

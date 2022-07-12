@@ -27,6 +27,6 @@ MonoBehaviour:
   movementAccuracy: 0.45
   jumpAccuracy: 1
   noScopeAccuracy: 0.6
-  crouchAccuracyModifier: 3
+  crouchAccuracy: 0.15
   gunSound: {fileID: 8300000, guid: 1a4ac763faa9fa648838aae63ff5b265, type: 3}
   reloadSpeed: 2

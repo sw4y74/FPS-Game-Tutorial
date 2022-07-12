@@ -72,6 +72,8 @@ public class SingleShotGun : Gun
 		float randY = Random.Range(-gun.movementAccuracy, gun.movementAccuracy)/10;
 		float jRandX = Random.Range(-gun.jumpAccuracy, gun.jumpAccuracy) / 10;
 		float jRandY = Random.Range(-gun.jumpAccuracy, gun.jumpAccuracy) / 10;
+		float cRandX = Random.Range(-gun.crouchAccuracy, gun.crouchAccuracy) / 10;
+		float cRandY = Random.Range(-gun.crouchAccuracy, gun.crouchAccuracy) / 10;
 
 		bool isMoving = root.isMoving;
 		bool grounded = root.grounded;
@@ -90,8 +92,8 @@ public class SingleShotGun : Gun
 		
 		if (grounded && isMoving && isCrouching)
         {
-			accuracyX = 0.5f + randX / gun.crouchAccuracyModifier;
-			accuracyY = 0.5f + randY / gun.crouchAccuracyModifier;
+			accuracyX = 0.5f + cRandX;
+			accuracyY = 0.5f + cRandY;
         }
 
 		if (gun.firstShootAccurate)
