@@ -20,6 +20,7 @@ public class GunInfo : ItemInfo
 	public float fireRate;
 	public int maxAmmo;
 	public bool firstShootAccurate;
+	public bool primaryWeapon = true;
 
 	[Header("Recoil")]
 	[SerializeField] public float recoilX;

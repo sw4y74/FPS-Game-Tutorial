@@ -10,6 +10,24 @@ using Utilities;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 using System.IO;
 
+[System.Serializable]
+public struct WeaponSlot
+{
+	//Variable declaration
+	//Note: I'm explicitly declaring them as public, but they are public by default. You can use private if you choose.
+	[SerializeField] public int weaponIndex;
+	[SerializeField] public string Name;
+	[SerializeField] public bool primaryWeapon;
+	[SerializeField] public SingleShotGun gunInstance;
+
+	public WeaponSlot(SingleShotGun gun)
+	{
+		gunInstance = gun;
+		weaponIndex = gun.index;
+		Name = gun.gun.name;
+		primaryWeapon = gun.gun.primaryWeapon;
+	}
+}
 public class PlayerController : MonoBehaviourPunCallbacks
 {
 	[SerializeField] Image healthbarImage;
@@ -34,6 +52,8 @@ public class PlayerController : MonoBehaviourPunCallbacks
 	SingleShotGun[] items;
 	SingleShotGun[] itemsMP;
 	[System.NonSerialized] public bool aimingDownSights = false;
+	public WeaponSlot weaponSlot1;
+	public WeaponSlot weaponSlot2;
 
 	[System.NonSerialized] public int itemIndex;
 	int previousItemIndex = -1;
@@ -98,39 +118,42 @@ public class PlayerController : MonoBehaviourPunCallbacks
 	void Start()
 	{
 		if(PV.IsMine)
-		{
-			headCollider.enabled = false;
+        {
+            headCollider.enabled = false;
 
-			if (PlayerPrefs.HasKey("sensitivity"))
-			{
-				ChangeSensitivity(PlayerPrefs.GetFloat("sensitivity"));
-			}
-
-			//turn off MP viewModel renderers and gunHolder
-			foreach (Transform child in viewModel.transform)
+            if (PlayerPrefs.HasKey("sensitivity"))
             {
-				if (child.GetComponent<SkinnedMeshRenderer>())
+                ChangeSensitivity(PlayerPrefs.GetFloat("sensitivity"));
+            }
+
+            //turn off MP viewModel renderers and gunHolder
+            foreach (Transform child in viewModel.transform)
+            {
+                if (child.GetComponent<SkinnedMeshRenderer>())
                 {
-					child.GetComponent<SkinnedMeshRenderer>().enabled = false;
+                    child.GetComponent<SkinnedMeshRenderer>().enabled = false;
                 }
-			}
+            }
 
-			itemHolderMP.SetActive(false);
+            itemHolderMP.SetActive(false);
 
-			Cursor.lockState = CursorLockMode.Locked;
-			Cursor.visible = false;
-			EquipItem(0);
-			//gameObject.layer = LayerMask.NameToLayer("LocalPlayer");
-			SetLayer(10);
-			gameObject.tag = "LocalPlayer";
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            EquipItem(0);
+            //gameObject.layer = LayerMask.NameToLayer("LocalPlayer");
+            SetLayer(10);
+            gameObject.tag = "LocalPlayer";
 
-			for (int i = 0; i < items.Length; i++)
-			{
-				items[i].index = i;
-			}
-			Debug.Log(PhotonNetwork.LocalPlayer.GetScore());
-		}
-		else
+            for (int i = 0; i < items.Length; i++)
+            {
+                items[i].index = i;
+            }
+
+			ChangeLoadout(items[1], items[0]);
+
+            Debug.Log(PhotonNetwork.LocalPlayer.GetScore());
+        }
+        else
 		{
 			Destroy(GetComponentInChildren<Camera>().gameObject);
 			Destroy(controller);
@@ -139,7 +162,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
 		}
 	}
 
-	void Update()
+    void Update()
 	{
 		if(!PV.IsMine)
 			return;
@@ -346,6 +369,21 @@ public class PlayerController : MonoBehaviourPunCallbacks
 		}
 
 		previousItemIndex = itemIndex;
+	}
+
+	void ChangeLoadout(SingleShotGun primaryWeapon, SingleShotGun secondaryWeapon)
+	{
+		if (primaryWeapon.gun.primaryWeapon)
+		{
+			weaponSlot1 = new WeaponSlot(primaryWeapon);
+		}
+		else Debug.LogError("Secondary weapon in primary slot!");
+
+		if (!secondaryWeapon.gun.primaryWeapon)
+		{
+			weaponSlot2 = new WeaponSlot(secondaryWeapon);
+		}
+		else Debug.LogError("Primary weapon in secondary slot!");
 	}
 
 	public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
