@@ -17,10 +17,14 @@ public class PauseMenu : MonoBehaviour
     [SerializeField] Transform secondaryWeaponsParent;
     bool loadoutPanelSet = false;
 
+    [SerializeField] List<GameObject> panelItems;
+    [ColorUsageAttribute(true, true)]
+    public Color weaponPickedColor;
+
     SingleShotGun[] guns;
 
-    int primaryWeapon = 1;
-    int secondaryWeapon = 0;
+    public int primaryWeapon = 5;
+    public int secondaryWeapon = 3;
 
     void Update()
     {
@@ -40,6 +44,16 @@ public class PauseMenu : MonoBehaviour
             }
             else Pause();
             
+        }
+
+        //Change item tile color for which weapon is picked
+        foreach (GameObject item in panelItems)
+        {
+            int itemIndex = item.GetComponent<LoadoutItem>().gun.index;
+            if (itemIndex == primaryWeapon || itemIndex == secondaryWeapon)
+            {
+                item.GetComponent<Image>().color = Color.Lerp(item.GetComponent<Image>().color, weaponPickedColor, 4f * Time.deltaTime);
+            } else item.GetComponent<Image>().color = Color.Lerp(item.GetComponent<Image>().color, Color.white, 4f * Time.deltaTime);
         }
     }
 
@@ -75,7 +89,7 @@ public class PauseMenu : MonoBehaviour
 
     public void ApplyLoadout()
     {
-        GameObject.FindGameObjectWithTag("LocalPlayer").GetComponent<PlayerController>().TestChangeLoadout(primaryWeapon, secondaryWeapon);
+        GameObject.FindGameObjectWithTag("LocalPlayer").GetComponent<PlayerController>().ChangeLoadoutByIndex(primaryWeapon, secondaryWeapon);
     }
 
     void SetupLoadoutPanel()
@@ -92,6 +106,7 @@ public class PauseMenu : MonoBehaviour
 
             item.GetComponent<LoadoutItem>().gun = gun;
             item.GetComponentInChildren<TextMeshProUGUI>().text = gun.gun.name;
+            panelItems.Add(item);
         }
     }
 

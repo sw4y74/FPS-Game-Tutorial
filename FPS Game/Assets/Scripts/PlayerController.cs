@@ -64,8 +64,6 @@ public class PlayerController : MonoBehaviourPunCallbacks
 	public SingleShotGun[] items;
 	SingleShotGun[] itemsMP;
 	[System.NonSerialized] public bool aimingDownSights = false;
-	public WeaponSlot weaponSlot1;
-	public WeaponSlot weaponSlot2;
 	public List<WeaponSlot> weaponSlots;
 
 	[System.NonSerialized] public int itemIndex;
@@ -153,17 +151,15 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
-            EquipItem(weaponSlots[0].weaponIndex);
-            //gameObject.layer = LayerMask.NameToLayer("LocalPlayer");
-            SetLayer(10);
+
+			//SET CURRENT LOADOUT AFTER RESPAWN
+			Debug.Log(pauseMenu.primaryWeapon);
+			Debug.Log(pauseMenu.secondaryWeapon);
+			ChangeLoadoutByIndex(pauseMenu.primaryWeapon, pauseMenu.secondaryWeapon);
+			EquipItem(weaponSlots[0].weaponIndex);
+			SetLayer(10);
+
             gameObject.tag = "LocalPlayer";
-
-            for (int i = 0; i < items.Length; i++)
-            {
-                items[i].index = i;
-            }
-
-            Debug.Log(PhotonNetwork.LocalPlayer.GetScore());
         }
         else
 		{
@@ -405,21 +401,6 @@ public class PlayerController : MonoBehaviourPunCallbacks
 		else Debug.LogError("Primary weapon in secondary slot!");
 	}
 
-	void ChangeLoadout___(SingleShotGun primaryWeapon, SingleShotGun secondaryWeapon)
-	{
-		if (primaryWeapon.gun.primaryWeapon)
-		{
-			weaponSlot1 = new WeaponSlot(primaryWeapon);
-		}
-		else Debug.LogError("Secondary weapon in primary slot!");
-
-		if (!secondaryWeapon.gun.primaryWeapon)
-		{
-			weaponSlot2 = new WeaponSlot(secondaryWeapon);
-		}
-		else Debug.LogError("Primary weapon in secondary slot!");
-	}
-
 	public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
 	{
 		if(changedProps.ContainsKey("itemIndex") && !PV.IsMine && targetPlayer == PV.Owner)
@@ -584,7 +565,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
 		}
 	}
 
-	public void TestChangeLoadout(int primaryWeapon, int secondaryWeapon)
+	public void ChangeLoadoutByIndex(int primaryWeapon, int secondaryWeapon)
     {
 		ChangeLoadout(items[primaryWeapon], items[secondaryWeapon]);
 		EquipItem(weaponSlots[0].weaponIndex);

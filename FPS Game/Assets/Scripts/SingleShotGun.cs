@@ -11,7 +11,7 @@ public class SingleShotGun : Gun
 	PlayerController root;
 
 	[Header("Weapon properties")]
-	[System.NonSerialized] public int index;
+	public int index;
 	[System.NonSerialized] public GunInfo gun;
 	public bool allowFire = true;
 	[System.NonSerialized] public int currentAmmo;
