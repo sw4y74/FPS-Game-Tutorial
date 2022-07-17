@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
+using UnityEngine.UI;
 
 public class PauseMenu : MonoBehaviour
 {
@@ -10,6 +12,15 @@ public class PauseMenu : MonoBehaviour
     public GameObject pauseMenuUI;
     public Menu optionsMenu;
     public GameObject optionsScreen;
+    [SerializeField] GameObject panelItem;
+    [SerializeField] Transform primaryWeaponsParent;
+    [SerializeField] Transform secondaryWeaponsParent;
+    bool loadoutPanelSet = false;
+
+    SingleShotGun[] guns;
+
+    int primaryWeapon = 1;
+    int secondaryWeapon = 0;
 
     void Update()
     {
@@ -41,6 +52,9 @@ public class PauseMenu : MonoBehaviour
     }
     void Pause ()
     {
+        if (!loadoutPanelSet)
+            SetupLoadoutPanel();
+
         pauseMenuUI.SetActive(true);
         GameIsPaused = true;
 		Cursor.lockState = CursorLockMode.None;
@@ -57,5 +71,33 @@ public class PauseMenu : MonoBehaviour
     {
         Debug.Log("Quitting game...");
         Application.Quit();
+    }
+
+    public void ApplyLoadout()
+    {
+        GameObject.FindGameObjectWithTag("LocalPlayer").GetComponent<PlayerController>().TestChangeLoadout(primaryWeapon, secondaryWeapon);
+    }
+
+    void SetupLoadoutPanel()
+    {
+        loadoutPanelSet = true;
+        guns = GameObject.FindGameObjectWithTag("LocalPlayer").GetComponent<PlayerController>().items;
+
+        foreach(SingleShotGun gun in guns)
+        {
+            GameObject item;
+            if (gun.gun.primaryWeapon)
+                item = Instantiate(panelItem, primaryWeaponsParent);
+            else item = Instantiate(panelItem, secondaryWeaponsParent);
+
+            item.GetComponent<LoadoutItem>().gun = gun;
+            item.GetComponentInChildren<TextMeshProUGUI>().text = gun.gun.name;
+        }
+    }
+
+    public void ChangeWeapon(int weaponIndex)
+    {
+        if (guns[weaponIndex].gun.primaryWeapon) primaryWeapon = weaponIndex;
+        else secondaryWeapon = weaponIndex;
     }
 }

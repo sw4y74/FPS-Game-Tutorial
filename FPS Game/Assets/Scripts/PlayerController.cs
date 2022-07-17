@@ -10,24 +10,36 @@ using Utilities;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 using System.IO;
 
+public enum SlotType { Primary, Secondary, Grenade }
+
 [System.Serializable]
 public struct WeaponSlot
 {
 	//Variable declaration
 	//Note: I'm explicitly declaring them as public, but they are public by default. You can use private if you choose.
+	[SerializeField] public string name;
 	[SerializeField] public int weaponIndex;
-	[SerializeField] public string Name;
-	[SerializeField] public bool primaryWeapon;
+	[SerializeField] public SlotType slotType;
 	[SerializeField] public SingleShotGun gunInstance;
 
-	public WeaponSlot(SingleShotGun gun)
+	public WeaponSlot(SingleShotGun wpn)
 	{
-		gunInstance = gun;
-		weaponIndex = gun.index;
-		Name = gun.gun.name;
-		primaryWeapon = gun.gun.primaryWeapon;
+		gunInstance = wpn;
+		weaponIndex = wpn.index;
+
+		if (wpn.gun.primaryWeapon)
+		{
+			slotType = SlotType.Primary;
+			name = "PrimaryWeapon";
+		}
+		else
+		{
+			slotType = SlotType.Secondary;
+			name = "SecondaryWeapon";
+		}
 	}
 }
+
 public class PlayerController : MonoBehaviourPunCallbacks
 {
 	[SerializeField] Image healthbarImage;
@@ -49,14 +61,16 @@ public class PlayerController : MonoBehaviourPunCallbacks
 	[SerializeField] GameObject armsPos;
 	[SerializeField] Animator GunsAnimator;
 	public AudioSource gunAudioSource;
-	SingleShotGun[] items;
+	public SingleShotGun[] items;
 	SingleShotGun[] itemsMP;
 	[System.NonSerialized] public bool aimingDownSights = false;
 	public WeaponSlot weaponSlot1;
 	public WeaponSlot weaponSlot2;
+	public List<WeaponSlot> weaponSlots;
 
 	[System.NonSerialized] public int itemIndex;
 	int previousItemIndex = -1;
+	int slotIndex = -1;
 
 	[SerializeField] TMP_Text ammoText;
 
@@ -139,7 +153,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
-            EquipItem(0);
+            EquipItem(weaponSlots[0].weaponIndex);
             //gameObject.layer = LayerMask.NameToLayer("LocalPlayer");
             SetLayer(10);
             gameObject.tag = "LocalPlayer";
@@ -148,8 +162,6 @@ public class PlayerController : MonoBehaviourPunCallbacks
             {
                 items[i].index = i;
             }
-
-			ChangeLoadout(items[1], items[0]);
 
             Debug.Log(PhotonNetwork.LocalPlayer.GetScore());
         }
@@ -179,35 +191,38 @@ public class PlayerController : MonoBehaviourPunCallbacks
 			Jump();
 			GetComponent<Crouch>().CrouchToggler();
 
-			for (int i = 0; i < items.Length; i++)
-			{
-				if (Input.GetKeyDown((i + 1).ToString()))
+			for (int i = 0; i < weaponSlots.Count; i++)
+            {
+				if (Input.GetKeyDown("1") && weaponSlots[i].slotType.Equals(SlotType.Primary))
 				{
-					EquipItem(i);
-					break;
+					EquipItem(weaponSlots[i].weaponIndex);
+				}
+				if (Input.GetKeyDown("2") && weaponSlots[i].slotType.Equals(SlotType.Secondary))
+                {
+					EquipItem(weaponSlots[i].weaponIndex);
 				}
 			}
 
 			if (Input.GetAxisRaw("Mouse ScrollWheel") < 0f)
 			{
-				if (itemIndex >= items.Length - 1)
+				if (slotIndex >= weaponSlots.Count - 1)
 				{
-					EquipItem(0);
+					EquipItem(weaponSlots[0].weaponIndex);
 				}
 				else
 				{
-					EquipItem(itemIndex + 1);
+					EquipItem(weaponSlots[slotIndex + 1].weaponIndex);
 				}
 			}
 			else if (Input.GetAxisRaw("Mouse ScrollWheel") > 0f)
 			{
-				if (itemIndex <= 0)
+				if (slotIndex <= 0)
 				{
-					EquipItem(items.Length - 1);
+					EquipItem(weaponSlots[weaponSlots.Count - 1].weaponIndex);
 				}
 				else
 				{
-					EquipItem(itemIndex - 1);
+					EquipItem(weaponSlots[slotIndex - 1].weaponIndex);
 				}
 			}
 
@@ -348,6 +363,8 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
 		items[itemIndex].itemGameObject.SetActive(true);
 		itemsMP[itemIndex].itemGameObject.SetActive(true);
+		if (items[itemIndex].gun.primaryWeapon) slotIndex = 0;
+		else if (!items[itemIndex].gun.primaryWeapon) slotIndex = 1;
 
 		if (previousItemIndex != -1)
 		{
@@ -372,6 +389,23 @@ public class PlayerController : MonoBehaviourPunCallbacks
 	}
 
 	void ChangeLoadout(SingleShotGun primaryWeapon, SingleShotGun secondaryWeapon)
+	{
+		if (primaryWeapon.gun.primaryWeapon)
+		{
+			int index = weaponSlots.FindIndex(x => x.slotType == SlotType.Primary);
+			weaponSlots[index] = new WeaponSlot(primaryWeapon);
+		}
+		else Debug.LogError("Secondary weapon in primary slot!");
+
+		if (!secondaryWeapon.gun.primaryWeapon)
+		{
+			int index = weaponSlots.FindIndex(x => x.slotType == SlotType.Secondary);
+			weaponSlots[index] = new WeaponSlot(secondaryWeapon);
+		}
+		else Debug.LogError("Primary weapon in secondary slot!");
+	}
+
+	void ChangeLoadout___(SingleShotGun primaryWeapon, SingleShotGun secondaryWeapon)
 	{
 		if (primaryWeapon.gun.primaryWeapon)
 		{
@@ -549,4 +583,10 @@ public class PlayerController : MonoBehaviourPunCallbacks
 			child.gameObject.layer = layer;
 		}
 	}
+
+	public void TestChangeLoadout(int primaryWeapon, int secondaryWeapon)
+    {
+		ChangeLoadout(items[primaryWeapon], items[secondaryWeapon]);
+		EquipItem(weaponSlots[0].weaponIndex);
+    }
 }

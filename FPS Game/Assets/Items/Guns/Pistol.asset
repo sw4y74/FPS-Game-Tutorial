@@ -20,6 +20,7 @@ MonoBehaviour:
   fireRate: 12
   maxAmmo: 16
   firstShootAccurate: 1
+  primaryWeapon: 0
   recoilX: -4
   recoilY: 3
   recoilZ: 0.01
