@@ -24,6 +24,9 @@ MonoBehaviour:
   recoilX: -4
   recoilY: 3
   recoilZ: 0.01
+  spreadComeback: 20
+  spreadY: 2.5
+  spreadX: 6
   kickbackZ: 0.08
   movementAccuracy: 0.4
   jumpAccuracy: 0.7

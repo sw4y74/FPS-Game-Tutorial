@@ -4,7 +4,6 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.UI;
-using Utilities;
 
 public class ScoreboardOverview : MonoBehaviourPunCallbacks
 {

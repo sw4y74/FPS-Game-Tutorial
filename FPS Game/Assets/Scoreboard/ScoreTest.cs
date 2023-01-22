@@ -1,6 +1,5 @@
 ﻿using Photon.Pun;
 using UnityEngine;
-using Utilities;
 
 //just to showcase score changes
 public class ScoreTest : MonoBehaviour

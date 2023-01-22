@@ -3,13 +3,13 @@ using System.Collections;
 using UnityEngine;
 
 
-public class SingleShotGun : Gun
+public class Gun : Item
 {
 	[SerializeField] Camera cam;
 
 	PhotonView PV;
 	PlayerController root;
-
+	public GameObject bulletImpactPrefab;
 	[Header("Weapon properties")]
 	public int index;
 	[System.NonSerialized] public GunInfo gun;
@@ -21,12 +21,17 @@ public class SingleShotGun : Gun
 
 	[SerializeField] private Kickback Kickback;
 
-	private float recoilCooldown = 0f;
+	[SerializeField] private float firstShootAccurate = 0f;
+	[SerializeField] private float spreadCooldown = 0f;
 
 	[Header("Reload properties")]
     public bool reloading;
 	Coroutine reloadRoutine = null;
 	Coroutine shootRoutine = null;
+
+	[SerializeField] ParticleSystem muzzleFlash;
+	[SerializeField] ParticleSystem muzzleFlashStraight;
+	[SerializeField] ParticleSystem bulletTrail;
 
     void Awake()
 	{
@@ -80,6 +85,13 @@ public class SingleShotGun : Gun
 		bool isCrouching = root.GetComponent<Crouch>().isCrouching;
 		bool adsOn = root.aimingDownSights;
 
+		// CS LIKE RECOIL
+		accuracyY = 0.5f + spreadCooldown / 10;
+		accuracyX = 0.5f + Random.Range(-(spreadCooldown + gun.spreadX/20) / 100, (spreadCooldown + gun.spreadX/20) / 100);
+		if (spreadCooldown < gun.spreadY/3)
+			spreadCooldown += gun.spreadY/2 / 10;
+		else spreadCooldown = gun.spreadY/2 + Random.Range(-gun.spreadY/100, gun.spreadY/100);
+
 		if (!grounded)
 		{
 			accuracyX += jRandX;
@@ -98,13 +110,13 @@ public class SingleShotGun : Gun
 
 		if (gun.firstShootAccurate)
         {
-			if (recoilCooldown == 0f && grounded)
+			if (firstShootAccurate == 0f && grounded)
             {
 				accuracyX = 0.5f;
 				accuracyY = 0.5f;
 			}
 
-			recoilCooldown = gun.fireRate / 1.5f;
+			firstShootAccurate = gun.fireRate / 1.5f;
 		}
 
 		if (gun.weaponType.Equals(WeaponType.sniperRifle))
@@ -176,6 +188,8 @@ public class SingleShotGun : Gun
 			if (hitbox && hitbox.isHead)
 			{
 				damage *= 3;
+			} else if (hitbox && hitbox.isLimb) {
+				damage *= 0.8f;
 			}
 
 			hit.collider.gameObject.GetComponent<IDamageable>()?.TakeDamage(damage, PV.ViewID);
@@ -184,7 +198,7 @@ public class SingleShotGun : Gun
 
 		PV.RPC("RPC_Shoot", RpcTarget.All, hit.point, hit.normal);
 
-		Recoil.RecoilFire(gun.recoilX, gun.recoilY, gun.recoilZ);
+		Recoil.RecoilFire(gun.recoilX/2, gun.recoilY/2, gun.recoilZ/2);
 		Kickback.KickbackFire(gun.kickbackZ);
 
 		yield return new WaitForSeconds(gun.fireRate/100);
@@ -204,6 +218,11 @@ public class SingleShotGun : Gun
 	{
 		AudioSource gunAudioSource = root.gunAudioSource;
 
+		muzzleFlash.Play();
+		muzzleFlashStraight.Play();
+/*		bulletTrail.transform.rotation = Quaternion.LookRotation(hitNormal);
+		bulletTrail.Play();*/
+
 		gunAudioSource.PlayOneShot(gun.gunSound);
 
 		Collider[] colliders = Physics.OverlapSphere(hitPosition, 0.3f);
@@ -218,7 +237,7 @@ public class SingleShotGun : Gun
 		}
 	}
 
-    void Update()
+    void FixedUpdate()
     {
 		//stop reloading when weapon switched
         if (reloading)
@@ -240,11 +259,15 @@ public class SingleShotGun : Gun
 			}
 		} else
         {
-			if (recoilCooldown > 0f)
+			if (firstShootAccurate > 0f)
 			{
-				recoilCooldown -= 0.1f;
+				firstShootAccurate -= 0.5f;
 			}
-			else if (recoilCooldown < 0f) recoilCooldown = 0f;
+			else if (firstShootAccurate < 0f) firstShootAccurate = 0f;
+
+			if (spreadCooldown > 0f) {
+				spreadCooldown -= 1 / gun.spreadComeback;
+			} else if (spreadCooldown < 0f) spreadCooldown = 0f;
 		}
 		
     }

@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using Utilities;
 
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 using System.IO;
@@ -20,9 +19,9 @@ public struct WeaponSlot
 	[SerializeField] public string name;
 	[SerializeField] public int weaponIndex;
 	[SerializeField] public SlotType slotType;
-	[SerializeField] public SingleShotGun gunInstance;
+	[SerializeField] public Gun gunInstance;
 
-	public WeaponSlot(SingleShotGun wpn)
+	public WeaponSlot(Gun wpn)
 	{
 		gunInstance = wpn;
 		weaponIndex = wpn.index;
@@ -61,8 +60,8 @@ public class PlayerController : MonoBehaviourPunCallbacks
 	[SerializeField] GameObject armsPos;
 	[SerializeField] Animator GunsAnimator;
 	public AudioSource gunAudioSource;
-	public SingleShotGun[] items;
-	SingleShotGun[] itemsMP;
+	public Gun[] items;
+	Gun[] itemsMP;
 	[System.NonSerialized] public bool aimingDownSights = false;
 	public List<WeaponSlot> weaponSlots;
 
@@ -121,8 +120,8 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
 		playerManager = PhotonView.Find((int)PV.InstantiationData[0]).GetComponent<PlayerManager>();
 
-		items = itemHolder.GetComponentsInChildren<SingleShotGun>();
-		itemsMP = itemHolderMP.GetComponentsInChildren<SingleShotGun>();
+		items = itemHolder.GetComponentsInChildren<Gun>();
+		itemsMP = itemHolderMP.GetComponentsInChildren<Gun>();
 		killFeed = FindObjectOfType<KillFeed>();
 		animationController = GetComponent<PlayerAnimController>();
 	}
@@ -384,7 +383,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
 		previousItemIndex = itemIndex;
 	}
 
-	void ChangeLoadout(SingleShotGun primaryWeapon, SingleShotGun secondaryWeapon)
+	void ChangeLoadout(Gun primaryWeapon, Gun secondaryWeapon)
 	{
 		if (primaryWeapon.gun.primaryWeapon)
 		{
@@ -451,7 +450,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
 	public void UpdateAmmoUI()
     {
-		SingleShotGun gun = items[itemIndex];
+		Gun gun = items[itemIndex];
 		ammoText.text = gun.currentAmmo + "/" + gun.gun.maxAmmo;
     }
 
@@ -509,9 +508,9 @@ public class PlayerController : MonoBehaviourPunCallbacks
 		yield return null;
 	}
 
-	public SingleShotGun CurrentlyEquippedItem()
+	public Gun CurrentlyEquippedItem()
     {
-		return items[itemIndex].GetComponent<SingleShotGun>();
+		return items[itemIndex].GetComponent<Gun>();
     }
 
 	// Updates the weapon bob animation based on character speed

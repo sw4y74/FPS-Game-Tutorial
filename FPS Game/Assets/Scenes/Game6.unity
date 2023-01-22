@@ -10831,9 +10831,7 @@ MonoBehaviour:
   primaryWeaponsParent: {fileID: 1940635560}
   secondaryWeaponsParent: {fileID: 285233266}
   panelItems: []
-  weaponPickedColor: {r: 0.1745283, g: 0.53881854, b: 1, a: 1}
-  primaryWeapon: 5
-  secondaryWeapon: 3
+  weaponPickedColor: {r: 0.14818443, g: 0.6981132, b: 0.49733543, a: 1}
 --- !u!1 &2042438011
 GameObject:
   m_ObjectHideFlags: 0

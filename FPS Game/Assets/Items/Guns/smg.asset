@@ -13,16 +13,20 @@ MonoBehaviour:
   m_Name: smg
   m_EditorClassIdentifier: 
   itemName: smg
-  damage: 20
+  damage: 25
   weaponType: 2
   weight: 3
   automatic: 1
   fireRate: 8
   maxAmmo: 30
   firstShootAccurate: 0
+  primaryWeapon: 1
   recoilX: -4
   recoilY: 2.4
   recoilZ: 0.01
+  spreadComeback: 14
+  spreadY: 2
+  spreadX: 8
   kickbackZ: 0.06
   movementAccuracy: 0.45
   jumpAccuracy: 1

@@ -27,6 +27,12 @@ public class GunInfo : ItemInfo
 	[SerializeField] public float recoilY;
 	[SerializeField] public float recoilZ;
 
+	[Header("Spread")]
+	[Range(5f, 100f)]
+	public float spreadComeback;
+	public float spreadY;
+	public float spreadX;
+
 	[Header("Kickback")]
 	[SerializeField] public float kickbackZ;
 

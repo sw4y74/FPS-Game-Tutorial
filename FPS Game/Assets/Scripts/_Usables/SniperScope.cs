@@ -24,13 +24,13 @@ public class SniperScope : MonoBehaviour
     {
         if (!root.pauseMenu.GameIsPaused)
         {
-            if (GetComponent<SingleShotGun>().currentlyEquipped)
+            if (GetComponent<Gun>().currentlyEquipped)
             {
                 crosshair.SetActive(false);
             }
             else crosshair.SetActive(true);
 
-            if (GetComponent<SingleShotGun>().currentlyEquipped && GetComponent<SingleShotGun>().allowFire && !GetComponent<SingleShotGun>().reloading && Input.GetMouseButtonDown(1))
+            if (GetComponent<Gun>().currentlyEquipped && GetComponent<Gun>().allowFire && !GetComponent<Gun>().reloading && Input.GetMouseButtonDown(1))
             {
                 ToggleScope(!scopeOn);
             }

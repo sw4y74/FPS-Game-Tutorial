@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class LoadoutItem : MonoBehaviour
 {
-    public SingleShotGun gun;
+    public Gun gun;
 
     public void OnClickSwitchWeapon()
     {

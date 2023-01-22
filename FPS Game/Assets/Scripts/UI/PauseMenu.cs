@@ -21,10 +21,10 @@ public class PauseMenu : MonoBehaviour
     [ColorUsageAttribute(true, true)]
     public Color weaponPickedColor;
 
-    SingleShotGun[] guns;
+    Gun[] guns;
 
-    public int primaryWeapon = 5;
-    public int secondaryWeapon = 3;
+    [System.NonSerialized] public int primaryWeapon = 5;
+    [System.NonSerialized] public int secondaryWeapon = 0;
 
     void Update()
     {
@@ -97,7 +97,7 @@ public class PauseMenu : MonoBehaviour
         loadoutPanelSet = true;
         guns = GameObject.FindGameObjectWithTag("LocalPlayer").GetComponent<PlayerController>().items;
 
-        foreach(SingleShotGun gun in guns)
+        foreach(Gun gun in guns)
         {
             GameObject item;
             if (gun.gun.primaryWeapon)

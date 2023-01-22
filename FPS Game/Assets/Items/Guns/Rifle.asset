@@ -13,16 +13,20 @@ MonoBehaviour:
   m_Name: Rifle
   m_EditorClassIdentifier: 
   itemName: Rifle
-  damage: 30
+  damage: 35
   weaponType: 3
   weight: 8
   automatic: 1
-  fireRate: 10
+  fireRate: 9
   maxAmmo: 30
   firstShootAccurate: 0
+  primaryWeapon: 1
   recoilX: -6
   recoilY: 3
   recoilZ: 0.01
+  spreadComeback: 36
+  spreadY: 2.5
+  spreadX: 6
   kickbackZ: 0.08
   movementAccuracy: 0.6
   jumpAccuracy: 1.2
