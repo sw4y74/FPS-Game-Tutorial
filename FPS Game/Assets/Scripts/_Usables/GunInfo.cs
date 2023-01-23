@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum WeaponType { sniperRifle, pistol, smg, assaultRifle }
+public enum WeaponType { sniperRifle, pistol, smg, assaultRifle, shotgun }
 
 [CreateAssetMenu(menuName = "FPS/New Gun")]
 public class GunInfo : ItemInfo

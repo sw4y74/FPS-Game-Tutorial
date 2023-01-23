@@ -1,7 +1,7 @@
 ﻿using Photon.Pun;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-
 
 public class Gun : Item
 {
@@ -85,12 +85,14 @@ public class Gun : Item
 		bool isCrouching = root.GetComponent<Crouch>().isCrouching;
 		bool adsOn = root.aimingDownSights;
 
+		#region Spread and Recoil
+
 		// CS LIKE RECOIL
 		accuracyY = 0.5f + spreadCooldown / 10;
 		accuracyX = 0.5f + Random.Range(-(spreadCooldown + gun.spreadX/20) / 100, (spreadCooldown + gun.spreadX/20) / 100);
 		if (spreadCooldown < gun.spreadY/3)
 			spreadCooldown += gun.spreadY/2 / 10;
-		else spreadCooldown = gun.spreadY/2 + Random.Range(-gun.spreadY/100, gun.spreadY/100);
+		else spreadCooldown = gun.spreadY/3 + Random.Range(-gun.spreadY/50, gun.spreadY/50);
 
 		if (!grounded)
 		{
@@ -156,47 +158,100 @@ public class Gun : Item
 			}
 		}
 
-		Ray ray = cam.ViewportPointToRay(new Vector3(accuracyX, accuracyY));
-		ray.origin = cam.transform.position;
-		int layerMask = 1 << 10;
-		layerMask = ~layerMask;
+		#endregion
+	
+		if (gun.weaponType == WeaponType.shotgun) {
+			Vector3[] bulletPositions = new Vector3[8];
+			Vector3[] bulletNormals = new Vector3[8];
+			for (int i = 0; i < 8; i++) {
+				float xDeviation = Random.Range(-0.02f, 0.02f);
+				float yDeviation = Random.Range(-0.05f, 0.05f);
+				Ray shotgunRay = cam.ViewportPointToRay(new Vector3(accuracyX+xDeviation, accuracyY+yDeviation));
+				shotgunRay.origin = cam.transform.position;
+				int shotgunLayerMask = 1 << 10;
+				shotgunLayerMask = ~shotgunLayerMask;
 
-		//ammo
-		currentAmmo--;
-		root.UpdateAmmoUI();
-		if (currentAmmo == 0)
-        {
-			Reload();
-        }
-
-		if (Physics.Raycast(ray, out RaycastHit hit, 2000f, layerMask))
-		{
-			Hitbox hitbox = hit.collider.gameObject.GetComponent<Hitbox>();
-
-			if (hitbox)
-			{
-				if (hitbox.isHead)
+				if (Physics.Raycast(shotgunRay, out RaycastHit shotgunHit, 2000f, shotgunLayerMask))
 				{
-					transform.root.gameObject.GetComponent<Hitmarker>().ShowHitHS();
+					Hitbox hitbox = shotgunHit.collider.gameObject.GetComponent<Hitbox>();
+
+					if (hitbox)
+					{
+						if (hitbox.isHead)
+						{
+							transform.root.gameObject.GetComponent<Hitmarker>().ShowHitHS();
+						}
+						else transform.root.gameObject.GetComponent<Hitmarker>().ShowHit();
+
+					}
+
+					float damage = gun.damage;
+
+					if (hitbox && hitbox.isHead)
+					{
+						damage *= 3;
+					} else if (hitbox && hitbox.isLimb) {
+						damage *= 0.8f;
+					}
+
+					shotgunHit.collider.gameObject.GetComponent<IDamageable>()?.TakeDamage(damage, PV.ViewID);
+					bulletPositions[i] = shotgunHit.point;
+					bulletNormals[i] = shotgunHit.normal;
 				}
-				else transform.root.gameObject.GetComponent<Hitmarker>().ShowHit();
-
 			}
-
-			float damage = gun.damage;
-
-			if (hitbox && hitbox.isHead)
+			currentAmmo--;
+			root.UpdateAmmoUI();
+			if (currentAmmo == 0)
 			{
-				damage *= 3;
-			} else if (hitbox && hitbox.isLimb) {
-				damage *= 0.8f;
+				Reload();
+			}
+			PV.RPC("RPC_Shoot", RpcTarget.All, bulletPositions, bulletNormals);
+		} else {
+			Vector3[] bulletPositions = new Vector3[1];
+			Vector3[] bulletNormals = new Vector3[1];
+			Ray ray = cam.ViewportPointToRay(new Vector3(accuracyX, accuracyY));
+			ray.origin = cam.transform.position;
+			int layerMask = 1 << 10;
+			layerMask = ~layerMask;
+
+			//ammo
+			currentAmmo--;
+			root.UpdateAmmoUI();
+			if (currentAmmo == 0)
+			{
+				Reload();
 			}
 
-			hit.collider.gameObject.GetComponent<IDamageable>()?.TakeDamage(damage, PV.ViewID);
+			if (Physics.Raycast(ray, out RaycastHit hit, 2000f, layerMask))
+			{
+				Hitbox hitbox = hit.collider.gameObject.GetComponent<Hitbox>();
 
+				if (hitbox)
+				{
+					if (hitbox.isHead)
+					{
+						transform.root.gameObject.GetComponent<Hitmarker>().ShowHitHS();
+					}
+					else transform.root.gameObject.GetComponent<Hitmarker>().ShowHit();
+
+				}
+
+				float damage = gun.damage;
+
+				if (hitbox && hitbox.isHead)
+				{
+					damage *= 3;
+				} else if (hitbox && hitbox.isLimb) {
+					damage *= 0.8f;
+				}
+
+				hit.collider.gameObject.GetComponent<IDamageable>()?.TakeDamage(damage, PV.ViewID);
+				bulletPositions[0] = hit.point;
+				bulletNormals[0] = hit.normal;
+				PV.RPC("RPC_Shoot", RpcTarget.All, bulletPositions, bulletNormals);
+			}
 		}
-
-		PV.RPC("RPC_Shoot", RpcTarget.All, hit.point, hit.normal);
+		
 
 		Recoil.RecoilFire(gun.recoilX/2, gun.recoilY/2, gun.recoilZ/2);
 		Kickback.KickbackFire(gun.kickbackZ);
@@ -214,7 +269,7 @@ public class Gun : Item
 	}
 
 	[PunRPC]
-	void RPC_Shoot(Vector3 hitPosition, Vector3 hitNormal)
+	void RPC_Shoot(Vector3[] hitPositions, Vector3[] hitNormals)
 	{
 		AudioSource gunAudioSource = root.gunAudioSource;
 
@@ -225,15 +280,18 @@ public class Gun : Item
 
 		gunAudioSource.PlayOneShot(gun.gunSound);
 
-		Collider[] colliders = Physics.OverlapSphere(hitPosition, 0.3f);
-		if(colliders.Length != 0)
+		for (int i = 0; i < hitPositions.Length; i++)
 		{
-			Quaternion rotation = hitNormal == Vector3.zero
-                                  ? Quaternion.identity
-                                  : Quaternion.LookRotation(hitNormal);
-			GameObject bulletImpactObj = Instantiate(bulletImpactPrefab, hitPosition + hitNormal * 0.001f, rotation * bulletImpactPrefab.transform.rotation);
-			Destroy(bulletImpactObj, 10f);
-			bulletImpactObj.transform.SetParent(colliders[0].transform);
+			Collider[] colliders = Physics.OverlapSphere(hitPositions[i], 0.3f);
+			if(colliders.Length != 0)
+			{
+				Quaternion rotation = hitNormals[i] == Vector3.zero
+									? Quaternion.identity
+									: Quaternion.LookRotation(hitNormals[i]);
+				GameObject bulletImpactObj = Instantiate(bulletImpactPrefab, hitPositions[i] + hitNormals[i] * 0.001f, rotation * bulletImpactPrefab.transform.rotation);
+				Destroy(bulletImpactObj, 10f);
+				bulletImpactObj.transform.SetParent(colliders[0].transform);
+			}
 		}
 	}
 
