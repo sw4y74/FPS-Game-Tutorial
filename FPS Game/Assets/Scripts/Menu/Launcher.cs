@@ -6,6 +6,14 @@ using TMPro;
 using Photon.Realtime;
 using System.Linq;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+
+[System.Serializable]
+public class Maps
+{
+	public int id;
+	public string name;
+}
 
 public class Launcher : MonoBehaviourPunCallbacks
 {
@@ -19,6 +27,12 @@ public class Launcher : MonoBehaviourPunCallbacks
 	[SerializeField] Transform playerListContent;
 	[SerializeField] GameObject PlayerListItemPrefab;
 	[SerializeField] GameObject startGameButton;
+	[SerializeField] GameObject mapChoice;
+    [SerializeField] TMP_Text mapLabel;
+	[SerializeField] Button nextMap;
+	[SerializeField] Button previousMap;
+	[SerializeField] List<Maps> maps = new List<Maps>();
+	private int selectedMap;
 
 	void Awake()
 	{
@@ -29,6 +43,8 @@ public class Launcher : MonoBehaviourPunCallbacks
 	{
 		Debug.Log("Connecting to Master");
 		PhotonNetwork.ConnectUsingSettings();
+		selectedMap = 0;
+		UpdateMapLabel();
 	}
 
 	public override void OnConnectedToMaster()
@@ -72,6 +88,7 @@ public class Launcher : MonoBehaviourPunCallbacks
 		}
 
 		startGameButton.SetActive(PhotonNetwork.IsMasterClient);
+		mapChoice.SetActive(PhotonNetwork.IsMasterClient);
 	}
 
 	public override void OnMasterClientSwitched(Player newMasterClient)
@@ -88,7 +105,7 @@ public class Launcher : MonoBehaviourPunCallbacks
 
 	public void StartGame()
 	{
-		PhotonNetwork.LoadLevel(1);
+		PhotonNetwork.LoadLevel(maps[selectedMap].id);
 	}
 
 	public void LeaveRoom()
@@ -114,7 +131,7 @@ public class Launcher : MonoBehaviourPunCallbacks
 
 		while (PhotonNetwork.IsConnected)
 			yield return null;
-		SceneManager.LoadScene("Menu");
+		SceneManager.LoadScene("_Menu");
     }
 
 	public override void OnRoomListUpdate(List<RoomInfo> roomList)
@@ -136,4 +153,27 @@ public class Launcher : MonoBehaviourPunCallbacks
 	{
 		Instantiate(PlayerListItemPrefab, playerListContent).GetComponent<PlayerListItem>().SetUp(newPlayer);
 	}
+
+	public void MapLeft() 
+    {
+        selectedMap--;
+        if(selectedMap < 0) {
+            selectedMap = 0;
+        }
+        UpdateMapLabel();
+    }
+
+    public void MapRight() 
+    {
+        selectedMap++;
+        if (selectedMap > maps.Count - 1) {
+            selectedMap = maps.Count - 1;
+        }
+        UpdateMapLabel();
+    }
+
+    public void UpdateMapLabel()
+    {
+        mapLabel.text = maps[selectedMap].name;
+    }
 }

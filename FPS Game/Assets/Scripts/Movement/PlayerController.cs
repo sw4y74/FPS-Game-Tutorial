@@ -8,6 +8,7 @@ using TMPro;
 
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 using System.IO;
+using System;
 
 public enum SlotType { Primary, Secondary, Grenade }
 
@@ -94,6 +95,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
 	public Vector3 velocity;
 	public Vector3 playerCharacterVelocity;
+	public Vector3 savedVelocity;
 	public float gravity = -16.81f;
 
 	PhotonView PV;
@@ -178,6 +180,8 @@ public class PlayerController : MonoBehaviourPunCallbacks
 		{
 			velocity.y = -2f;
 		}
+		
+		HandleGravity();
 
 		if (!pauseMenu.GameIsPaused)
 		{
@@ -249,7 +253,12 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
 	}
 
-	void LateUpdate()
+    private void HandleGravity()
+    {
+		velocity.y += gravity * Time.deltaTime;
+    }
+
+    void LateUpdate()
 	{
 		if (!PV.IsMine)
 			return;
@@ -281,7 +290,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
 		if (!grounded)
         {
-			smoothTime = 0.03f * 7;
+			smoothTime = 0.03f * 20;
 			controller.stepOffset = 0f;
 		} else
         {
@@ -320,10 +329,14 @@ public class PlayerController : MonoBehaviourPunCallbacks
 		}
 
 		moveAmount = Vector3.SmoothDamp(moveAmount, inputs * playerActualSpeed, ref smoothMoveVelocity, smoothTime);
-
-		controller.Move(moveAmount * Time.deltaTime);
-
-		velocity.y += gravity * Time.deltaTime;
+		// if (grounded) {
+			controller.Move(moveAmount * Time.deltaTime);
+			savedVelocity = moveAmount;
+		// } else {
+		// 	Vector3 mixedVelocity = new Vector3(moveAmount.x, moveAmount.y, savedVelocity.z);
+		// 	Vector3 smoothVelocity = Vector3.SmoothDamp(mixedVelocity, inputs * playerActualSpeed, ref smoothMoveVelocity, smoothTime);
+		// 	controller.Move(smoothVelocity * Time.deltaTime);
+		// }
 
 		controller.Move(velocity * Time.deltaTime);
 

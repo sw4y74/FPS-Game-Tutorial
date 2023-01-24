@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
 using UnityEngine.UI;
+using Photon.Pun;
 
 public class PauseMenu : MonoBehaviour
 {
@@ -25,6 +26,19 @@ public class PauseMenu : MonoBehaviour
 
     [System.NonSerialized] public int primaryWeapon = 5;
     [System.NonSerialized] public int secondaryWeapon = 0;
+
+    [SerializeField] GameObject mapChoice;
+    [SerializeField] TMP_Text mapLabel;
+	[SerializeField] Button nextMap;
+	[SerializeField] Button previousMap;
+	[SerializeField] List<Maps> maps = new List<Maps>();
+	private int selectedMap;
+
+    private void Start() {
+        mapChoice.SetActive(PhotonNetwork.IsMasterClient);
+        selectedMap = 0;
+		UpdateMapLabel();
+    }
 
     void Update()
     {
@@ -115,4 +129,31 @@ public class PauseMenu : MonoBehaviour
         if (guns[weaponIndex].gun.primaryWeapon) primaryWeapon = weaponIndex;
         else secondaryWeapon = weaponIndex;
     }
+
+    public void MapLeft() 
+    {
+        selectedMap--;
+        if(selectedMap < 0) {
+            selectedMap = 0;
+        }
+        UpdateMapLabel();
+    }
+
+    public void MapRight() 
+    {
+        selectedMap++;
+        if (selectedMap > maps.Count - 1) {
+            selectedMap = maps.Count - 1;
+        }
+        UpdateMapLabel();
+    }
+
+    public void UpdateMapLabel()
+    {
+        mapLabel.text = maps[selectedMap].name;
+    }
+
+    public void SwitchMap() {
+		PhotonNetwork.LoadLevel(maps[selectedMap].id);
+    }   
 }

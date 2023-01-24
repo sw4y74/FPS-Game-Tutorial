@@ -31,7 +31,8 @@ public class Gun : Item
 
 	[SerializeField] ParticleSystem muzzleFlash;
 	[SerializeField] ParticleSystem muzzleFlashStraight;
-	[SerializeField] ParticleSystem bulletTrail;
+	[SerializeField] TrailRenderer bulletTrail;
+	[SerializeField] Transform muzzlePos;
 
     void Awake()
 	{
@@ -160,7 +161,8 @@ public class Gun : Item
 
 		#endregion
 	
-		if (gun.weaponType == WeaponType.shotgun) {
+		#region Weapon types
+		if (gun.weaponType.Equals(WeaponType.shotgun)) {
 			Vector3[] bulletPositions = new Vector3[8];
 			Vector3[] bulletNormals = new Vector3[8];
 			for (int i = 0; i < 8; i++) {
@@ -187,11 +189,13 @@ public class Gun : Item
 
 					float damage = gun.damage;
 
-					if (hitbox && hitbox.isHead)
-					{
-						damage *= 3;
-					} else if (hitbox && hitbox.isLimb) {
-						damage *= 0.8f;
+					if (hitbox) {
+						if (hitbox.isHead) {
+							damage = gun.damage * 3;
+						}
+						if (hitbox.isLimb) {
+							damage = gun.damage * 0.8f;
+						}
 					}
 
 					shotgunHit.collider.gameObject.GetComponent<IDamageable>()?.TakeDamage(damage, PV.ViewID);
@@ -199,6 +203,7 @@ public class Gun : Item
 					bulletNormals[i] = shotgunHit.normal;
 				}
 			}
+
 			currentAmmo--;
 			root.UpdateAmmoUI();
 			if (currentAmmo == 0)
@@ -238,11 +243,13 @@ public class Gun : Item
 
 				float damage = gun.damage;
 
-				if (hitbox && hitbox.isHead)
-				{
-					damage *= 3;
-				} else if (hitbox && hitbox.isLimb) {
-					damage *= 0.8f;
+				if (hitbox) {
+					if (hitbox.isHead) {
+						damage = gun.damage * 3;
+					}
+					if (hitbox.isLimb) {
+						damage = gun.damage * 0.8f;
+					}
 				}
 
 				hit.collider.gameObject.GetComponent<IDamageable>()?.TakeDamage(damage, PV.ViewID);
@@ -252,6 +259,7 @@ public class Gun : Item
 			}
 		}
 		
+		#endregion
 
 		Recoil.RecoilFire(gun.recoilX/2, gun.recoilY/2, gun.recoilZ/2);
 		Kickback.KickbackFire(gun.kickbackZ);
@@ -291,6 +299,8 @@ public class Gun : Item
 				GameObject bulletImpactObj = Instantiate(bulletImpactPrefab, hitPositions[i] + hitNormals[i] * 0.001f, rotation * bulletImpactPrefab.transform.rotation);
 				Destroy(bulletImpactObj, 10f);
 				bulletImpactObj.transform.SetParent(colliders[0].transform);
+				TrailRenderer trail = Instantiate(bulletTrail, muzzlePos.position, Quaternion.identity);
+				StartCoroutine(SpawnTrail(trail, hitPositions[i]));
 			}
 		}
 	}
@@ -329,6 +339,23 @@ public class Gun : Item
 		}
 		
     }
+
+	private IEnumerator SpawnTrail(TrailRenderer trail, Vector3 hitPoint) {
+		float time = 0;
+		Vector3 startPosition = trail.transform.position;
+
+		while (time < 1) {
+			trail.transform.position = Vector3.Lerp(startPosition, hitPoint, time);
+			time += Time.deltaTime / trail.time;
+
+			yield return null;
+		}
+
+		trail.transform.position = hitPoint;
+		// Instantiate(bulletTrail, hit.point, Quaternion.LookRotation(hit.normal));
+
+		Destroy(trail.gameObject, trail.time);
+	}
 
     IEnumerator ReloadCoroutine()
     {

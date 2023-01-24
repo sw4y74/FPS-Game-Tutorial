@@ -6,22 +6,22 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Menu.unity
+    path: Assets/Scenes/_Menu.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   - enabled: 1
-    path: Assets/Scenes/Game6.unity
+    path: Assets/Scenes/Close Quarters.unity
     guid: 6469189f53520fe4ab579c5f78b39d36
-  - enabled: 0
-    path: Assets/Scenes/Game5.unity
+  - enabled: 1
+    path: Assets/Scenes/Nuke.unity
     guid: 10f04998a276087498d22cb670c93c32
   - enabled: 0
-    path: Assets/Scenes/Game4.unity
+    path: Assets/Scenes/NukeOld.unity
     guid: 13e902af092b6464e98cc4e4f0168bca
-  - enabled: 0
-    path: Assets/Scenes/Game3.unity
+  - enabled: 1
+    path: Assets/Scenes/Prototype.unity
     guid: 2a539b4e3f497ec48b8dce0f860c9006
-  - enabled: 0
-    path: Assets/Scenes/Game.unity
+  - enabled: 1
+    path: Assets/Scenes/Heights.unity
     guid: deb61b0e5d401f74c8de47ef802ac1ad
   - enabled: 0
     path: Assets/Scenes/Game2.unity
