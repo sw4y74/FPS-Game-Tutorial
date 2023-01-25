@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7311680973407981741}
   - component: {fileID: 6709346206462671823}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: BulletTrail
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -50,7 +50,7 @@ TrailRenderer:
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
-  m_RenderingLayerMask: 1
+  m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 66b0b79b41eca8444ae025bdd36249a1, type: 2}
@@ -150,7 +150,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2289428425146467402}
   - component: {fileID: 260550523719163449}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: Point Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -89,8 +89,10 @@ public class Gun : Item
 		#region Spread and Recoil
 
 		// CS LIKE RECOIL
-		accuracyY = 0.5f + spreadCooldown / 10;
-		accuracyX = 0.5f + Random.Range(-(spreadCooldown + gun.spreadX/20) / 100, (spreadCooldown + gun.spreadX/20) / 100);
+		accuracyY = 0.5f + spreadCooldown / (isCrouching ? 15 : 10);
+		accuracyX = 0.5f + Random.Range(-(spreadCooldown + gun.spreadX/(isCrouching ? 25 : 20)) / 100, 
+		(spreadCooldown + gun.spreadX/(isCrouching ? 25 : 20)) / 100);
+
 		if (spreadCooldown < gun.spreadY/3)
 			spreadCooldown += gun.spreadY/2 / 10;
 		else spreadCooldown = gun.spreadY/3 + Random.Range(-gun.spreadY/50, gun.spreadY/50);
@@ -99,17 +101,18 @@ public class Gun : Item
 		{
 			accuracyX += jRandX;
 			accuracyY += jRandY;
-		} else if (isMoving)
+		} 
+		if (grounded && isMoving && !isCrouching)
 		{
 			accuracyX += randX;
 			accuracyY += randY;
 		}
 		
-		if (grounded && isMoving && isCrouching)
-        {
-			accuracyX = 0.5f + cRandX;
-			accuracyY = 0.5f + cRandY;
-        }
+		// if (grounded && isMoving && isCrouching)
+        // {
+		// 	accuracyX = 0.5f + cRandX;
+		// 	accuracyY = 0.5f + cRandY;
+        // }
 
 		if (gun.firstShootAccurate)
         {
@@ -296,13 +299,36 @@ public class Gun : Item
 				Quaternion rotation = hitNormals[i] == Vector3.zero
 									? Quaternion.identity
 									: Quaternion.LookRotation(hitNormals[i]);
-				GameObject bulletImpactObj = Instantiate(bulletImpactPrefab, hitPositions[i] + hitNormals[i] * 0.001f, rotation * bulletImpactPrefab.transform.rotation);
-				Destroy(bulletImpactObj, 10f);
-				bulletImpactObj.transform.SetParent(colliders[0].transform);
-				TrailRenderer trail = Instantiate(bulletTrail, muzzlePos.position, Quaternion.identity);
-				StartCoroutine(SpawnTrail(trail, hitPositions[i]));
+				if (!colliders[i].transform.root.tag.Equals("Player") && !colliders[i].transform.root.tag.Equals("LocalPlayer"))
+				{
+					GameObject bulletImpactObj = Instantiate(bulletImpactPrefab, hitPositions[i] + hitNormals[i] * 0.001f, 
+					rotation * bulletImpactPrefab.transform.rotation);
+					Destroy(bulletImpactObj, 10f);
+					bulletImpactObj.transform.SetParent(colliders[i].transform);				
+				}
+				
+				if (PV.IsMine)
+				{
+					TrailRenderer trail = Instantiate(bulletTrail, muzzlePos.position, Quaternion.identity);
+					StartCoroutine(SpawnTrail(trail, hitPositions[i]));
+				} else {
+					Debug.Log(transform.root.GetComponent<PlayerController>().itemsMP[index]);
+					Gun mpGun = transform.root.GetComponent<PlayerController>().itemsMP[index];
+					mpGun.SpawnTrailNetworked(hitPositions[i]);
+				}
 			}
 		}
+	}
+
+	public void LogSomething() {
+		Debug.Log(transform.parent.name);
+		Debug.Log(gun.itemName);
+		Debug.Log(index);
+	}
+
+	public void SpawnTrailNetworked(Vector3 hitPosition) {
+		TrailRenderer trail = Instantiate(bulletTrail, muzzlePos.position, Quaternion.identity);
+		StartCoroutine(SpawnTrail(trail, hitPosition));
 	}
 
     void FixedUpdate()

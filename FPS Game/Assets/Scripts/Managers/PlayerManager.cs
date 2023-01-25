@@ -37,7 +37,10 @@ public class PlayerManager : MonoBehaviour
 		float timeout = 3f;
 		//PV.RPC("RPC_DestroyViewModel", RpcTarget.Others);
 		Transform cameraTransform = controller.GetComponent<PlayerController>().firstPersonCamera.transform;
-		PhotonNetwork.Destroy(controller);
+		PhotonNetwork.Destroy(controller.transform.GetChild(0).gameObject);
+		controller.GetComponent<PlayerController>().enabled = false;
+		controller.GetComponent<Throwable>().enabled = false;
+		controller.GetComponent<Footsteps>().enabled = false;
 
 		GameObject.FindGameObjectWithTag("DeathCam").GetComponent<AudioListener>().enabled = true;
 		GameObject.FindGameObjectWithTag("DeathCam").GetComponent<AudioLowPassFilter>().enabled = true;
@@ -47,6 +50,7 @@ public class PlayerManager : MonoBehaviour
 		deathCam.DisplayDeathInfo(timeout, killer);
 
 		yield return new WaitForSeconds(timeout);
+		PhotonNetwork.Destroy(controller);
 
 		GameObject.FindGameObjectWithTag("DeathCam").GetComponent<AudioListener>().enabled = false;
 		GameObject.FindGameObjectWithTag("DeathCam").GetComponent<AudioLowPassFilter>().enabled = false;

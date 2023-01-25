@@ -24,6 +24,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Heights.unity
     guid: deb61b0e5d401f74c8de47ef802ac1ad
   - enabled: 0
-    path: Assets/Scenes/Game2.unity
+    path: 
     guid: 15ac9239e282ded4389eb82e27054d86
+  - enabled: 1
+    path: Assets/Scenes/LaCanal.unity
+    guid: 0d2e06b6d7d363c4296b9e327da2a417
   m_configObjects: {}

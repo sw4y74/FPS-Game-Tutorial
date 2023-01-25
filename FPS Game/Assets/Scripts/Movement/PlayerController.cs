@@ -42,37 +42,43 @@ public struct WeaponSlot
 
 public class PlayerController : MonoBehaviourPunCallbacks
 {
+	[Header("UI and Camera")]
 	[SerializeField] Image healthbarImage;
 	[SerializeField] GameObject ui;
-
+	public PauseMenu pauseMenu;
 	[SerializeField] GameObject cameraHolder;
 	[SerializeField] Transform[] syncRotationObjects;
 
+	[Header("Viewmodels")]
 	public GameObject viewModel;
 	[SerializeField] GameObject localViewModel;
 	public float mouseSensitivity;
-	public float sprintSpeed, walkSpeed, jumpForce, smoothTime;
-	public bool isSprinting = false;
+	
 
+	[Header("Weapon Gameobjects")]
 	[SerializeField] GameObject itemHolder;
-	[SerializeField] GameObject itemHolderMP;
+	public GameObject itemHolderMP;
 	[SerializeField] GameObject arms;
 	[SerializeField] GameObject reloadPos;
 	[SerializeField] GameObject armsPos;
 	[SerializeField] Animator GunsAnimator;
 	public AudioSource gunAudioSource;
 	public Gun[] items;
-	Gun[] itemsMP;
+	public Gun[] itemsMP;
 	[System.NonSerialized] public bool aimingDownSights = false;
-	public List<WeaponSlot> weaponSlots;
 
+	[Header("Loadout")]
+	[SerializeField] TMP_Text ammoText;
+	public List<WeaponSlot> weaponSlots;
 	[System.NonSerialized] public int itemIndex;
 	int previousItemIndex = -1;
 	int slotIndex = -1;
 
-	[SerializeField] TMP_Text ammoText;
-
 	float verticalLookRotation;
+
+	[Header("Movement")]
+	public bool isSprinting = false;
+	public float sprintSpeed, walkSpeed, jumpForce, smoothTime;
 	public Transform groundCheck;
 	public float groundDistance;
 	public LayerMask groundMask;
@@ -80,28 +86,38 @@ public class PlayerController : MonoBehaviourPunCallbacks
 	public bool isMoving;
 	Vector3 smoothMoveVelocity;
 	Vector3 moveAmount;
-	public PauseMenu pauseMenu;
-
-	float m_WeaponBobFactor;
-	Vector3 m_WeaponBobLocalPosition;
-	Vector3 LastCharacterPosition;
+	
+	[Header("Weapon Bobbing")]
 	public float BobFrequency = 10f;
 	public float BobSharpness = 10f;
 	public float DefaultBobAmount = 0.05f;
 	public float AimingBobAmount = 0.02f;
+	float m_WeaponBobFactor;
+	Vector3 m_WeaponBobLocalPosition;
+	Vector3 LastCharacterPosition;
 
 	Rigidbody rb;
 	public CharacterController controller;
 
+	[Header("Velocity")]
 	public Vector3 velocity;
 	public Vector3 playerCharacterVelocity;
 	public Vector3 savedVelocity;
-	public float gravity = -16.81f;
+
+	[Header("Gravity and fall damage")]
+	[SerializeField] float gravity = 16.81f;
+    private float fallVelocity = 0f;
+	[Range(5f, 80f)]
+    [SerializeField] float damagableFallVelocity = 15f;
+	[SerializeField] AudioClip fallDamageSound;
+	[Range(0f, 3f)]
+    [SerializeField] float fallModifier = 1.75f;
 
 	PhotonView PV;
 
 	const float maxHealth = 100f;
 	float currentHealth = maxHealth;
+	bool isDead = false;
 	public SphereCollider headCollider;
 
 	PlayerManager playerManager;
@@ -115,12 +131,13 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
     void Awake()
 	{
+		if (GetComponent<TesterScript>().testing) PhotonNetwork.OfflineMode = true;
 		//rb = GetComponent<Rigidbody>();
 		PV = GetComponent<PhotonView>();
 
 		pauseMenu = FindObjectOfType<PauseMenu>();
 
-		playerManager = PhotonView.Find((int)PV.InstantiationData[0]).GetComponent<PlayerManager>();
+		if (PV.isRuntimeInstantiated) playerManager = PhotonView.Find((int)PV.InstantiationData[0]).GetComponent<PlayerManager>();
 
 		items = itemHolder.GetComponentsInChildren<Gun>();
 		itemsMP = itemHolderMP.GetComponentsInChildren<Gun>();
@@ -178,15 +195,16 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
 		if (grounded && velocity.y < 0)
 		{
-			velocity.y = -2f;
+			velocity.y = 0f;
 		}
 		
 		HandleGravity();
+		Move();
+		HandleFallDamage();
 
 		if (!pauseMenu.GameIsPaused)
 		{
 			Look();
-			Move();
 			Jump();
 			GetComponent<Crouch>().CrouchToggler();
 
@@ -253,9 +271,27 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
 	}
 
+    private void HandleFallDamage()
+    {
+        if (!grounded)
+		{
+			fallVelocity = playerCharacterVelocity.y*2;
+		}
+		else if (grounded)
+		{
+			if (fallVelocity < -damagableFallVelocity)
+			{
+				Debug.Log("Falling damage: " + fallVelocity);
+				TakeDamage(-fallVelocity*fallModifier, -1);
+				gunAudioSource.PlayOneShot(fallDamageSound);
+			}
+			fallVelocity = 0f;
+		}
+    }
+
     private void HandleGravity()
     {
-		velocity.y += gravity * Time.deltaTime;
+		velocity.y -= gravity * Time.deltaTime;
     }
 
     void LateUpdate()
@@ -304,7 +340,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
 		float playerActualSpeed = walkSpeed;
 
 		Vector3 move = transform.right * movementX + transform.forward * movementY;
-		Vector3 inputs = Vector3.ClampMagnitude(move, 1f);
+		Vector3 inputs = pauseMenu.GameIsPaused ? Vector3.zero : Vector3.ClampMagnitude(move, 1f);
 		bool movingHorizontally = movementX > strafeThreshold || movementX < -strafeThreshold;
 		bool movingVertically = movementY > strafeThreshold || movementY < -strafeThreshold;
 
@@ -358,7 +394,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
 	{
 		if(Input.GetKeyDown(KeyCode.Space) && grounded)
 		{
-			velocity.y = Mathf.Sqrt(jumpForce * -2f * gravity);
+			velocity.y = Mathf.Sqrt(jumpForce * 2f * gravity);
 		}
 	}
 
@@ -449,8 +485,9 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
 		healthbarImage.fillAmount = currentHealth / maxHealth;
 
-		if(currentHealth <= 0)
+		if(currentHealth <= 0 && !isDead)
 		{
+			isDead = true;
 			Die(photonID);
 		}
 	}
