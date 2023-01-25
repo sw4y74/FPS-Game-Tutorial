@@ -131,7 +131,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
     void Awake()
 	{
-		if (GetComponent<TesterScript>().testing) PhotonNetwork.OfflineMode = true;
+	
 		//rb = GetComponent<Rigidbody>();
 		PV = GetComponent<PhotonView>();
 
