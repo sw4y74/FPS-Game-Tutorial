@@ -4686,7 +4686,7 @@ MonoBehaviour:
   muzzleFlashStraight: {fileID: 0}
   bulletTrail: {fileID: 6709346206462671823, guid: 6ec333d508a523f45b85a2e959483f29,
     type: 3}
-  muzzlePos: {fileID: 0}
+  muzzlePos: {fileID: 7986410602949030420}
 --- !u!114 &6235564322429704277
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5579,7 +5579,7 @@ MonoBehaviour:
   muzzleFlashStraight: {fileID: 0}
   bulletTrail: {fileID: 6709346206462671823, guid: 6ec333d508a523f45b85a2e959483f29,
     type: 3}
-  muzzlePos: {fileID: 0}
+  muzzlePos: {fileID: 804847404059658139}
 --- !u!114 &1649786770061327711
 MonoBehaviour:
   m_ObjectHideFlags: 0
