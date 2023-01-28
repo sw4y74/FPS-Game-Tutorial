@@ -29,6 +29,8 @@ public class Launcher : MonoBehaviourPunCallbacks
 	[SerializeField] GameObject startGameButton;
 	[SerializeField] GameObject mapChoice;
     [SerializeField] TMP_Text mapLabel;
+	[SerializeField] Button createRoomButton;
+	[SerializeField] Button findRoomButton;
 	[SerializeField] Button nextMap;
 	[SerializeField] Button previousMap;
 	[SerializeField] List<Maps> maps = new List<Maps>();
@@ -61,17 +63,19 @@ public class Launcher : MonoBehaviourPunCallbacks
 	}
 
 	public void CreateRoom()
-	{
-		if(string.IsNullOrEmpty(roomNameInputField.text))
-		{
-			return;
-		}
-		PhotonNetwork.CreateRoom(roomNameInputField.text);
-		MenuManager.Instance.OpenMenu("loading");
-	}
+    {
+        ToggleNavElements(false);
+        if (string.IsNullOrEmpty(roomNameInputField.text))
+        {
+            return;
+        }
+        PhotonNetwork.CreateRoom(roomNameInputField.text);
+        MenuManager.Instance.OpenMenu("loading");
+    }
 
-	public override void OnJoinedRoom()
+    public override void OnJoinedRoom()
 	{
+		ToggleNavElements(false);
 		MenuManager.Instance.OpenMenu("room");
 		roomNameText.text = PhotonNetwork.CurrentRoom.Name;
 
@@ -110,6 +114,7 @@ public class Launcher : MonoBehaviourPunCallbacks
 
 	public void LeaveRoom()
 	{
+		ToggleNavElements(true);
 		PhotonNetwork.LeaveRoom();
 		MenuManager.Instance.OpenMenu("loading");
 	}
@@ -176,4 +181,11 @@ public class Launcher : MonoBehaviourPunCallbacks
     {
         mapLabel.text = maps[selectedMap].name;
     }
+
+	private void ToggleNavElements(bool toggle)
+    {
+        findRoomButton.interactable = toggle;
+        createRoomButton.interactable = toggle;
+    }
+
 }
