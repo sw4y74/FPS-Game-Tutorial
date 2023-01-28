@@ -2279,6 +2279,8 @@ MonoBehaviour:
     name: Heights
   - id: 5
     name: LaCanal
+  - id: 6
+    name: Test Map
 --- !u!1 &2498768998209086858
 GameObject:
   m_ObjectHideFlags: 0
