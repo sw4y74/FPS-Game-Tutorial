@@ -24,7 +24,7 @@ public class MenuManager : MonoBehaviour
 			{
 				menus[i].Open();
 			}
-			else if(menus[i].open)
+			else if(menus[i].open && menus[i].isClosable)
 			{
 				CloseMenu(menus[i]);
 			}
@@ -35,7 +35,7 @@ public class MenuManager : MonoBehaviour
 	{
 		for(int i = 0; i < menus.Length; i++)
 		{
-			if(menus[i].open)
+			if(menus[i].open && menus[i].isClosable)
 			{
 				CloseMenu(menus[i]);
 			}
