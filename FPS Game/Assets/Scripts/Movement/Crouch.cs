@@ -7,6 +7,13 @@ public class Crouch : MonoBehaviour
     public bool isCrouching = false;
     [SerializeField] Transform cameraRecoil;
     [SerializeField] LayerMask layerToIgnore;
+    float standPositionY;
+    float crouchPositionY;
+
+    private void Start() {
+        standPositionY = cameraRecoil.localPosition.y;
+        crouchPositionY = standPositionY - 1.4f;
+    }
 
     public void CrouchToggler()
     {
@@ -14,10 +21,10 @@ public class Crouch : MonoBehaviour
         {
             //crouch
             GetComponent<CharacterController>().height = 1.2f;
-            GetComponent<CharacterController>().center = new Vector3(GetComponent<CharacterController>().center.x, -0.3f, GetComponent<CharacterController>().center.z);
+            // GetComponent<CharacterController>().center = new Vector3(GetComponent<CharacterController>().center.x, -0.3f, GetComponent<CharacterController>().center.z);
 
-            Vector3 posA = new Vector3(0f, 0f, 0f);
-            Vector3 posB = new Vector3(0f, -0.456f, 0f);
+            Vector3 posA = new Vector3(0f, standPositionY, 0f);
+            Vector3 posB = new Vector3(0f, crouchPositionY, 0f);
             StartCoroutine(LerpPosition(posA, posB));
 
             isCrouching = true;
@@ -28,14 +35,14 @@ public class Crouch : MonoBehaviour
         if (isCrouching && !Input.GetKey(KeyCode.LeftControl)) 
         {
 
-            if (!Physics.Raycast(transform.position, Vector3.up, out RaycastHit hit, 2f, ~layerToIgnore))
+            if (!Physics.Raycast(transform.position, Vector3.up, out RaycastHit hit, GetComponent<CharacterController>().height+0.1f, ~layerToIgnore))
             {
                     //standup
-                    GetComponent<CharacterController>().height = 1.8f;
-                    GetComponent<CharacterController>().center = new Vector3(GetComponent<CharacterController>().center.x, 0f, GetComponent<CharacterController>().center.z);
+                    GetComponent<CharacterController>().height = 1.9f;
+                    // GetComponent<CharacterController>().center = new Vector3(GetComponent<CharacterController>().center.x, 0f, GetComponent<CharacterController>().center.z);
 
-                    Vector3 posA = new Vector3(0f, -0.456f, 0f);
-                    Vector3 posB = new Vector3(0f, 0f, 0f);
+                    Vector3 posA = new Vector3(0f, crouchPositionY, 0f);
+                    Vector3 posB = new Vector3(0f, standPositionY, 0f);
                     StartCoroutine(LerpPosition(posA, posB));
 
                     isCrouching = false;

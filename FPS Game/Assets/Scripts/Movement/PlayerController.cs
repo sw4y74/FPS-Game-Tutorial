@@ -193,7 +193,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
 		if(!PV.IsMine)
 			return;
 
-		if (grounded && velocity.y < 0)
+		if (grounded && velocity.y <= 0)
 		{
 			velocity.y = 0f;
 		}

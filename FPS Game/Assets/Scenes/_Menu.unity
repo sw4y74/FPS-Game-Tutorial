@@ -13466,6 +13466,8 @@ MonoBehaviour:
     name: Heights
   - id: 5
     name: LaCanal
+  - id: 6
+    name: Test Map
 --- !u!114 &2125027183
 MonoBehaviour:
   m_ObjectHideFlags: 0
