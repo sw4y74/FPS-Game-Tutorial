@@ -343,7 +343,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 235914374}
+      - m_Target: {fileID: 2125027185}
         m_TargetAssemblyTypeName: OptionsScreen, Assembly-CSharp
         m_MethodName: DisplayModeLeft
         m_Mode: 1
@@ -1331,8 +1331,8 @@ RectTransform:
   m_Father: {fileID: 949720670}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 1}
+  m_AnchorMin: {x: 0.24050634, y: 0}
+  m_AnchorMax: {x: 0.24050634, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -1604,7 +1604,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 235914371}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f06b9690e917b3b4a89caa330ae01204, type: 3}
   m_Name: 
@@ -5017,7 +5017,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 9.1835e-41, y: 9.756604e-37, z: 6.5570544e-38, w: 4.1326e-40}
+  m_BoundingSphereOverride: {x: 6.57e-43, y: 9.4e-44, z: 0, w: 0.000000055352672}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
@@ -5920,7 +5920,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 235914374}
+      - m_Target: {fileID: 2125027185}
         m_TargetAssemblyTypeName: OptionsScreen, Assembly-CSharp
         m_MethodName: ResRight
         m_Mode: 1
@@ -6408,7 +6408,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 235914374}
+      - m_Target: {fileID: 2125027185}
         m_TargetAssemblyTypeName: OptionsScreen, Assembly-CSharp
         m_MethodName: OnChangeSensitivity
         m_Mode: 1
@@ -7130,7 +7130,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 2,4
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: f270266c67782654c87bea361384e82c, type: 2}
   m_sharedMaterial: {fileID: 7924042922245011425, guid: f270266c67782654c87bea361384e82c,
@@ -9143,7 +9143,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 1}
+  m_AnchorMax: {x: 0.24050634, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -12367,7 +12367,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 235914374}
+      - m_Target: {fileID: 2125027185}
         m_TargetAssemblyTypeName: OptionsScreen, Assembly-CSharp
         m_MethodName: ResLeft
         m_Mode: 1
@@ -14005,7 +14005,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 235914374}
+      - m_Target: {fileID: 2125027185}
         m_TargetAssemblyTypeName: OptionsScreen, Assembly-CSharp
         m_MethodName: ApplyGraphics
         m_Mode: 1
@@ -15261,6 +15261,7 @@ GameObject:
   - component: {fileID: 2125027182}
   - component: {fileID: 2125027183}
   - component: {fileID: 2125027184}
+  - component: {fileID: 2125027185}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -15433,6 +15434,40 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   usernameInput: {fileID: 1976894339}
   usernameText: {fileID: 118770274}
+--- !u!114 &2125027185
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2125027177}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f06b9690e917b3b4a89caa330ae01204, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  resolutions:
+  - horizontal: 2560
+    vertical: 1440
+  - horizontal: 1920
+    vertical: 1080
+  - horizontal: 1600
+    vertical: 900
+  - horizontal: 1280
+    vertical: 720
+  - horizontal: 1280
+    vertical: 1024
+  displayModes:
+  - displayMode: 0
+    displayModeName: FULL SCREEN
+  - displayMode: 1
+    displayModeName: BORDERLESS
+  - displayMode: 2
+    displayModeName: WINDOWED
+  resolutionLabel: {fileID: 1338206082}
+  displayModeLabel: {fileID: 463941788}
+  sensitivitySlider: {fileID: 846153863}
+  sensitivityLabel: {fileID: 941781628}
 --- !u!1 &2126670492
 GameObject:
   m_ObjectHideFlags: 0
@@ -15994,7 +16029,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 235914374}
+      - m_Target: {fileID: 2125027185}
         m_TargetAssemblyTypeName: OptionsScreen, Assembly-CSharp
         m_MethodName: DisplayModeRight
         m_Mode: 1

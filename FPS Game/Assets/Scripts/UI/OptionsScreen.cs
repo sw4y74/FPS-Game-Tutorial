@@ -17,8 +17,10 @@ public class OptionsScreen : MonoBehaviour
 
     private void Start() {
         sensitivityLabel.text = RoomManager.Instance.sensitivity.ToString("F1");
-        selectedResolution = PlayerPrefs.GetInt("resolution", 1);
-        selectedDisplayMode = PlayerPrefs.GetInt("displaymode", 0);
+        selectedResolution = PlayerPrefs.HasKey("resolution") ? PlayerPrefs.GetInt("resolution") : 1;
+        selectedDisplayMode = PlayerPrefs.HasKey("displaymode") ? PlayerPrefs.GetInt("displaymode") : 0;
+        Debug.Log(selectedResolution);
+        Debug.Log(selectedDisplayMode);
         UpdateResLabel();
         UpdateDisplayModeLabel();
         if (PlayerPrefs.HasKey("sensitivity"))
@@ -81,6 +83,7 @@ public class OptionsScreen : MonoBehaviour
         Screen.SetResolution(resolutions[selectedResolution].horizontal, resolutions[selectedResolution].vertical, displayModes[selectedDisplayMode].displayMode);
         PlayerPrefs.SetInt("displaymode", selectedDisplayMode);
         PlayerPrefs.SetInt("resolution", selectedResolution);
+        PlayerPrefs.Save();
     }
 
     public void OnChangeSensitivity() 

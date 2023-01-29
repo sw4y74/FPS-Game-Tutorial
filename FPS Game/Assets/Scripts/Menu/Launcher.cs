@@ -211,4 +211,8 @@ public class Launcher : MonoBehaviourPunCallbacks
 	{
 		numberOfPlayersText.text = numberOfPlayers.ToString();
 	}
+
+	private void OnApplicationQuit() {
+		PlayerPrefs.Save();
+	}
 }
