@@ -171,8 +171,6 @@ public class PlayerController : MonoBehaviourPunCallbacks
             Cursor.visible = false;
 
 			//SET CURRENT LOADOUT AFTER RESPAWN
-			Debug.Log(pauseMenu.primaryWeapon);
-			Debug.Log(pauseMenu.secondaryWeapon);
 			ChangeLoadoutByIndex(pauseMenu.primaryWeapon, pauseMenu.secondaryWeapon);
 			EquipItem(weaponSlots[0].weaponIndex);
 			SetLayer(10);
@@ -400,15 +398,17 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
 	void EquipItem(int _index)
 	{
-		if(_index == previousItemIndex)
+		if (_index == previousItemIndex)
 			return;
 
 		itemIndex = _index;
 
 		items[itemIndex].itemGameObject.SetActive(true);
 		itemsMP[itemIndex].itemGameObject.SetActive(true);
-		if (items[itemIndex].gun.primaryWeapon) slotIndex = 0;
-		else if (!items[itemIndex].gun.primaryWeapon) slotIndex = 1;
+		if (items[itemIndex].gun.primaryWeapon)
+			slotIndex = 0;
+		else if (!items[itemIndex].gun.primaryWeapon)
+			slotIndex = 1;
 
 		if (previousItemIndex != -1)
 		{
@@ -416,16 +416,14 @@ public class PlayerController : MonoBehaviourPunCallbacks
 			itemsMP[previousItemIndex].itemGameObject.SetActive(false);
 		}
 
-		if(PV.IsMine)
+		if (PV.IsMine)
 		{
 			if (previousItemIndex != -1)
 			{
 				items[previousItemIndex].OnUnequip();
 			}
 			items[itemIndex].OnEquip();
-			Hashtable hash = new Hashtable();
-			hash.Add("itemIndex", itemIndex);
-			PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
+			PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { "itemIndex", itemIndex } });
 			UpdateAmmoUI();
 		}
 

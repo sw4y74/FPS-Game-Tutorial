@@ -23,9 +23,6 @@ public class KillFeed : MonoBehaviour
         killerNameText.text = killerName;
         targetNameText.text = deadName;
 
-        Debug.Log(killerName);
-        Debug.Log(deadName);
-
         Destroy(k, 5f);
     }
         

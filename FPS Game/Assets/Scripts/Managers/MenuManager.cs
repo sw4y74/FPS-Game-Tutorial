@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
 public class MenuManager : MonoBehaviour
 
@@ -41,6 +42,20 @@ public class MenuManager : MonoBehaviour
 			}
 		}
 		menu.Open();
+	}
+
+	public void OpenMenuOptions(Menu menu)
+	{
+		for(int i = 0; i < menus.Length; i++)
+		{
+			if(menus[i].open && menus[i].isClosable)
+			{
+				CloseMenu(menus[i]);
+			}
+		}
+		if (menu.menuName == "room" && PhotonNetwork.InRoom) {
+			menu.Open();
+		}
 	}
 
 	public void CloseMenu(Menu menu)

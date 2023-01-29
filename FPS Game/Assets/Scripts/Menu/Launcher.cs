@@ -22,18 +22,22 @@ public class Launcher : MonoBehaviourPunCallbacks
 	[SerializeField] TMP_InputField roomNameInputField;
 	[SerializeField] TMP_Text errorText;
 	[SerializeField] TMP_Text roomNameText;
+	[SerializeField] TMP_Text mapLabel;
+	[SerializeField] TMP_Text numberOfPlayersText;
 	[SerializeField] Transform roomListContent;
 	[SerializeField] GameObject roomListItemPrefab;
 	[SerializeField] Transform playerListContent;
 	[SerializeField] GameObject PlayerListItemPrefab;
 	[SerializeField] GameObject startGameButton;
 	[SerializeField] GameObject mapChoice;
-    [SerializeField] TMP_Text mapLabel;
 	[SerializeField] Button createRoomButton;
 	[SerializeField] Button findRoomButton;
 	[SerializeField] Button nextMap;
 	[SerializeField] Button previousMap;
 	[SerializeField] List<Maps> maps = new List<Maps>();
+	[SerializeField] int numberOfPlayers = 4;
+	[SerializeField] int maxNoOfPlayers = 12;
+	
 	private int selectedMap;
 
 	void Awake()
@@ -47,6 +51,7 @@ public class Launcher : MonoBehaviourPunCallbacks
 		PhotonNetwork.ConnectUsingSettings();
 		selectedMap = 0;
 		UpdateMapLabel();
+		UpdateNoOfPlayersText();
 	}
 
 	public override void OnConnectedToMaster()
@@ -188,4 +193,22 @@ public class Launcher : MonoBehaviourPunCallbacks
         createRoomButton.interactable = toggle;
     }
 
+	public void ChangeNumberOfPlayers(int change)
+	{
+		numberOfPlayers += change;
+		if (numberOfPlayers < 2)
+		{
+			numberOfPlayers = 2;
+		}
+		if (numberOfPlayers > maxNoOfPlayers)
+		{
+			numberOfPlayers = maxNoOfPlayers;
+		}
+		UpdateNoOfPlayersText();
+	}
+
+	private void UpdateNoOfPlayersText()
+	{
+		numberOfPlayersText.text = numberOfPlayers.ToString();
+	}
 }
