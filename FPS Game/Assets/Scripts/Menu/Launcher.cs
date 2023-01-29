@@ -69,11 +69,11 @@ public class Launcher : MonoBehaviourPunCallbacks
 
 	public void CreateRoom()
     {
-        ToggleNavElements(false);
         if (string.IsNullOrEmpty(roomNameInputField.text))
         {
             return;
         }
+		ToggleNavElements(false);
         PhotonNetwork.CreateRoom(roomNameInputField.text);
         MenuManager.Instance.OpenMenu("loading");
     }

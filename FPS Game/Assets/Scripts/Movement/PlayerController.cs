@@ -167,8 +167,11 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
             itemHolderMP.SetActive(false);
 
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
+			// if game's not paused lock cursor
+			if (!pauseMenu.GameIsPaused) {
+				Cursor.lockState = CursorLockMode.Locked;
+            	Cursor.visible = false;
+			}
 
 			//SET CURRENT LOADOUT AFTER RESPAWN
 			ChangeLoadoutByIndex(pauseMenu.primaryWeapon, pauseMenu.secondaryWeapon);
@@ -245,6 +248,10 @@ public class PlayerController : MonoBehaviourPunCallbacks
 			{
 				if (Input.GetMouseButton(0) && items[itemIndex].allowFire)
 				{
+					if (Cursor.visible) {
+						Cursor.lockState = CursorLockMode.Locked;
+            			Cursor.visible = false;
+					}
 					items[itemIndex].Use();
 				}
 			}
@@ -252,6 +259,10 @@ public class PlayerController : MonoBehaviourPunCallbacks
 			{
 				if (Input.GetMouseButtonDown(0) && items[itemIndex].allowFire)
 				{
+					if (Cursor.visible) {
+						Cursor.lockState = CursorLockMode.Locked;
+            			Cursor.visible = false;
+					}
 					items[itemIndex].Use();
 				}
 			}
@@ -273,7 +284,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
     {
         if (!grounded)
 		{
-			fallVelocity = playerCharacterVelocity.y*2;
+			fallVelocity = velocity.y*2;
 		}
 		else if (grounded)
 		{

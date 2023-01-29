@@ -58,6 +58,18 @@ public class MenuManager : MonoBehaviour
 		}
 	}
 
+	public void OpenMenuInGame(Menu menu)
+	{
+		for(int i = 0; i < menus.Length; i++)
+		{
+			if(menus[i].open && menus[i].isClosable && menus[i].name == "pause")
+			{
+				CloseMenu(menus[i]);
+			}
+		}
+		menu.Open();
+	}
+
 	public void CloseMenu(Menu menu)
 	{
 		menu.Close();
