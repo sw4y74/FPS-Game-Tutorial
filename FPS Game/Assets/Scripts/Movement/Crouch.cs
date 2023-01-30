@@ -20,7 +20,7 @@ public class Crouch : MonoBehaviour
         if (!isCrouching && Input.GetKey(KeyCode.LeftControl))
         {
             //crouch
-            GetComponent<CharacterController>().height = 1.2f;
+            // GetComponent<CharacterController>().height = 1.2f;
             // GetComponent<CharacterController>().center = new Vector3(GetComponent<CharacterController>().center.x, -0.3f, GetComponent<CharacterController>().center.z);
 
             Vector3 posA = new Vector3(0f, standPositionY, 0f);
@@ -35,10 +35,10 @@ public class Crouch : MonoBehaviour
         if (isCrouching && !Input.GetKey(KeyCode.LeftControl)) 
         {
 
-            if (!Physics.Raycast(transform.position, Vector3.up, out RaycastHit hit, GetComponent<CharacterController>().height+0.1f, ~layerToIgnore))
+            if (!Physics.Raycast(transform.position, Vector3.up, out RaycastHit hit, GetComponent<PlayerMovement>().playerCollider.height+0.1f, ~layerToIgnore))
             {
                     //standup
-                    GetComponent<CharacterController>().height = 1.9f;
+                    // GetComponent<CharacterController>().height = 1.9f;
                     // GetComponent<CharacterController>().center = new Vector3(GetComponent<CharacterController>().center.x, 0f, GetComponent<CharacterController>().center.z);
 
                     Vector3 posA = new Vector3(0f, crouchPositionY, 0f);

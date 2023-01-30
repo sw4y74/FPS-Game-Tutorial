@@ -48,6 +48,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
 	public PauseMenu pauseMenu;
 	[SerializeField] GameObject cameraHolder;
 	[SerializeField] Transform[] syncRotationObjects;
+	WallRun wallRun;
 
 	[Header("Viewmodels")]
 	public GameObject viewModel;
@@ -97,7 +98,6 @@ public class PlayerController : MonoBehaviourPunCallbacks
 	Vector3 LastCharacterPosition;
 
 	Rigidbody rb;
-	public CharacterController controller;
 
 	[Header("Velocity")]
 	public Vector3 velocity;
@@ -135,7 +135,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
 	
 		//rb = GetComponent<Rigidbody>();
 		PV = GetComponent<PhotonView>();
-
+		wallRun = GetComponent<WallRun>();
 		pauseMenu = FindObjectOfType<PauseMenu>();
 
 		if (PV.isRuntimeInstantiated) playerManager = PhotonView.Find((int)PV.InstantiationData[0]).GetComponent<PlayerManager>();
@@ -185,7 +185,6 @@ public class PlayerController : MonoBehaviourPunCallbacks
         else
 		{
 			Destroy(GetComponentInChildren<Camera>().gameObject);
-			Destroy(controller);
 			Destroy(ui);
 			localViewModel.SetActive(false);
 		}
@@ -207,9 +206,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
 		if (!pauseMenu.GameIsPaused)
 		{
-			Look();
 			// Jump();
-			GetComponent<Crouch>().CrouchToggler();
 
 			for (int i = 0; i < weaponSlots.Count; i++)
             {
@@ -310,8 +307,10 @@ public class PlayerController : MonoBehaviourPunCallbacks
 		if (!PV.IsMine)
 			return;
 
-		if (!pauseMenu.GameIsPaused)
+		if (!pauseMenu.GameIsPaused) {
 			UpdateWeaponBob();
+			Look();	
+		}
 
 		// Set final weapon socket position based on all the combined animation influences
 		itemHolder.transform.localPosition = m_WeaponBobLocalPosition;
@@ -320,11 +319,12 @@ public class PlayerController : MonoBehaviourPunCallbacks
 	void Look()
 	{
 		transform.Rotate(Vector3.up * Input.GetAxisRaw("Mouse X") * mouseSensitivity);
-
+		// transform.Rotate(new Vector3(Input.GetAxisRaw("Mouse X") * mouseSensitivity, 0, wallRun.tilt), Space.World);
 		verticalLookRotation += Input.GetAxisRaw("Mouse Y") * mouseSensitivity;
 		verticalLookRotation = Mathf.Clamp(verticalLookRotation, -90f, 90f);
 
 		cameraHolder.transform.localEulerAngles = Vector3.left * verticalLookRotation;
+		cameraHolder.transform.localEulerAngles = new Vector3(cameraHolder.transform.localEulerAngles.x, cameraHolder.transform.localEulerAngles.y, wallRun.tilt);
 		foreach(Transform obj in syncRotationObjects)
         {
 			obj.localEulerAngles = Vector3.left * verticalLookRotation;
@@ -580,7 +580,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
 		if (Time.deltaTime > 0f)
 		{
 			playerCharacterVelocity =
-				(controller.transform.position - LastCharacterPosition) / Time.deltaTime;
+				(transform.position - LastCharacterPosition) / Time.deltaTime;
 
 			// calculate a smoothed weapon bob amount based on how close to our max grounded movement velocity we are
 			float characterMovementFactor = 0f;
@@ -606,7 +606,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
 			m_WeaponBobLocalPosition.y = Mathf.Abs(vBobValue)+0.08f;
 			m_WeaponBobLocalPosition.z = -0.176f;
 
-			LastCharacterPosition = controller.transform.position;
+			LastCharacterPosition = transform.position;
 		}
 	}
 

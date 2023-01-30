@@ -1351,7 +1351,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.01
-  far clip plane: 1000
+  far clip plane: 800
   field of view: 68
   orthographic: 0
   orthographic size: 5
@@ -1421,7 +1421,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1488053958305132835}
-  - component: {fileID: 9186214440057998566}
   - component: {fileID: 5353915076702350881}
   - component: {fileID: 3173820623740129246}
   - component: {fileID: 8997055070651253307}
@@ -1435,6 +1434,7 @@ GameObject:
   - component: {fileID: 5967904815956423474}
   - component: {fileID: 6246074405525065185}
   - component: {fileID: 1418804518075185752}
+  - component: {fileID: 28684286372313809}
   m_Layer: 0
   m_Name: PlayerController
   m_TagString: Player
@@ -1457,24 +1457,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!143 &9186214440057998566
-CharacterController:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1488053958305132839}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 0
-  serializedVersion: 2
-  m_Height: 1.8
-  m_Radius: 0.3
-  m_SlopeLimit: 45
-  m_StepOffset: 0.7
-  m_SkinWidth: 0.08
-  m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0.01, z: 0}
 --- !u!114 &5353915076702350881
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1561,7 +1543,6 @@ MonoBehaviour:
   BobSharpness: 4
   DefaultBobAmount: 0.05
   AimingBobAmount: 0.02
-  controller: {fileID: 9186214440057998566}
   velocity: {x: 0, y: 0, z: 0}
   playerCharacterVelocity: {x: 0, y: 0, z: 0}
   savedVelocity: {x: 0, y: 0, z: 0}
@@ -1886,6 +1867,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e4c9319f1b91634db1f4341bad80a66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerCollider: {fileID: 1418804518075185752}
   orientation: {fileID: 1488053958305132835}
   moveSpeed: 4.0000005
   airMultiplier: 0.2
@@ -1916,7 +1898,7 @@ Rigidbody:
   m_AngularDrag: 0.05
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 2
   m_Constraints: 0
   m_CollisionDetection: 0
 --- !u!136 &1418804518075185752
@@ -1929,10 +1911,32 @@ CapsuleCollider:
   m_Material: {fileID: 13400000, guid: 41fccb5f87fa086419662116d8e14da6, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.5
-  m_Height: 1.8
+  m_Radius: 0.3
+  m_Height: 2
   m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: 0.04, z: 0}
+--- !u!114 &28684286372313809
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1488053958305132839}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f19b62797fd1aec44a2ee510f968b08e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  orientation: {fileID: 1488053958305132835}
+  wallDistance: 0.8
+  minimumJumpHeight: 1.5
+  wallRunGravity: 3
+  wallRunJumpForce: 5
+  cam: {fileID: 1488053957094389952}
+  wallRunfov: 80
+  wallRunfovTime: 20
+  camTilt: 10
+  camTiltTime: 20
 --- !u!1 &1689359071152410414
 GameObject:
   m_ObjectHideFlags: 0
@@ -5000,7 +5004,8 @@ MonoBehaviour:
   prefixField: -1
   Synchronization: 0
   OwnershipTransfer: 0
-  ObservedComponents: []
+  ObservedComponents:
+  - {fileID: 0}
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
