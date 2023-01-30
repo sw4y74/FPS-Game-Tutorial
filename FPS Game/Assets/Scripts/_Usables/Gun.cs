@@ -33,10 +33,11 @@ public class Gun : Item
 	[SerializeField] ParticleSystem muzzleFlashStraight;
 	[SerializeField] TrailRenderer bulletTrail;
 	[SerializeField] Transform muzzlePos;
-
+	PlayerMovement playerMovement;
     void Awake()
 	{
 		PV = GetComponent<PhotonView>();
+		playerMovement = transform.root.gameObject.GetComponent<PlayerMovement>();
 		root = transform.root.gameObject.GetComponent<PlayerController>();
 		gun = (GunInfo)itemInfo; // EXAMPLE OF GETTING HIGHER INTERFACE WITH THE LOWER INTERFACE
 		currentAmmo = gun.maxAmmo;
@@ -44,7 +45,7 @@ public class Gun : Item
 
 	public override void Use()
 	{
-		if (currentAmmo > 0 && !reloading && !root.isSprinting)
+		if (currentAmmo > 0 && !reloading && !playerMovement.IsSprinting())
 		{
 			shootRoutine = StartCoroutine(Shoot());
 		}
@@ -81,8 +82,8 @@ public class Gun : Item
 		float cRandX = Random.Range(-gun.crouchAccuracy, gun.crouchAccuracy) / 10;
 		float cRandY = Random.Range(-gun.crouchAccuracy, gun.crouchAccuracy) / 10;
 
-		bool isMoving = root.isMoving;
-		bool grounded = root.grounded;
+		bool isMoving = playerMovement.IsMoving();
+		bool grounded = playerMovement.isGrounded;
 		bool isCrouching = root.GetComponent<Crouch>().isCrouching;
 		bool adsOn = root.aimingDownSights;
 
@@ -149,7 +150,7 @@ public class Gun : Item
 				GetComponent<SniperScope>().ToggleScope(false);
 				scopeEnabled = true;
 
-				if (root.grounded)
+				if (playerMovement.isGrounded)
                 {
 					accuracyX = 0.5f;
 					accuracyY = 0.5f;

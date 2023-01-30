@@ -3479,7 +3479,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 1.15789504e+27, y: 0.23671502, z: 2.1560059e+29, w: 7.360415e+22}
+  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
@@ -9761,6 +9761,8 @@ MonoBehaviour:
     name: Heights
   - id: 5
     name: LaCanal
+  - id: 6
+    name: TestMap
   numberOfPlayers: 4
   maxNoOfPlayers: 12
 --- !u!114 &2125027183
@@ -10049,7 +10051,7 @@ PrefabInstance:
     - target: {fileID: 576772950571757589, guid: 4ac688e2a73b5584cada7afa54e728de,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -29.7
+      value: -29.699951
       objectReference: {fileID: 0}
     - target: {fileID: 683845357251244604, guid: 4ac688e2a73b5584cada7afa54e728de,
         type: 3}

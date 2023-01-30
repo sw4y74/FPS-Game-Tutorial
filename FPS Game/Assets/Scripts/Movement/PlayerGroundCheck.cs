@@ -11,32 +11,32 @@ public class PlayerGroundCheck : MonoBehaviour
 		playerController = GetComponentInParent<PlayerController>();
 	}
 
-	void OnTriggerEnter(Collider other)
-	{
-		if(other.gameObject == playerController.gameObject)
-        {
-			Debug.Log(other.gameObject);
-			return;
-		}
+	// void OnTriggerEnter(Collider other)
+	// {
+	// 	if(other.gameObject == playerController.gameObject)
+    //     {
+	// 		Debug.Log(other.gameObject);
+	// 		return;
+	// 	}
 			
-		Debug.Log(other.gameObject);
+	// 	Debug.Log(other.gameObject);
 
-		playerController.SetGroundedState(true);
-	}
+	// 	playerController.SetGroundedState(true);
+	// }
 
-	void OnTriggerExit(Collider other)
-	{
-		if(other.gameObject == playerController.gameObject)
-			return;
+	// void OnTriggerExit(Collider other)
+	// {
+	// 	if(other.gameObject == playerController.gameObject)
+	// 		return;
 
-		playerController.SetGroundedState(false);
-	}
+	// 	playerController.SetGroundedState(false);
+	// }
 
-	void OnTriggerStay(Collider other)
-	{
-		if(other.gameObject == playerController.gameObject)
-			return;
+	// void OnTriggerStay(Collider other)
+	// {
+	// 	if(other.gameObject == playerController.gameObject)
+	// 		return;
 
-		playerController.SetGroundedState(true);
-	}
+	// 	playerController.SetGroundedState(true);
+	// }
 }

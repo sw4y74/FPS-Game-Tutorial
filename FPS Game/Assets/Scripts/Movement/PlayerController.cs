@@ -76,16 +76,16 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
 	float verticalLookRotation;
 
-	[Header("Movement")]
-	public bool isSprinting = false;
-	public float sprintSpeed, walkSpeed, jumpForce, smoothTime;
-	public Transform groundCheck;
-	public float groundDistance;
-	public LayerMask groundMask;
-	public bool grounded = true;
-	public bool isMoving;
-	Vector3 smoothMoveVelocity;
-	Vector3 moveAmount;
+	// [Header("Movement")]
+	// public bool isSprinting = false;
+	// public float sprintSpeed, walkSpeed, jumpForce, smoothTime;
+	// public Transform groundCheck;
+	// public float groundDistance;
+	// public LayerMask groundMask;
+	// public bool grounded = true;
+	// public bool isMoving;
+	// Vector3 smoothMoveVelocity;
+	// Vector3 moveAmount;
 	
 	[Header("Weapon Bobbing")]
 	public float BobFrequency = 10f;
@@ -126,6 +126,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
 	[SerializeField] GameObject ragdollPlayer;
 
 	PlayerAnimController animationController;
+	PlayerMovement playerMovement;
 
     public bool IsAiming { get; private set; }
 
@@ -165,6 +166,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
                 }
             }
 
+			playerMovement = GetComponent<PlayerMovement>();
             itemHolderMP.SetActive(false);
 
 			// if game's not paused lock cursor
@@ -194,19 +196,19 @@ public class PlayerController : MonoBehaviourPunCallbacks
 		if(!PV.IsMine)
 			return;
 
-		if (grounded && velocity.y <= 0)
-		{
-			velocity.y = 0f;
-		}
+		// if (grounded && velocity.y <= 0)
+		// {
+		// 	velocity.y = 0f;
+		// }
 		
-		HandleGravity();
-		Move();
-		HandleFallDamage();
+		// HandleGravity();
+		// Move();
+		// HandleFallDamage();
 
 		if (!pauseMenu.GameIsPaused)
 		{
 			Look();
-			Jump();
+			// Jump();
 			GetComponent<Crouch>().CrouchToggler();
 
 			for (int i = 0; i < weaponSlots.Count; i++)
@@ -280,28 +282,28 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
 	}
 
-    private void HandleFallDamage()
-    {
-        if (!grounded)
-		{
-			fallVelocity = velocity.y*2;
-		}
-		else if (grounded)
-		{
-			if (fallVelocity < -damagableFallVelocity)
-			{
-				Debug.Log("Falling damage: " + fallVelocity);
-				TakeDamage(-fallVelocity*fallModifier, -1);
-				gunAudioSource.PlayOneShot(fallDamageSound);
-			}
-			fallVelocity = 0f;
-		}
-    }
+    // private void HandleFallDamage()
+    // {
+    //     if (!grounded)
+	// 	{
+	// 		fallVelocity = velocity.y*2;
+	// 	}
+	// 	else if (grounded)
+	// 	{
+	// 		if (fallVelocity < -damagableFallVelocity)
+	// 		{
+	// 			Debug.Log("Falling damage: " + fallVelocity);
+	// 			TakeDamage(-fallVelocity*fallModifier, -1);
+	// 			gunAudioSource.PlayOneShot(fallDamageSound);
+	// 		}
+	// 		fallVelocity = 0f;
+	// 	}
+    // }
 
-    private void HandleGravity()
-    {
-		velocity.y -= gravity * Time.deltaTime;
-    }
+    // private void HandleGravity()
+    // {
+	// 	velocity.y -= gravity * Time.deltaTime;
+    // }
 
     void LateUpdate()
 	{
@@ -329,83 +331,83 @@ public class PlayerController : MonoBehaviourPunCallbacks
 		}
 	}
 
-	void Move()
-    {
-		grounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
+	// void Move()
+    // {
+	// 	grounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
 
-		if (!grounded)
-        {
-			smoothTime = 0.03f * 20;
-			controller.stepOffset = 0f;
-		} else
-        {
-			smoothTime = 0.03f;
-			controller.stepOffset = 0.7f;
-		}
+	// 	if (!grounded)
+    //     {
+	// 		smoothTime = 0.03f * 20;
+	// 		controller.stepOffset = 0f;
+	// 	} else
+    //     {
+	// 		smoothTime = 0.03f;
+	// 		controller.stepOffset = 0.7f;
+	// 	}
 
-		float movementX = Input.GetAxis("Horizontal");
-		float movementY = Input.GetAxis("Vertical");
-		float strafeThreshold = 0.6f;
-		float playerActualSpeed = walkSpeed;
+	// 	float movementX = Input.GetAxis("Horizontal");
+	// 	float movementY = Input.GetAxis("Vertical");
+	// 	float strafeThreshold = 0.6f;
+	// 	float playerActualSpeed = walkSpeed;
 
-		Vector3 move = transform.right * movementX + transform.forward * movementY;
-		Vector3 inputs = pauseMenu.GameIsPaused ? Vector3.zero : Vector3.ClampMagnitude(move, 1f);
-		bool movingHorizontally = movementX > strafeThreshold || movementX < -strafeThreshold;
-		bool movingVertically = movementY > strafeThreshold || movementY < -strafeThreshold;
+	// 	Vector3 move = transform.right * movementX + transform.forward * movementY;
+	// 	Vector3 inputs = pauseMenu.GameIsPaused ? Vector3.zero : Vector3.ClampMagnitude(move, 1f);
+	// 	bool movingHorizontally = movementX > strafeThreshold || movementX < -strafeThreshold;
+	// 	bool movingVertically = movementY > strafeThreshold || movementY < -strafeThreshold;
 
-		// Define player speed in cases
-		if (GetComponent<Crouch>().isCrouching || aimingDownSights)
-        {
-			isSprinting = false;
-			if (GetComponent<Crouch>().isCrouching && aimingDownSights)
-				playerActualSpeed = walkSpeed * 0.3f;
-			else playerActualSpeed = walkSpeed * 0.5f;
+	// 	// Define player speed in cases
+	// 	if (GetComponent<Crouch>().isCrouching || aimingDownSights)
+    //     {
+	// 		isSprinting = false;
+	// 		if (GetComponent<Crouch>().isCrouching && aimingDownSights)
+	// 			playerActualSpeed = walkSpeed * 0.3f;
+	// 		else playerActualSpeed = walkSpeed * 0.5f;
 
-		}
-		else if (Input.GetKey(KeyCode.LeftShift) && (movingHorizontally || movingVertically) && grounded)
-		{
-			playerActualSpeed = sprintSpeed * (1 - CurrentlyEquippedItem().gun.weight / 100);
-			isSprinting = true;
-		}
-		else
-        {			
-			playerActualSpeed = walkSpeed * (1 - CurrentlyEquippedItem().gun.weight / 100);
-			isSprinting = false;
-		}
+	// 	}
+	// 	else if (Input.GetKey(KeyCode.LeftShift) && (movingHorizontally || movingVertically) && grounded)
+	// 	{
+	// 		playerActualSpeed = sprintSpeed * (1 - CurrentlyEquippedItem().gun.weight / 100);
+	// 		isSprinting = true;
+	// 	}
+	// 	else
+    //     {			
+	// 		playerActualSpeed = walkSpeed * (1 - CurrentlyEquippedItem().gun.weight / 100);
+	// 		isSprinting = false;
+	// 	}
 
-		moveAmount = Vector3.SmoothDamp(moveAmount, inputs * playerActualSpeed, ref smoothMoveVelocity, smoothTime);
-		// if (grounded) {
-			controller.Move(moveAmount * Time.deltaTime);
-			savedVelocity = moveAmount;
-		// } else {
-		// 	Vector3 mixedVelocity = new Vector3(moveAmount.x, moveAmount.y, savedVelocity.z);
-		// 	Vector3 smoothVelocity = Vector3.SmoothDamp(mixedVelocity, inputs * playerActualSpeed, ref smoothMoveVelocity, smoothTime);
-		// 	controller.Move(smoothVelocity * Time.deltaTime);
-		// }
+	// 	moveAmount = Vector3.SmoothDamp(moveAmount, inputs * playerActualSpeed, ref smoothMoveVelocity, smoothTime);
+	// 	// if (grounded) {
+	// 		controller.Move(moveAmount * Time.deltaTime);
+	// 		savedVelocity = moveAmount;
+	// 	// } else {
+	// 	// 	Vector3 mixedVelocity = new Vector3(moveAmount.x, moveAmount.y, savedVelocity.z);
+	// 	// 	Vector3 smoothVelocity = Vector3.SmoothDamp(mixedVelocity, inputs * playerActualSpeed, ref smoothMoveVelocity, smoothTime);
+	// 	// 	controller.Move(smoothVelocity * Time.deltaTime);
+	// 	// }
 
-		controller.Move(velocity * Time.deltaTime);
+	// 	controller.Move(velocity * Time.deltaTime);
 
-		animationController.MovementAnimation(movementX, movementY);
+	// 	animationController.MovementAnimation(movementX, movementY);
 
 
-		if (movingHorizontally || movingVertically)
-		{
-			isMoving = true;
-		}
-		else
-		{
-			isMoving = false;
-		}
+	// 	if (movingHorizontally || movingVertically)
+	// 	{
+	// 		isMoving = true;
+	// 	}
+	// 	else
+	// 	{
+	// 		isMoving = false;
+	// 	}
 
-	}
+	// }
 
-	void Jump()
-	{
-		if(Input.GetKeyDown(KeyCode.Space) && grounded)
-		{
-			velocity.y = Mathf.Sqrt(jumpForce * 2f * gravity);
-		}
-	}
+	// void Jump()
+	// {
+	// 	if(Input.GetKeyDown(KeyCode.Space) && grounded)
+	// 	{
+	// 		velocity.y = Mathf.Sqrt(jumpForce * 2f * gravity);
+	// 	}
+	// }
 
 	void EquipItem(int _index)
 	{
@@ -466,10 +468,10 @@ public class PlayerController : MonoBehaviourPunCallbacks
 		}
 	}
 
-	public void SetGroundedState(bool _grounded)
-	{
-		grounded = _grounded;
-	}
+	// public void SetGroundedState(bool _grounded)
+	// {
+	// 	grounded = _grounded;
+	// }
 
 	void FixedUpdate()
 	{
@@ -582,11 +584,11 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
 			// calculate a smoothed weapon bob amount based on how close to our max grounded movement velocity we are
 			float characterMovementFactor = 0f;
-			if (grounded)
+			if (playerMovement.isGrounded)
 			{
 				characterMovementFactor =
 					Mathf.Clamp01(playerCharacterVelocity.magnitude /
-								  (walkSpeed * 2));
+								  (playerMovement.walkSpeed * 2));
 			}
 
 			m_WeaponBobFactor =

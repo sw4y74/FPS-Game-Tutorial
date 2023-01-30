@@ -5,7 +5,7 @@ using Photon.Pun;
 
 public class Footsteps : MonoBehaviour
 {
-    PlayerController pc;
+    PlayerMovement playerMovement;
     PhotonView PV;
 
     void Awake()
@@ -15,7 +15,7 @@ public class Footsteps : MonoBehaviour
 
     void Start()
     {
-        pc = GetComponent<PlayerController>();
+        playerMovement = GetComponent<PlayerMovement>();
     }
 
     [PunRPC]
@@ -29,7 +29,7 @@ public class Footsteps : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (pc.grounded && !pc.GetComponent<Crouch>().isCrouching && pc.isMoving && GetComponent<AudioSource>().isPlaying == false)
+        if (playerMovement.isGrounded && !playerMovement.GetComponent<Crouch>().isCrouching && playerMovement.IsMoving() && GetComponent<AudioSource>().isPlaying == false)
         {
             float randA = Random.Range(0.8f, 1);
             float randB = Random.Range(0.8f, 1.1f);
