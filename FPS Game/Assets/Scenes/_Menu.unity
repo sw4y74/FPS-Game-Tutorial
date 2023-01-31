@@ -961,7 +961,6 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 654044948}
   - {fileID: 303422641}
   - {fileID: 1420118277}
   - {fileID: 398128272}
@@ -1160,7 +1159,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 272386751}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
@@ -1466,7 +1465,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 272386751}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1603,7 +1602,7 @@ RectTransform:
   m_Children:
   - {fileID: 982493961}
   m_Father: {fileID: 272386751}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
@@ -3116,41 +3115,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!1 &654044947
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 654044948}
-  m_Layer: 5
-  m_Name: MapChoice
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &654044948
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 654044947}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 272386751}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &660748789
 GameObject:
   m_ObjectHideFlags: 0
@@ -3479,7 +3443,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0, y: 3.3909e-41, z: 0, w: 0}
+  m_BoundingSphereOverride: {x: 0, y: 4e-45, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
@@ -7175,7 +7139,7 @@ RectTransform:
   m_Children:
   - {fileID: 1180665935}
   m_Father: {fileID: 272386751}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
@@ -7668,7 +7632,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1676493628}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2125027182}
+        m_TargetAssemblyTypeName: Launcher, Assembly-CSharp
+        m_MethodName: GameModeRight
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1676493628
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8765,7 +8741,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1942450534}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2125027182}
+        m_TargetAssemblyTypeName: Launcher, Assembly-CSharp
+        m_MethodName: GameModeLeft
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1942450534
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9737,6 +9725,7 @@ MonoBehaviour:
   errorText: {fileID: 1414290306}
   roomNameText: {fileID: 738420261}
   mapLabel: {fileID: 343220109}
+  gameModeLabel: {fileID: 572758075}
   numberOfPlayersText: {fileID: 963787945}
   roomListContent: {fileID: 513197373}
   roomListItemPrefab: {fileID: 5590041413162275129, guid: 1269824dfd0cb1642a9294fbbfb1a1ea,
@@ -9745,7 +9734,12 @@ MonoBehaviour:
   PlayerListItemPrefab: {fileID: 1878336002063414184, guid: d11edb5dbb901db49a659dace16ad395,
     type: 3}
   startGameButton: {fileID: 1254237742}
-  mapChoice: {fileID: 654044947}
+  mapSelectionButtons:
+  - {fileID: 1420118276}
+  - {fileID: 398128271}
+  gameModeSelectionButtons:
+  - {fileID: 1942450531}
+  - {fileID: 1676493625}
   createRoomButton: {fileID: 908378262}
   findRoomButton: {fileID: 477066598}
   nextMap: {fileID: 398128273}
@@ -9753,18 +9747,32 @@ MonoBehaviour:
   maps:
   - id: 1
     name: Close Quarters
+    sprite: {fileID: 0}
   - id: 2
     name: Nuke
+    sprite: {fileID: 0}
   - id: 3
     name: Prototype
+    sprite: {fileID: 0}
   - id: 4
     name: Heights
+    sprite: {fileID: 0}
   - id: 5
     name: LaCanal
+    sprite: {fileID: 0}
   - id: 6
     name: TestMap
+    sprite: {fileID: 0}
   numberOfPlayers: 4
   maxNoOfPlayers: 12
+  gameModes:
+  - id: 0
+    name: Team Elimination
+    type: 0
+  - id: 1
+    name: Free for All
+    type: 1
+  selectedGameMode: 0
 --- !u!114 &2125027183
 MonoBehaviour:
   m_ObjectHideFlags: 0

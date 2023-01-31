@@ -39,6 +39,8 @@ public class PlayerManager : MonoBehaviour
 		Transform cameraTransform = controller.GetComponent<PlayerController>().firstPersonCamera.transform;
 		PhotonNetwork.Destroy(controller.transform.GetChild(0).gameObject);
 		controller.GetComponent<PlayerController>().enabled = false;
+		controller.GetComponent<PlayerMovement>().enabled = false;
+		controller.GetComponent<WallRun>().enabled = false;
 		controller.GetComponent<Throwable>().enabled = false;
 		controller.GetComponent<Footsteps>().enabled = false;
 

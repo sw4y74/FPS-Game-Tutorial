@@ -7,13 +7,7 @@ using Photon.Realtime;
 using System.Linq;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-
-[System.Serializable]
-public class Maps
-{
-	public int id;
-	public string name;
-}
+using System;
 
 public class Launcher : MonoBehaviourPunCallbacks
 {
@@ -23,13 +17,15 @@ public class Launcher : MonoBehaviourPunCallbacks
 	[SerializeField] TMP_Text errorText;
 	[SerializeField] TMP_Text roomNameText;
 	[SerializeField] TMP_Text mapLabel;
+	[SerializeField] TMP_Text gameModeLabel;
 	[SerializeField] TMP_Text numberOfPlayersText;
 	[SerializeField] Transform roomListContent;
 	[SerializeField] GameObject roomListItemPrefab;
 	[SerializeField] Transform playerListContent;
 	[SerializeField] GameObject PlayerListItemPrefab;
 	[SerializeField] GameObject startGameButton;
-	[SerializeField] GameObject mapChoice;
+	[SerializeField] GameObject[] mapSelectionButtons;
+	[SerializeField] GameObject[] gameModeSelectionButtons;
 	[SerializeField] Button createRoomButton;
 	[SerializeField] Button findRoomButton;
 	[SerializeField] Button nextMap;
@@ -39,6 +35,8 @@ public class Launcher : MonoBehaviourPunCallbacks
 	[SerializeField] int maxNoOfPlayers = 12;
 	
 	private int selectedMap;
+	[SerializeField] public List<GameMode> gameModes = new List<GameMode>();
+	[System.NonSerialized] public int selectedGameMode;
 
 	void Awake()
 	{
@@ -50,7 +48,7 @@ public class Launcher : MonoBehaviourPunCallbacks
 		Debug.Log("Connecting to Master");
 		PhotonNetwork.ConnectUsingSettings();
 		selectedMap = 0;
-		UpdateMapLabel();
+		selectedGameMode = 0;
 		UpdateNoOfPlayersText();
 	}
 
@@ -80,7 +78,11 @@ public class Launcher : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
 	{
+		Debug.Log("Joined Room");
+		Debug.Log(selectedMap);
 		ToggleNavElements(false);
+		SetMap(selectedMap);
+		SetGameMode(selectedGameMode);
 		MenuManager.Instance.OpenMenu("room");
 		roomNameText.text = PhotonNetwork.CurrentRoom.Name;
 
@@ -97,7 +99,14 @@ public class Launcher : MonoBehaviourPunCallbacks
 		}
 
 		startGameButton.SetActive(PhotonNetwork.IsMasterClient);
-		mapChoice.SetActive(PhotonNetwork.IsMasterClient);
+		foreach (GameObject item in mapSelectionButtons)
+		{
+			item.SetActive(PhotonNetwork.IsMasterClient);
+		}
+		foreach (GameObject item in gameModeSelectionButtons)
+		{
+			item.SetActive(PhotonNetwork.IsMasterClient);
+		}
 	}
 
 	public override void OnMasterClientSwitched(Player newMasterClient)
@@ -161,7 +170,11 @@ public class Launcher : MonoBehaviourPunCallbacks
 
 	public override void OnPlayerEnteredRoom(Player newPlayer)
 	{
-		Instantiate(PlayerListItemPrefab, playerListContent).GetComponent<PlayerListItem>().SetUp(newPlayer);
+		PlayerListItem newPlayerItem = Instantiate(PlayerListItemPrefab, playerListContent).GetComponent<PlayerListItem>();
+		newPlayerItem.SetUp(newPlayer);
+		newPlayerItem.ChangeTeam(0);
+		SetMap(selectedMap);
+		SetGameMode(selectedGameMode);
 	}
 
 	public void MapLeft() 
@@ -170,7 +183,7 @@ public class Launcher : MonoBehaviourPunCallbacks
         if(selectedMap < 0) {
             selectedMap = 0;
         }
-        UpdateMapLabel();
+		SetMap(selectedMap);
     }
 
     public void MapRight() 
@@ -179,12 +192,35 @@ public class Launcher : MonoBehaviourPunCallbacks
         if (selectedMap > maps.Count - 1) {
             selectedMap = maps.Count - 1;
         }
-        UpdateMapLabel();
+		SetMap(selectedMap);
+    }
+
+	public void GameModeLeft() 
+    {
+        selectedGameMode--;
+        if(selectedGameMode < 0) {
+            selectedGameMode = 0;
+        }
+		SetGameMode(selectedGameMode);
+    }
+
+    public void GameModeRight() 
+    {
+        selectedGameMode++;
+        if (selectedGameMode > gameModes.Count - 1) {
+            selectedGameMode = gameModes.Count - 1;
+        }
+		SetGameMode(selectedGameMode);
     }
 
     public void UpdateMapLabel()
     {
         mapLabel.text = maps[selectedMap].name;
+    }
+
+    private void UpdateGameModeLabel()
+    {
+		gameModeLabel.text = gameModes[selectedGameMode].name;
     }
 
 	private void ToggleNavElements(bool toggle)
@@ -215,4 +251,72 @@ public class Launcher : MonoBehaviourPunCallbacks
 	private void OnApplicationQuit() {
 		PlayerPrefs.Save();
 	}
+
+	public void SetPlayerTeam(int team, Player player)
+	{
+		player.SetTeam(team);
+	}
+
+	public void SetGameMode(int mode)
+	{
+		if (PhotonNetwork.IsMasterClient) {
+			PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "gamemode", mode } });
+		}
+	}
+	
+	public void SetMap(int map)
+	{
+		if (PhotonNetwork.IsMasterClient) {
+			PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "map", map } });
+		}
+	}
+
+	public override void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
+    {
+		Debug.Log("OnPlayerPropertiesUpdate: " + targetPlayer.NickName + " changedProps: " + changedProps.ToStringFull());
+		if (changedProps.ContainsKey("map")) {
+			int map = (int)changedProps["map"];
+			selectedMap = map;
+			UpdateMapLabel();
+		}
+		if (changedProps.ContainsKey("gamemode")) {
+			int gameMode = (int)changedProps["gamemode"];
+			selectedGameMode = gameMode;
+			UpdateGameModeLabel();
+			UpdateGameModeUI();
+		}
+    }
+
+    private void UpdateGameModeUI()
+    {
+        foreach(Transform child in playerListContent)
+		{
+			child.GetComponent<PlayerListItem>().SetupGamemode(gameModes[selectedGameMode]);
+		}
+    }
+}
+
+[System.Serializable]
+public class Maps
+{
+	public int id;
+	public string name;
+	public Sprite sprite;
+}
+
+[System.Serializable]
+public class GameMode {
+	public int id;
+	public string name;
+	public GameModeType type;
+	public GameMode(int id, string name, GameModeType type) {
+		this.id = id;
+		this.name = name;
+		this.type = type;
+	}
+}
+
+public enum GameModeType
+{
+	team, freeForAll
 }

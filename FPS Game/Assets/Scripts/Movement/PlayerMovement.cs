@@ -102,7 +102,6 @@ public class PlayerMovement : MonoBehaviour
             GetComponent<Crouch>().CrouchToggler();
         }
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
-        Debug.Log(CalculateSlope());
         ControlDrag();
         ControlSpeed();
         ControlPlayerHeight();
@@ -116,13 +115,13 @@ public class PlayerMovement : MonoBehaviour
         {
             playerHeight = 1.2f;
             playerCollider.height = playerHeight;
-            playerCollider.center = new Vector3(0, -0.36f, 0);
+            playerCollider.center = new Vector3(0, 0.555f, 0);
         }
         else
         {
             playerHeight = 2f;
             playerCollider.height = playerHeight;
-            playerCollider.center = new Vector3(0, 0.04f, 0);
+            playerCollider.center = new Vector3(0, 0.955f, 0);
         }
     }
 

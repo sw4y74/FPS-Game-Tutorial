@@ -8,7 +8,6 @@ using System.IO;
 public class RoomManager : MonoBehaviourPunCallbacks
 {
 	public static RoomManager Instance;
-
 	public float sensitivity;
 
 	void Awake()

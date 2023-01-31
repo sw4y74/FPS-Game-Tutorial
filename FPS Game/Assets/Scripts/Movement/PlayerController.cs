@@ -150,6 +150,13 @@ public class PlayerController : MonoBehaviourPunCallbacks
 	{
 		if(PV.IsMine)
         {
+			foreach (var item in PhotonNetwork.PlayerList)
+			{
+				if (item.GetTeam() != -1)
+				{
+					Debug.Log(item.GetTeam());
+				}
+			}
             headCollider.enabled = false;
 
             if (PlayerPrefs.HasKey("sensitivity"))
@@ -184,8 +191,10 @@ public class PlayerController : MonoBehaviourPunCallbacks
         }
         else
 		{
+			wallRun.enabled = false;
 			Destroy(GetComponentInChildren<Camera>().gameObject);
 			Destroy(ui);
+			
 			localViewModel.SetActive(false);
 		}
 	}
@@ -324,7 +333,9 @@ public class PlayerController : MonoBehaviourPunCallbacks
 		verticalLookRotation = Mathf.Clamp(verticalLookRotation, -90f, 90f);
 
 		cameraHolder.transform.localEulerAngles = Vector3.left * verticalLookRotation;
-		cameraHolder.transform.localEulerAngles = new Vector3(cameraHolder.transform.localEulerAngles.x, cameraHolder.transform.localEulerAngles.y, wallRun.tilt);
+		if (wallRun.enabled) {
+			cameraHolder.transform.localEulerAngles = new Vector3(cameraHolder.transform.localEulerAngles.x, cameraHolder.transform.localEulerAngles.y, wallRun.tilt);
+		}
 		foreach(Transform obj in syncRotationObjects)
         {
 			obj.localEulerAngles = Vector3.left * verticalLookRotation;
