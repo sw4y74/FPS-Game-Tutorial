@@ -92,7 +92,7 @@ Material:
     m_Floats:
     - _AlphaClip: 0
     - _Blend: 0
-    - _BumpScale: 0.2
+    - _BumpScale: 0.3
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Cull: 2
@@ -104,8 +104,8 @@ Material:
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
-    - _Metallic: 0.2
-    - _OcclusionStrength: 0.2
+    - _Metallic: 0.1
+    - _OcclusionStrength: 0.3
     - _Parallax: 0.005
     - _QueueOffset: 0
     - _ReceiveShadows: 1
