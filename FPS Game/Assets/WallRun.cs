@@ -54,7 +54,7 @@ public class WallRun : MonoBehaviour
     {
         CheckWall();
 
-        if (CanWallRun() && Input.GetKey(KeyCode.Space))
+        if (CanWallRun() && Input.GetKey(KeyCode.LeftShift))
         {
             if (wallLeft)
             {

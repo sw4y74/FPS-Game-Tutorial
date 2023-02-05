@@ -2108,14 +2108,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   orientation: {fileID: 1488053958305132835}
-  wallDistance: 0.8
+  wallDistance: 0.9
   minimumJumpHeight: 1.5
-  wallRunGravity: 3
-  wallRunJumpForce: 5
+  wallRunGravity: 4
+  wallRunJumpForce: 4
   cam: {fileID: 1488053957094389952}
   wallRunfov: 80
   wallRunfovTime: 20
-  camTilt: 10
+  camTilt: 6
   camTiltTime: 20
 --- !u!54 &6246074405525065185
 Rigidbody:
@@ -2132,7 +2132,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 80
-  m_CollisionDetection: 2
+  m_CollisionDetection: 1
 --- !u!1 &1689359071152410414
 GameObject:
   m_ObjectHideFlags: 0
@@ -3844,7 +3844,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4460622666282892428}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.75, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 8115444742597510493}
