@@ -4068,7 +4068,7 @@ PrefabInstance:
     - target: {fileID: 1669638030829674109, guid: b507b3659baa95b4baa0ce7b49c34c6b,
         type: 3}
       propertyPath: m_Name
-      value: Canvas (1)
+      value: ScoreboardCanvas
       objectReference: {fileID: 0}
     - target: {fileID: 1669638030829674109, guid: b507b3659baa95b4baa0ce7b49c34c6b,
         type: 3}
@@ -9772,7 +9772,6 @@ MonoBehaviour:
   - id: 1
     name: Free for All
     type: 1
-  selectedGameMode: 0
 --- !u!114 &2125027183
 MonoBehaviour:
   m_ObjectHideFlags: 0

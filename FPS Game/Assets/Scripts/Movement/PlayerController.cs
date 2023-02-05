@@ -215,7 +215,9 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
 		if (!pauseMenu.GameIsPaused)
 		{
-			// Jump();
+			UpdateWeaponBob();
+			Look();	
+			itemHolder.transform.localPosition = m_WeaponBobLocalPosition;
 
 			for (int i = 0; i < weaponSlots.Count; i++)
             {
@@ -316,13 +318,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
 		if (!PV.IsMine)
 			return;
 
-		if (!pauseMenu.GameIsPaused) {
-			UpdateWeaponBob();
-			Look();	
-		}
-
 		// Set final weapon socket position based on all the combined animation influences
-		itemHolder.transform.localPosition = m_WeaponBobLocalPosition;
 	}
 
 	void Look()
