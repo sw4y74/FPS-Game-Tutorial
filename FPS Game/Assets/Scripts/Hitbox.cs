@@ -6,6 +6,7 @@ public class Hitbox : MonoBehaviour, IDamageable
 {
     [SerializeField] PlayerController PC;
     public bool isHead = false;
+    public bool isLimb = false;
 
     public void TakeDamage(float dmg, int viewID)
     {

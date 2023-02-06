@@ -13,16 +13,20 @@ MonoBehaviour:
   m_Name: Shotgun
   m_EditorClassIdentifier: 
   itemName: Shotgun
-  damage: 70
-  weaponType: 3
+  damage: 30
+  weaponType: 4
   weight: 6
   automatic: 1
   fireRate: 35
   maxAmmo: 5
   firstShootAccurate: 1
+  primaryWeapon: 1
   recoilX: -15
-  recoilY: 3
+  recoilY: 4
   recoilZ: 1
+  spreadComeback: 65
+  spreadY: 4
+  spreadX: 10
   kickbackZ: 0.4
   movementAccuracy: 0.5
   jumpAccuracy: 0.5
