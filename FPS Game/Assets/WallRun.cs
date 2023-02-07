@@ -22,6 +22,7 @@ public class WallRun : MonoBehaviour
     [SerializeField] private float wallRunfovTime;
     [SerializeField] private float camTilt;
     [SerializeField] private float camTiltTime;
+    [SerializeField] LayerMask localPlayerLayer;
 
     public float tilt { get; private set; }
 
@@ -35,7 +36,7 @@ public class WallRun : MonoBehaviour
 
     bool CanWallRun()
     {
-        return !Physics.Raycast(transform.position, Vector3.down, minimumJumpHeight);
+        return !Physics.Raycast(transform.position, Vector3.down, minimumJumpHeight, ~localPlayerLayer);
     }
 
     private void Start()

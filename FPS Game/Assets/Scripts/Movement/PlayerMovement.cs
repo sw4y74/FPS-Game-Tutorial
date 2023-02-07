@@ -113,9 +113,9 @@ public class PlayerMovement : MonoBehaviour
     {
         if (GetComponent<Crouch>().isCrouching)
         {
-            playerHeight = 1.2f;
+            playerHeight = 1.55f;
             playerCollider.height = playerHeight;
-            playerCollider.center = new Vector3(0, 0.555f, 0);
+            playerCollider.center = new Vector3(0, 0.735f, 0);
         }
         else
         {
