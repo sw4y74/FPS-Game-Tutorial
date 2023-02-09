@@ -10,27 +10,27 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 82c2ad346950704498cba8492b0fd389, type: 3}
-  m_Name: Rifle2
+  m_Name: S_pistol
   m_EditorClassIdentifier: 
-  itemName: Rifle2
-  damage: 30
-  weaponType: 3
-  weight: 6
-  automatic: 1
-  fireRate: 8
-  maxAmmo: 30
-  firstShootAccurate: 0
-  primaryWeapon: 1
-  recoilX: -7
-  recoilY: 2.4
+  itemName: S_Pistol
+  damage: 22
+  weaponType: 1
+  weight: 1.2
+  automatic: 0
+  fireRate: 13
+  maxAmmo: 20
+  firstShootAccurate: 1
+  primaryWeapon: 0
+  recoilX: -3
+  recoilY: 2
   recoilZ: 0.01
-  spreadComeback: 45
+  spreadComeback: 20
   spreadY: 2.5
   spreadX: 5
-  kickbackZ: 0.08
-  movementAccuracy: 0.6
-  jumpAccuracy: 1.2
-  noScopeAccuracy: 0.6
-  crouchAccuracy: 0.25
-  gunSound: {fileID: 8300000, guid: 36cede86e9d1ff64782ad3c8c253c883, type: 3}
-  reloadSpeed: 2.4
+  kickbackZ: 0.07
+  movementAccuracy: 0.4
+  jumpAccuracy: 0.7
+  noScopeAccuracy: 0
+  crouchAccuracy: 0.2
+  gunSound: {fileID: 8300000, guid: 9c2ebb1278b25af4bac960e45d95c235, type: 3}
+  reloadSpeed: 2.2
