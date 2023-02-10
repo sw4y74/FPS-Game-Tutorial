@@ -425,7 +425,7 @@ public class Gun : Item
 		StartCoroutine(SpawnTrail(trail, hitPosition));
 	}
 
-    void FixedUpdate()
+    void Update()
     {
 		//stop reloading when weapon switched
         if (reloading)

@@ -2319,7 +2319,7 @@ MonoBehaviour:
   orientation: {fileID: 1488053958305132835}
   wallDistance: 0.9
   minimumJumpHeight: 1.5
-  wallRunGravity: 4
+  wallRunGravity: 12
   wallRunJumpForce: 4
   cam: {fileID: 1488053957094389952}
   wallRunfov: 80
@@ -2329,6 +2329,8 @@ MonoBehaviour:
   localPlayerLayer:
     serializedVersion: 2
     m_Bits: 1024
+  wallJumpCooldown: 0
+  wallJumpCount: 0
 --- !u!54 &6246074405525065185
 Rigidbody:
   m_ObjectHideFlags: 0

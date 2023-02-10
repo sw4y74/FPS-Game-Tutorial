@@ -7,12 +7,12 @@ public enum WeaponType { sniperRifle, pistol, smg, assaultRifle, shotgun }
 [CreateAssetMenu(menuName = "FPS/New Gun")]
 public class GunInfo : ItemInfo
 {
-	[Range(0.0f, 200.0f)]
+	[Range(0.0f, 400.0f)]
 	public float damage;
 
 	public WeaponType weaponType;
 
-	[Range(0.0f, 50.0f)]
+	[Range(0.0f, 200.0f)]
 	public float weight;
 
 	[Header("Weapon properties")]

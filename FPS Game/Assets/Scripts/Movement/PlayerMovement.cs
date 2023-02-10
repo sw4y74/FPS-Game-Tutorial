@@ -135,10 +135,11 @@ public class PlayerMovement : MonoBehaviour
 
     void Jump()
     {
+        float gunWeight = 1 - GetComponent<PlayerController>().CurrentlyEquippedItem().gun.weight / 300;
         if (Input.GetKeyDown(jumpKey) && isGrounded)
         {
             rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
-            rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+            rb.AddForce(transform.up * jumpForce * gunWeight, ForceMode.Impulse);
         }
     }
 
@@ -156,6 +157,7 @@ public class PlayerMovement : MonoBehaviour
         {
             moveSpeed = Mathf.Lerp(moveSpeed, walkSpeed, acceleration * Time.deltaTime);
         }
+        moveSpeed *= 1 - GetComponent<PlayerController>().CurrentlyEquippedItem().gun.weight / 1000;
     }
 
     void ControlDrag()
