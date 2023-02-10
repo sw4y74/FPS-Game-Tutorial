@@ -49,6 +49,9 @@ public class PlayerController : MonoBehaviourPunCallbacks
 	[SerializeField] GameObject cameraHolder;
 	[SerializeField] Transform[] syncRotationObjects;
 	WallRun wallRun;
+	private float mouseInputX;
+	private float mouseInputY;
+	private float yaw;
 
 	[Header("Viewmodels")]
 	public GameObject viewModel;
@@ -133,7 +136,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
     void Awake()
 	{
 	
-		//rb = GetComponent<Rigidbody>();
+		rb = GetComponent<Rigidbody>();
 		PV = GetComponent<PhotonView>();
 		wallRun = GetComponent<WallRun>();
 		pauseMenu = FindObjectOfType<PauseMenu>();
@@ -200,132 +203,141 @@ public class PlayerController : MonoBehaviourPunCallbacks
 	}
 
     void Update()
-	{
-		if(!PV.IsMine)
-			return;
+    {
+        if (!PV.IsMine)
+            return;
 
-		// if (grounded && velocity.y <= 0)
-		// {
-		// 	velocity.y = 0f;
-		// }
-		
-		// HandleGravity();
-		// Move();
-		// HandleFallDamage();
+        if (transform.position.y < -10f) // Die if you fall out of the world
+        {
+            Die();
+        }
 
-		if (!pauseMenu.GameIsPaused)
-		{
-			UpdateWeaponBob();
-			Look();	
-			itemHolder.transform.localPosition = m_WeaponBobLocalPosition;
+        if (pauseMenu.GameIsPaused)
+            return;
 
-			for (int i = 0; i < weaponSlots.Count; i++)
+        LookInput();
+		Look();	
+
+        itemHolder.transform.localPosition = m_WeaponBobLocalPosition;
+
+        WeaponInput();
+
+    }
+
+    private void WeaponInput()
+    {
+        for (int i = 0; i < weaponSlots.Count; i++)
+        {
+            if (Input.GetKeyDown("1") && weaponSlots[i].slotType.Equals(SlotType.Primary))
             {
-				if (Input.GetKeyDown("1") && weaponSlots[i].slotType.Equals(SlotType.Primary))
-				{
-					EquipItem(weaponSlots[i].weaponIndex);
-				}
-				if (Input.GetKeyDown("2") && weaponSlots[i].slotType.Equals(SlotType.Secondary))
+                EquipItem(weaponSlots[i].weaponIndex);
+            }
+            if (Input.GetKeyDown("2") && weaponSlots[i].slotType.Equals(SlotType.Secondary))
+            {
+                EquipItem(weaponSlots[i].weaponIndex);
+            }
+        }
+
+        if (Input.GetAxisRaw("Mouse ScrollWheel") < 0f)
+        {
+            if (slotIndex >= weaponSlots.Count - 1)
+            {
+                EquipItem(weaponSlots[0].weaponIndex);
+            }
+            else
+            {
+                EquipItem(weaponSlots[slotIndex + 1].weaponIndex);
+            }
+        }
+        else if (Input.GetAxisRaw("Mouse ScrollWheel") > 0f)
+        {
+            if (slotIndex <= 0)
+            {
+                EquipItem(weaponSlots[weaponSlots.Count - 1].weaponIndex);
+            }
+            else
+            {
+                EquipItem(weaponSlots[slotIndex - 1].weaponIndex);
+            }
+        }
+
+        if (items[itemIndex].gun.automatic)
+        {
+            if (Input.GetMouseButton(0) && items[itemIndex].allowFire)
+            {
+                if (Cursor.visible)
                 {
-					EquipItem(weaponSlots[i].weaponIndex);
-				}
-			}
-
-			if (Input.GetAxisRaw("Mouse ScrollWheel") < 0f)
-			{
-				if (slotIndex >= weaponSlots.Count - 1)
-				{
-					EquipItem(weaponSlots[0].weaponIndex);
-				}
-				else
-				{
-					EquipItem(weaponSlots[slotIndex + 1].weaponIndex);
-				}
-			}
-			else if (Input.GetAxisRaw("Mouse ScrollWheel") > 0f)
-			{
-				if (slotIndex <= 0)
-				{
-					EquipItem(weaponSlots[weaponSlots.Count - 1].weaponIndex);
-				}
-				else
-				{
-					EquipItem(weaponSlots[slotIndex - 1].weaponIndex);
-				}
-			}
-
-			if (items[itemIndex].gun.automatic)
-			{
-				if (Input.GetMouseButton(0) && items[itemIndex].allowFire)
-				{
-					if (Cursor.visible) {
-						Cursor.lockState = CursorLockMode.Locked;
-            			Cursor.visible = false;
-					}
-					items[itemIndex].Use();
-				}
-			}
-			else
-			{
-				if (Input.GetMouseButtonDown(0) && items[itemIndex].allowFire)
-				{
-					if (Cursor.visible) {
-						Cursor.lockState = CursorLockMode.Locked;
-            			Cursor.visible = false;
-					}
-					items[itemIndex].Use();
-				}
-			}
-
-			if (Input.GetKeyDown(KeyCode.R))
+                    Cursor.lockState = CursorLockMode.Locked;
+                    Cursor.visible = false;
+                }
+                items[itemIndex].Use();
+            }
+        }
+        else
+        {
+            if (Input.GetMouseButtonDown(0) && items[itemIndex].allowFire)
             {
-				items[itemIndex].Reload();
-			}
-		}
+                if (Cursor.visible)
+                {
+                    Cursor.lockState = CursorLockMode.Locked;
+                    Cursor.visible = false;
+                }
+                items[itemIndex].Use();
+            }
+        }
 
-		if (transform.position.y < -10f) // Die if you fall out of the world
-		{
-			Die();
-		}
-
-	}
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            items[itemIndex].Reload();
+        }
+    }
 
     // private void HandleFallDamage()
     // {
     //     if (!grounded)
-	// 	{
-	// 		fallVelocity = velocity.y*2;
-	// 	}
-	// 	else if (grounded)
-	// 	{
-	// 		if (fallVelocity < -damagableFallVelocity)
-	// 		{
-	// 			Debug.Log("Falling damage: " + fallVelocity);
-	// 			TakeDamage(-fallVelocity*fallModifier, -1);
-	// 			gunAudioSource.PlayOneShot(fallDamageSound);
-	// 		}
-	// 		fallVelocity = 0f;
-	// 	}
+    // 	{
+    // 		fallVelocity = velocity.y*2;
+    // 	}
+    // 	else if (grounded)
+    // 	{
+    // 		if (fallVelocity < -damagableFallVelocity)
+    // 		{
+    // 			Debug.Log("Falling damage: " + fallVelocity);
+    // 			TakeDamage(-fallVelocity*fallModifier, -1);
+    // 			gunAudioSource.PlayOneShot(fallDamageSound);
+    // 		}
+    // 		fallVelocity = 0f;
+    // 	}
     // }
 
     // private void HandleGravity()
     // {
-	// 	velocity.y -= gravity * Time.deltaTime;
+    // 	velocity.y -= gravity * Time.deltaTime;
     // }
+
+    void FixedUpdate() {
+		if (!PV.IsMine || pauseMenu.GameIsPaused)
+			return;
+	}
 
     void LateUpdate()
 	{
-		if (!PV.IsMine)
+		if (!PV.IsMine || pauseMenu.GameIsPaused)
 			return;
+		UpdateWeaponBob();
+	}
 
-		// Set final weapon socket position based on all the combined animation influences
+	void LookInput() {
+		mouseInputX = Input.GetAxisRaw("Mouse X");
+		mouseInputY = Input.GetAxisRaw("Mouse Y");
 	}
 
 	void Look()
 	{
-		transform.Rotate(Vector3.up * Input.GetAxisRaw("Mouse X") * mouseSensitivity);
-		// transform.Rotate(new Vector3(Input.GetAxisRaw("Mouse X") * mouseSensitivity, 0, wallRun.tilt), Space.World);
-		verticalLookRotation += Input.GetAxisRaw("Mouse Y") * mouseSensitivity;
+		// transform.Rotate(Vector3.up * mouseInputX * mouseSensitivity);
+		yaw = (yaw + mouseInputX * mouseSensitivity) % 360f;
+		rb.MoveRotation(Quaternion.Euler(0f, yaw, 0f));
+		verticalLookRotation += mouseInputY * mouseSensitivity;
 		verticalLookRotation = Mathf.Clamp(verticalLookRotation, -90f, 90f);
 
 		cameraHolder.transform.localEulerAngles = Vector3.left * verticalLookRotation;
@@ -473,19 +485,6 @@ public class PlayerController : MonoBehaviourPunCallbacks
 		{
 			EquipItem((int)changedProps["itemIndex"]);
 		}
-	}
-
-	// public void SetGroundedState(bool _grounded)
-	// {
-	// 	grounded = _grounded;
-	// }
-
-	void FixedUpdate()
-	{
-		if(!PV.IsMine)
-			return;
-
-		//rb.MovePosition(rb.position + transform.TransformDirection(moveAmount) * Time.fixedDeltaTime);
 	}
 
 	public void TakeDamage(float damage, int photonID)
