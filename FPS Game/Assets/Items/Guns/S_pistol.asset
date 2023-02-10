@@ -15,22 +15,22 @@ MonoBehaviour:
   itemName: S_Pistol
   damage: 22
   weaponType: 1
-  weight: 1.2
+  weight: 1.5
   automatic: 0
-  fireRate: 13
-  maxAmmo: 20
+  fireRate: 11
+  maxAmmo: 10
   firstShootAccurate: 1
   primaryWeapon: 0
-  recoilX: -3
-  recoilY: 2
+  recoilX: -3.6
+  recoilY: 2.6
   recoilZ: 0.01
   spreadComeback: 20
   spreadY: 2.5
   spreadX: 5
-  kickbackZ: 0.13
-  movementAccuracy: 0.4
-  jumpAccuracy: 0.7
+  kickbackZ: 0.08
+  movementAccuracy: 0.35
+  jumpAccuracy: 0.45
   noScopeAccuracy: 0
   crouchAccuracy: 0.2
   gunSound: {fileID: 8300000, guid: 9c2ebb1278b25af4bac960e45d95c235, type: 3}
-  reloadSpeed: 2.2
+  reloadSpeed: 2

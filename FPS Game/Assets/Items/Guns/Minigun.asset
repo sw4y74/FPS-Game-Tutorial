@@ -15,22 +15,22 @@ MonoBehaviour:
   itemName: Minigun
   damage: 20
   weaponType: 3
-  weight: 30
+  weight: 20
   automatic: 1
   fireRate: 5
-  maxAmmo: 100
+  maxAmmo: 120
   firstShootAccurate: 0
   primaryWeapon: 1
-  recoilX: -5
+  recoilX: -8
   recoilY: 4
   recoilZ: 1
-  spreadComeback: 80
-  spreadY: 2
-  spreadX: 4
+  spreadComeback: 100
+  spreadY: 3
+  spreadX: 3
   kickbackZ: 0.08
   movementAccuracy: 0.2
   jumpAccuracy: 0.5
   noScopeAccuracy: 0.6
   crouchAccuracy: 1
   gunSound: {fileID: 8300000, guid: 48e032b9e9c1aa647ac7aabb2aaf9e1a, type: 3}
-  reloadSpeed: 4
+  reloadSpeed: 5
