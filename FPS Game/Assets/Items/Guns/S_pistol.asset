@@ -27,7 +27,12 @@ MonoBehaviour:
   spreadComeback: 20
   spreadY: 2.8
   spreadX: 8
-  kickbackZ: 0.14
+  kickbackZ: 0.19
+  kbX: -5
+  kbY: -0.5
+  kbZ: 0.6
+  snappiness: 23
+  returnSpeed: 10
   movementAccuracy: 0.35
   jumpAccuracy: 0.45
   noScopeAccuracy: 0

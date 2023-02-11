@@ -164,7 +164,7 @@ public class Gun : Item
         HandleWeaponTypes(accuracyX, accuracyY);
 
         Recoil.RecoilFire(gun.recoilX / 2, gun.recoilY / 2, gun.recoilZ / 2);
-        Kickback.KickbackFire(gun.kickbackZ);
+        Kickback.KickbackFire(gun.kickbackZ, gun.kbX, gun.kbY, gun.kbZ);
 
         yield return new WaitForSeconds(gun.fireRate / 100);
 

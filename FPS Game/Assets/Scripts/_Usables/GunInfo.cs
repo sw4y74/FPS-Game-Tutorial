@@ -24,9 +24,9 @@ public class GunInfo : ItemInfo
 	public WeaponSlotType weaponSlot;
 
 	[Header("Recoil")]
-	[SerializeField] public float recoilX;
-	[SerializeField] public float recoilY;
-	[SerializeField] public float recoilZ;
+	public float recoilX;
+	public float recoilY;
+	public float recoilZ;
 
 	[Header("Spread")]
 	[Range(5f, 100f)]
@@ -35,7 +35,12 @@ public class GunInfo : ItemInfo
 	public float spreadX;
 
 	[Header("Kickback")]
-	[SerializeField] public float kickbackZ;
+	public float kickbackZ;
+	public float kbX = -2.6f;
+    public float kbY = -0.6f;
+    public float kbZ = 0.6f;
+    public float snappiness = 18f;
+    public float returnSpeed = 7f;
 
 	[Header("Weapon movement accuracy")]
 	[Range(0.0f, 20.0f)]

@@ -24,10 +24,15 @@ MonoBehaviour:
   recoilX: -11
   recoilY: 4
   recoilZ: 0.01
-  spreadComeback: 45
+  spreadComeback: 35
   spreadY: 4
   spreadX: 5
-  kickbackZ: 0.16
+  kickbackZ: 0.21
+  kbX: -7
+  kbY: -0.6
+  kbZ: 0.6
+  snappiness: 22
+  returnSpeed: 10
   movementAccuracy: 1
   jumpAccuracy: 1.3
   noScopeAccuracy: 0
