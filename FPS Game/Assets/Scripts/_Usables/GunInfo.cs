@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum WeaponType { sniperRifle, pistol, smg, assaultRifle, shotgun }
+public enum WeaponSlotType { primary, secondary, melee }
 
 [CreateAssetMenu(menuName = "FPS/New Gun")]
 public class GunInfo : ItemInfo
@@ -20,7 +21,7 @@ public class GunInfo : ItemInfo
 	public float fireRate;
 	public int maxAmmo;
 	public bool firstShootAccurate;
-	public bool primaryWeapon = true;
+	public WeaponSlotType weaponSlot;
 
 	[Header("Recoil")]
 	[SerializeField] public float recoilX;

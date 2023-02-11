@@ -50,6 +50,8 @@ public class PlayerMovement : MonoBehaviour
     Rigidbody rb;
 
     RaycastHit slopeHit;
+    [SerializeField] float slideMultiplier;
+    [SerializeField] float slideAccelerationMultiplier;
 
     private bool OnSlope()
     {
@@ -147,7 +149,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (GetComponent<Crouch>().isCrouching && isGrounded)
         {
-            moveSpeed = Mathf.Lerp(moveSpeed, crouchSpeed, acceleration * Time.deltaTime);
+            moveSpeed = Mathf.Lerp(moveSpeed, crouchSpeed, acceleration * (moveSpeed > crouchSpeed * 1.2f ? slideAccelerationMultiplier : 1f) * Time.deltaTime);
         }
         else if (Input.GetKey(sprintKey) && isGrounded && !GetComponent<Crouch>().isCrouching)
         {

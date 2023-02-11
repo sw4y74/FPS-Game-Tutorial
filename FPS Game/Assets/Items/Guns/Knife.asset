@@ -20,7 +20,7 @@ MonoBehaviour:
   fireRate: 0
   maxAmmo: 0
   firstShootAccurate: 1
-  primaryWeapon: 0
+  weaponSlot: 2
   recoilX: 0
   recoilY: 0
   recoilZ: 0

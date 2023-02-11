@@ -1894,6 +1894,9 @@ GameObject:
   - component: {fileID: -8875917327178652588}
   - component: {fileID: 4645923500040410629}
   - component: {fileID: 8997055070651253307}
+  - component: {fileID: 5967904815956423474}
+  - component: {fileID: -4997894186399376600}
+  - component: {fileID: 28684286372313809}
   - component: {fileID: 7783492004674360832}
   - component: {fileID: 411029532331245480}
   - component: {fileID: 8162908744321694611}
@@ -1901,8 +1904,6 @@ GameObject:
   - component: {fileID: 4381022798693771027}
   - component: {fileID: 2430679136952116067}
   - component: {fileID: 942716270334048025}
-  - component: {fileID: 5967904815956423474}
-  - component: {fileID: 28684286372313809}
   - component: {fileID: 6246074405525065185}
   m_Layer: 0
   m_Name: PlayerController
@@ -2013,10 +2014,6 @@ MonoBehaviour:
   healthbarImage: {fileID: 8417113334592012448}
   ui: {fileID: 903522642830071290}
   pauseMenu: {fileID: 0}
-  cameraHolder: {fileID: 1180534203131505830}
-  syncRotationObjects:
-  - {fileID: 2262980573581107004}
-  - {fileID: 6483255541462211268}
   viewModel: {fileID: 5605174577258128695}
   localViewModel: {fileID: 4460622666282892428}
   mouseSensitivity: 3
@@ -2027,8 +2024,10 @@ MonoBehaviour:
   armsPos: {fileID: 4271459290375772670}
   GunsAnimator: {fileID: 0}
   gunAudioSource: {fileID: 2430679136952116067}
-  items: []
-  itemsMP: []
+  items:
+  - {fileID: 6144891650230792105}
+  itemsMP:
+  - {fileID: 6239371314114254129}
   ammoText: {fileID: 1961297457729827401}
   weaponSlots:
   - name: PrimaryWeapon
@@ -2039,25 +2038,95 @@ MonoBehaviour:
     weaponIndex: 0
     slotType: 1
     gunInstance: {fileID: 0}
-  - name: Grenade
-    weaponIndex: 0
-    slotType: 2
-    gunInstance: {fileID: 0}
-  BobFrequency: 7
-  BobSharpness: 5
-  DefaultBobAmount: 0.035
-  AimingBobAmount: 0.02
-  velocity: {x: 0, y: 0, z: 0}
+  - name: Knife
+    weaponIndex: 9
+    slotType: 3
+    gunInstance: {fileID: 6144891650230792105}
+  LastCharacterPosition: {x: 0, y: 0, z: 0}
   playerCharacterVelocity: {x: 0, y: 0, z: 0}
-  savedVelocity: {x: 0, y: 0, z: 0}
-  gravity: 15
-  damagableFallVelocity: 30
-  fallDamageSound: {fileID: 8300000, guid: 94b636359c3441441b2df546c9220160, type: 3}
-  fallModifier: 1.75
   headCollider: {fileID: 2419653239342796545}
   firstPersonCamera: {fileID: 1488053957094389952}
   ragdollPlayer: {fileID: 1667048936166391591, guid: c045df8722f4aa54597880effc64968f,
     type: 3}
+--- !u!114 &5967904815956423474
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1488053958305132839}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e4c9319f1b91634db1f4341bad80a66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerCollider: {fileID: 3431660972797286288}
+  orientation: {fileID: 1488053958305132835}
+  moveSpeed: 4
+  airMultiplier: 0.2
+  walkSpeed: 5
+  sprintSpeed: 6
+  crouchSpeed: 2.5
+  acceleration: 6
+  jumpForce: 10
+  jumpKey: 32
+  sprintKey: 304
+  groundDrag: 4
+  airDrag: 1
+  groundCheck: {fileID: 8665984376191428457}
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 512
+  groundDistance: 0.2
+  slideMultiplier: 2
+  slideAccelerationMultiplier: 0.2
+--- !u!114 &-4997894186399376600
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1488053958305132839}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: edd8f022357fa71449ecd4ab1d56d3fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncRotationObjects:
+  - {fileID: 2262980573581107004}
+  - {fileID: 6483255541462211268}
+  cameraHolder: {fileID: 1180534203131505830}
+  BobFrequency: 7
+  BobSharpness: 5
+  DefaultBobAmount: 0.035
+  AimingBobAmount: 0.02
+--- !u!114 &28684286372313809
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1488053958305132839}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f19b62797fd1aec44a2ee510f968b08e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  orientation: {fileID: 1488053958305132835}
+  wallDistance: 0.9
+  minimumJumpHeight: 1.5
+  wallRunGravity: 8.5
+  wallRunJumpForce: 4
+  cam: {fileID: 1488053957094389952}
+  wallRunfov: 80
+  wallRunfovTime: 20
+  camTilt: 6
+  camTiltTime: 20
+  localPlayerLayer:
+    serializedVersion: 2
+    m_Bits: 1024
+  wallJumpCooldown: 0
+  wallJumpCount: 0
 --- !u!114 &7783492004674360832
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2358,64 +2427,7 @@ MonoBehaviour:
   throwableGO: {fileID: 9106080304707934438, guid: e2fd3e6a99d89e1489c8e6b2f16f2290,
     type: 3}
   amount: 5
-  range: 14
---- !u!114 &5967904815956423474
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1488053958305132839}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2e4c9319f1b91634db1f4341bad80a66, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerCollider: {fileID: 3431660972797286288}
-  orientation: {fileID: 1488053958305132835}
-  moveSpeed: 4
-  airMultiplier: 0.2
-  walkSpeed: 5
-  sprintSpeed: 6
-  crouchSpeed: 3
-  acceleration: 6
-  jumpForce: 10
-  jumpKey: 32
-  sprintKey: 304
-  groundDrag: 4
-  airDrag: 1
-  groundCheck: {fileID: 8665984376191428457}
-  groundMask:
-    serializedVersion: 2
-    m_Bits: 512
-  groundDistance: 0.2
---- !u!114 &28684286372313809
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1488053958305132839}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f19b62797fd1aec44a2ee510f968b08e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  orientation: {fileID: 1488053958305132835}
-  wallDistance: 0.9
-  minimumJumpHeight: 1.5
-  wallRunGravity: 12
-  wallRunJumpForce: 4
-  cam: {fileID: 1488053957094389952}
-  wallRunfov: 80
-  wallRunfovTime: 20
-  camTilt: 6
-  camTiltTime: 20
-  localPlayerLayer:
-    serializedVersion: 2
-    m_Bits: 1024
-  wallJumpCooldown: 0
-  wallJumpCount: 0
+  range: 16
 --- !u!54 &6246074405525065185
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -3462,12 +3474,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb44231acd86c3d4cb10d458ea0bc1a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  recoilX: -1
-  recoilY: 0
-  recoilZ: 0
+  recoilX: -2.6
+  recoilY: -0.6
+  recoilZ: 0.6
   knockbackZ: 0.003
-  snappiness: 6
-  returnSpeed: 5
+  snappiness: 18
+  returnSpeed: 7
 --- !u!1 &3109924050620867661
 GameObject:
   m_ObjectHideFlags: 0
@@ -10612,12 +10624,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 1493631841898755392}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1764034391377135633 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 5bf7110e85440304b81f3b163f73ba2c,
-    type: 3}
-  m_PrefabInstance: {fileID: 1493631841898755392}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1382828571527680683 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 5bf7110e85440304b81f3b163f73ba2c,
@@ -10627,6 +10633,12 @@ Transform:
 --- !u!1 &4835021472109985986 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -2908480563657116286, guid: 5bf7110e85440304b81f3b163f73ba2c,
+    type: 3}
+  m_PrefabInstance: {fileID: 1493631841898755392}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1764034391377135633 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 5bf7110e85440304b81f3b163f73ba2c,
     type: 3}
   m_PrefabInstance: {fileID: 1493631841898755392}
   m_PrefabAsset: {fileID: 0}

@@ -10,7 +10,7 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 using System.IO;
 using System;
 
-public enum SlotType { Primary, Secondary, Grenade }
+public enum SlotType { Primary, Secondary, Grenade, Knife }
 
 [System.Serializable]
 public struct WeaponSlot
@@ -27,15 +27,24 @@ public struct WeaponSlot
 		gunInstance = wpn;
 		weaponIndex = wpn.index;
 
-		if (wpn.gun.primaryWeapon)
+		switch (wpn.gun.weaponSlot)
 		{
-			slotType = SlotType.Primary;
-			name = "PrimaryWeapon";
-		}
-		else
-		{
-			slotType = SlotType.Secondary;
-			name = "SecondaryWeapon";
+			case WeaponSlotType.primary:
+				slotType = SlotType.Primary;
+				name = "PrimaryWeapon";
+				break;
+			case WeaponSlotType.secondary:
+				slotType = SlotType.Secondary;
+				name = "SecondaryWeapon";
+				break;
+			case WeaponSlotType.melee:
+				slotType = SlotType.Knife;
+				name = "Knife";
+				break;
+			default:
+				slotType = SlotType.Primary;
+				name = "PrimaryWeapon";
+				break;
 		}
 	}
 }
@@ -45,13 +54,8 @@ public class PlayerController : MonoBehaviourPunCallbacks
 	[Header("UI and Camera")]
 	[SerializeField] Image healthbarImage;
 	[SerializeField] GameObject ui;
-	public PauseMenu pauseMenu;
-	[SerializeField] GameObject cameraHolder;
-	[SerializeField] Transform[] syncRotationObjects;
+	public PauseMenu pauseMenu; 
 	WallRun wallRun;
-	private float mouseInputX;
-	private float mouseInputY;
-	private float yaw;
 
 	[Header("Viewmodels")]
 	public GameObject viewModel;
@@ -60,7 +64,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
 	
 
 	[Header("Weapon Gameobjects")]
-	[SerializeField] GameObject itemHolder;
+	public GameObject itemHolder;
 	public GameObject itemHolderMP;
 	[SerializeField] GameObject arms;
 	[SerializeField] GameObject reloadPos;
@@ -77,44 +81,18 @@ public class PlayerController : MonoBehaviourPunCallbacks
 	[System.NonSerialized] public int itemIndex;
 	int previousItemIndex = -1;
 	int slotIndex = -1;
-
-	float verticalLookRotation;
-
-	// [Header("Movement")]
-	// public bool isSprinting = false;
-	// public float sprintSpeed, walkSpeed, jumpForce, smoothTime;
-	// public Transform groundCheck;
-	// public float groundDistance;
-	// public LayerMask groundMask;
-	// public bool grounded = true;
-	// public bool isMoving;
-	// Vector3 smoothMoveVelocity;
-	// Vector3 moveAmount;
-	
-	[Header("Weapon Bobbing")]
-	public float BobFrequency = 10f;
-	public float BobSharpness = 10f;
-	public float DefaultBobAmount = 0.05f;
-	public float AimingBobAmount = 0.02f;
-	float m_WeaponBobFactor;
-	Vector3 m_WeaponBobLocalPosition;
-	Vector3 LastCharacterPosition;
-
-	Rigidbody rb;
+	public Vector3 LastCharacterPosition;
 
 	[Header("Velocity")]
-	public Vector3 velocity;
 	public Vector3 playerCharacterVelocity;
-	public Vector3 savedVelocity;
 
-	[Header("Gravity and fall damage")]
-	[SerializeField] float gravity = 16.81f;
-    private float fallVelocity = 0f;
-	[Range(5f, 80f)]
-    [SerializeField] float damagableFallVelocity = 15f;
-	[SerializeField] AudioClip fallDamageSound;
-	[Range(0f, 3f)]
-    [SerializeField] float fallModifier = 1.75f;
+	// [Header("fall damage")] -------- TO BE MOVED TO PLAYERMOVEMENT SCRIPT
+    // private float fallVelocity = 0f;
+	// [Range(5f, 80f)]
+    // [SerializeField] float damagableFallVelocity = 15f;
+	// [SerializeField] AudioClip fallDamageSound;
+	// [Range(0f, 3f)]
+    // [SerializeField] float fallModifier = 1.75f;
 
 	PhotonView PV;
 
@@ -131,12 +109,10 @@ public class PlayerController : MonoBehaviourPunCallbacks
 	PlayerAnimController animationController;
 	PlayerMovement playerMovement;
 
-    public bool IsAiming { get; private set; }
 
     void Awake()
 	{
 	
-		rb = GetComponent<Rigidbody>();
 		PV = GetComponent<PhotonView>();
 		wallRun = GetComponent<WallRun>();
 		pauseMenu = FindObjectOfType<PauseMenu>();
@@ -215,13 +191,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
         if (pauseMenu.GameIsPaused)
             return;
 
-        LookInput();
-		Look();	
-
-        itemHolder.transform.localPosition = m_WeaponBobLocalPosition;
-
         WeaponInput();
-
     }
 
     private void WeaponInput()
@@ -233,6 +203,10 @@ public class PlayerController : MonoBehaviourPunCallbacks
                 EquipItem(weaponSlots[i].weaponIndex);
             }
             if (Input.GetKeyDown("2") && weaponSlots[i].slotType.Equals(SlotType.Secondary))
+            {
+                EquipItem(weaponSlots[i].weaponIndex);
+            }
+			if (Input.GetKeyDown("3") && weaponSlots[i].slotType.Equals(SlotType.Knife))
             {
                 EquipItem(weaponSlots[i].weaponIndex);
             }
@@ -310,123 +284,10 @@ public class PlayerController : MonoBehaviourPunCallbacks
     // 	}
     // }
 
-    // private void HandleGravity()
-    // {
-    // 	velocity.y -= gravity * Time.deltaTime;
-    // }
-
     void FixedUpdate() {
 		if (!PV.IsMine || pauseMenu.GameIsPaused)
 			return;
 	}
-
-    void LateUpdate()
-	{
-		if (!PV.IsMine || pauseMenu.GameIsPaused)
-			return;
-		UpdateWeaponBob();
-	}
-
-	void LookInput() {
-		mouseInputX = Input.GetAxisRaw("Mouse X");
-		mouseInputY = Input.GetAxisRaw("Mouse Y");
-	}
-
-	void Look()
-	{
-		// transform.Rotate(Vector3.up * mouseInputX * mouseSensitivity);
-		yaw = (yaw + mouseInputX * mouseSensitivity) % 360f;
-		rb.MoveRotation(Quaternion.Euler(0f, yaw, 0f));
-		verticalLookRotation += mouseInputY * mouseSensitivity;
-		verticalLookRotation = Mathf.Clamp(verticalLookRotation, -90f, 90f);
-
-		cameraHolder.transform.localEulerAngles = Vector3.left * verticalLookRotation;
-		if (wallRun.enabled) {
-			cameraHolder.transform.localEulerAngles = new Vector3(cameraHolder.transform.localEulerAngles.x, cameraHolder.transform.localEulerAngles.y, wallRun.tilt);
-		}
-		foreach(Transform obj in syncRotationObjects)
-        {
-			obj.localEulerAngles = Vector3.left * verticalLookRotation;
-		}
-	}
-
-	// void Move()
-    // {
-	// 	grounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
-
-	// 	if (!grounded)
-    //     {
-	// 		smoothTime = 0.03f * 20;
-	// 		controller.stepOffset = 0f;
-	// 	} else
-    //     {
-	// 		smoothTime = 0.03f;
-	// 		controller.stepOffset = 0.7f;
-	// 	}
-
-	// 	float movementX = Input.GetAxis("Horizontal");
-	// 	float movementY = Input.GetAxis("Vertical");
-	// 	float strafeThreshold = 0.6f;
-	// 	float playerActualSpeed = walkSpeed;
-
-	// 	Vector3 move = transform.right * movementX + transform.forward * movementY;
-	// 	Vector3 inputs = pauseMenu.GameIsPaused ? Vector3.zero : Vector3.ClampMagnitude(move, 1f);
-	// 	bool movingHorizontally = movementX > strafeThreshold || movementX < -strafeThreshold;
-	// 	bool movingVertically = movementY > strafeThreshold || movementY < -strafeThreshold;
-
-	// 	// Define player speed in cases
-	// 	if (GetComponent<Crouch>().isCrouching || aimingDownSights)
-    //     {
-	// 		isSprinting = false;
-	// 		if (GetComponent<Crouch>().isCrouching && aimingDownSights)
-	// 			playerActualSpeed = walkSpeed * 0.3f;
-	// 		else playerActualSpeed = walkSpeed * 0.5f;
-
-	// 	}
-	// 	else if (Input.GetKey(KeyCode.LeftShift) && (movingHorizontally || movingVertically) && grounded)
-	// 	{
-	// 		playerActualSpeed = sprintSpeed * (1 - CurrentlyEquippedItem().gun.weight / 100);
-	// 		isSprinting = true;
-	// 	}
-	// 	else
-    //     {			
-	// 		playerActualSpeed = walkSpeed * (1 - CurrentlyEquippedItem().gun.weight / 100);
-	// 		isSprinting = false;
-	// 	}
-
-	// 	moveAmount = Vector3.SmoothDamp(moveAmount, inputs * playerActualSpeed, ref smoothMoveVelocity, smoothTime);
-	// 	// if (grounded) {
-	// 		controller.Move(moveAmount * Time.deltaTime);
-	// 		savedVelocity = moveAmount;
-	// 	// } else {
-	// 	// 	Vector3 mixedVelocity = new Vector3(moveAmount.x, moveAmount.y, savedVelocity.z);
-	// 	// 	Vector3 smoothVelocity = Vector3.SmoothDamp(mixedVelocity, inputs * playerActualSpeed, ref smoothMoveVelocity, smoothTime);
-	// 	// 	controller.Move(smoothVelocity * Time.deltaTime);
-	// 	// }
-
-	// 	controller.Move(velocity * Time.deltaTime);
-
-	// 	animationController.MovementAnimation(movementX, movementY);
-
-
-	// 	if (movingHorizontally || movingVertically)
-	// 	{
-	// 		isMoving = true;
-	// 	}
-	// 	else
-	// 	{
-	// 		isMoving = false;
-	// 	}
-
-	// }
-
-	// void Jump()
-	// {
-	// 	if(Input.GetKeyDown(KeyCode.Space) && grounded)
-	// 	{
-	// 		velocity.y = Mathf.Sqrt(jumpForce * 2f * gravity);
-	// 	}
-	// }
 
 	void EquipItem(int _index)
 	{
@@ -437,10 +298,26 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
 		items[itemIndex].itemGameObject.SetActive(true);
 		itemsMP[itemIndex].itemGameObject.SetActive(true);
-		if (items[itemIndex].gun.primaryWeapon)
-			slotIndex = 0;
-		else if (!items[itemIndex].gun.primaryWeapon)
-			slotIndex = 1;
+
+		switch (items[itemIndex].gun.weaponSlot)
+		{
+			case WeaponSlotType.primary:
+				slotIndex = 0;
+				break;
+			case WeaponSlotType.secondary:
+				slotIndex = 1;
+				break;
+			case WeaponSlotType.melee:
+				slotIndex = 2;
+				break;
+		}
+		// if (items[itemIndex].gun.weaponSlot == WeaponSlotType.primary)
+		// 	slotIndex = 0;
+		// else if (items[itemIndex].gun.weaponSlot == WeaponSlotType.secondary)
+		// 	slotIndex = 1;
+		// else if (items[itemIndex].gun.weaponSlot == WeaponSlotType.melee)
+		// 	slotIndex = 2;
+		
 
 		if (previousItemIndex != -1)
 		{
@@ -464,14 +341,14 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
 	void ChangeLoadout(Gun primaryWeapon, Gun secondaryWeapon)
 	{
-		if (primaryWeapon.gun.primaryWeapon)
+		if (primaryWeapon.gun.weaponSlot == WeaponSlotType.primary)
 		{
 			int index = weaponSlots.FindIndex(x => x.slotType == SlotType.Primary);
 			weaponSlots[index] = new WeaponSlot(primaryWeapon);
 		}
 		else Debug.LogError("Secondary weapon in primary slot!");
 
-		if (!secondaryWeapon.gun.primaryWeapon)
+		if (secondaryWeapon.gun.weaponSlot == WeaponSlotType.secondary)
 		{
 			int index = weaponSlots.FindIndex(x => x.slotType == SlotType.Secondary);
 			weaponSlots[index] = new WeaponSlot(secondaryWeapon);
@@ -579,42 +456,6 @@ public class PlayerController : MonoBehaviourPunCallbacks
     {
 		return items[itemIndex].GetComponent<Gun>();
     }
-
-	// Updates the weapon bob animation based on character speed
-	void UpdateWeaponBob()
-	{
-		if (Time.deltaTime > 0f)
-		{
-			playerCharacterVelocity =
-				(transform.position - LastCharacterPosition) / Time.deltaTime;
-
-			// calculate a smoothed weapon bob amount based on how close to our max grounded movement velocity we are
-			float characterMovementFactor = 0f;
-			if (playerMovement.isGrounded)
-			{
-				characterMovementFactor =
-					Mathf.Clamp01(playerCharacterVelocity.magnitude /
-								  (playerMovement.walkSpeed * 2));
-			}
-
-			m_WeaponBobFactor =
-				Mathf.Lerp(m_WeaponBobFactor, characterMovementFactor, BobSharpness * Time.deltaTime);
-
-			// Calculate vertical and horizontal weapon bob values based on a sine function
-			float bobAmount = IsAiming ? AimingBobAmount : DefaultBobAmount;
-			float frequency = BobFrequency;
-			float hBobValue = Mathf.Sin(Time.time * frequency) * bobAmount * m_WeaponBobFactor;
-			float vBobValue = ((Mathf.Sin(Time.time * frequency * 2f) * 0.5f) + 0.5f) * bobAmount *
-							  m_WeaponBobFactor;
-
-			// Apply weapon bob
-			m_WeaponBobLocalPosition.x = hBobValue;
-			m_WeaponBobLocalPosition.y = Mathf.Abs(vBobValue)+0.08f;
-			m_WeaponBobLocalPosition.z = -0.176f;
-
-			LastCharacterPosition = transform.position;
-		}
-	}
 
 	public void SetLayer(int layer, bool includeChildren = true)
 	{

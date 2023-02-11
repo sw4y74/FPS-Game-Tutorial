@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 82c2ad346950704498cba8492b0fd389, type: 3}
-  m_Name: Smg
+  m_Name: smg
   m_EditorClassIdentifier: 
   itemName: smg
   damage: 25
@@ -21,6 +21,7 @@ MonoBehaviour:
   maxAmmo: 30
   firstShootAccurate: 0
   primaryWeapon: 1
+  knife: 0
   recoilX: -4
   recoilY: 2.4
   recoilZ: 0.01

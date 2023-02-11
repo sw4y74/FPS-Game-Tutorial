@@ -109,12 +109,6 @@ public class Gun : Item
             accuracyY += randY;
         }
 
-        // if (grounded && isMoving && isCrouching)
-        // {
-        // 	accuracyX = 0.5f + cRandX;
-        // 	accuracyY = 0.5f + cRandY;
-        // }
-
         if (gun.firstShootAccurate)
         {
             if (firstShootAccurate == 0f && grounded)
@@ -254,113 +248,6 @@ public class Gun : Item
             PV.RPC("RPC_Shoot", RpcTarget.All, bulletPositions, bulletNormals);
 		}
 
-        // if (gun.weaponType.Equals(WeaponType.shotgun))
-        // {
-        //     Vector3[] bulletPositions = new Vector3[8];
-        //     Vector3[] bulletNormals = new Vector3[8];
-        //     for (int i = 0; i < 8; i++)
-        //     {
-        //         float xDeviation = Random.Range(-0.02f, 0.02f);
-        //         float yDeviation = Random.Range(-0.05f, 0.05f);
-        //         Ray shotgunRay = cam.ViewportPointToRay(new Vector3(accuracyX + xDeviation, accuracyY + yDeviation));
-        //         shotgunRay.origin = cam.transform.position;
-        //         int shotgunLayerMask = 1 << 10;
-        //         shotgunLayerMask = ~shotgunLayerMask;
-
-        //         if (Physics.Raycast(shotgunRay, out RaycastHit shotgunHit, 2000f, shotgunLayerMask))
-        //         {
-        //             Hitbox hitbox = shotgunHit.collider.gameObject.GetComponent<Hitbox>();
-
-        //             if (hitbox)
-        //             {
-        //                 if (hitbox.isHead)
-        //                 {
-        //                     transform.root.gameObject.GetComponent<Hitmarker>().ShowHitHS();
-        //                 }
-        //                 else transform.root.gameObject.GetComponent<Hitmarker>().ShowHit();
-
-        //             }
-
-        //             float damage = gun.damage;
-
-        //             if (hitbox)
-        //             {
-        //                 if (hitbox.isHead)
-        //                 {
-        //                     damage = gun.damage * 3;
-        //                 }
-        //                 if (hitbox.isLimb)
-        //                 {
-        //                     damage = gun.damage * 0.8f;
-        //                 }
-        //             }
-
-        //             shotgunHit.collider.gameObject.GetComponent<IDamageable>()?.TakeDamage(damage, PV.ViewID);
-        //             bulletPositions[i] = shotgunHit.point;
-        //             bulletNormals[i] = shotgunHit.normal;
-        //         }
-        //     }
-
-        //     currentAmmo--;
-        //     root.UpdateAmmoUI();
-        //     if (currentAmmo == 0)
-        //     {
-        //         Reload();
-        //     }
-        //     PV.RPC("RPC_Shoot", RpcTarget.All, bulletPositions, bulletNormals);
-        // }
-        // else
-        // {
-        //     Vector3[] bulletPositions = new Vector3[1];
-        //     Vector3[] bulletNormals = new Vector3[1];
-        //     Ray ray = cam.ViewportPointToRay(new Vector3(accuracyX, accuracyY));
-        //     ray.origin = cam.transform.position;
-        //     int layerMask = 1 << 10;
-        //     layerMask = ~layerMask;
-
-        //     //ammo
-        //     currentAmmo--;
-        //     root.UpdateAmmoUI();
-        //     if (currentAmmo == 0)
-        //     {
-        //         Reload();
-        //     }
-
-        //     if (Physics.Raycast(ray, out RaycastHit hit, 2000f, layerMask))
-        //     {
-        //         Hitbox hitbox = hit.collider.gameObject.GetComponent<Hitbox>();
-
-        //         if (hitbox)
-        //         {
-        //             if (hitbox.isHead)
-        //             {
-        //                 transform.root.gameObject.GetComponent<Hitmarker>().ShowHitHS();
-        //             }
-        //             else transform.root.gameObject.GetComponent<Hitmarker>().ShowHit();
-
-        //         }
-
-        //         float damage = gun.damage;
-
-        //         if (hitbox)
-        //         {
-        //             if (hitbox.isHead)
-        //             {
-        //                 damage = gun.damage * 3;
-        //             }
-        //             if (hitbox.isLimb)
-        //             {
-        //                 damage = gun.damage * 0.8f;
-        //             }
-        //         }
-
-        //         hit.collider.gameObject.GetComponent<IDamageable>()?.TakeDamage(damage, PV.ViewID);
-        //         bulletPositions[0] = hit.point;
-        //         bulletNormals[0] = hit.normal;
-        //         PV.RPC("RPC_Shoot", RpcTarget.All, bulletPositions, bulletNormals);
-        //     }
-        // }
-
     private void HandleSniperScope(bool scopeEnabled)
     {
         if (gun.weaponType.Equals(WeaponType.sniperRifle) && !GetComponent<SniperScope>().scopeOn && !reloading && scopeEnabled)
@@ -374,7 +261,7 @@ public class Gun : Item
 	{
 		AudioSource gunAudioSource = root.gunAudioSource;
 
-		muzzleFlash.Play();
+		// muzzleFlash.Play();
 		muzzleFlashStraight.Play();
 /*		bulletTrail.transform.rotation = Quaternion.LookRotation(hitNormal);
 		bulletTrail.Play();*/
@@ -414,12 +301,6 @@ public class Gun : Item
 		}
 	}
 
-	public void LogSomething() {
-		Debug.Log(transform.parent.name);
-		Debug.Log(gun.itemName);
-		Debug.Log(index);
-	}
-
 	public void SpawnTrailNetworked(Vector3 hitPosition) {
 		TrailRenderer trail = Instantiate(bulletTrail, muzzlePos.position, Quaternion.identity);
 		StartCoroutine(SpawnTrail(trail, hitPosition));
@@ -430,7 +311,7 @@ public class Gun : Item
 		//stop reloading when weapon switched
         if (reloading)
         {
-			if (root.itemIndex != index)
+			if (root.itemIndex != index && reloadRoutine != null)
             {
 				StopCoroutine(reloadRoutine);
 				StartCoroutine(root.LerpArmsReloadPosition(false));
@@ -440,7 +321,7 @@ public class Gun : Item
 
 		if (!allowFire)
         {
-			if (root.itemIndex != index)
+			if (root.itemIndex != index && shootRoutine != null)
 			{
 				StopCoroutine(shootRoutine);
 				allowFire = true;

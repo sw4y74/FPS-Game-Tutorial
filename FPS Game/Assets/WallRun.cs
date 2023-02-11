@@ -41,6 +41,7 @@ public class WallRun : MonoBehaviour
 
     bool CanWallRun()
     {
+        if (GetComponent<PlayerController>().aimingDownSights) return false;
         return !Physics.Raycast(transform.position, Vector3.down, minimumJumpHeight, ~localPlayerLayer);
     }
 
@@ -148,7 +149,9 @@ public class WallRun : MonoBehaviour
     {
         rb.useGravity = true;
 
-        cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, fov, wallRunfovTime * Time.deltaTime);
+        if (!GetComponent<PlayerController>().aimingDownSights) {
+            cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, fov, wallRunfovTime * Time.deltaTime);
+        }
         tilt = Mathf.Lerp(tilt, 0, camTiltTime * Time.deltaTime);
     }
 }

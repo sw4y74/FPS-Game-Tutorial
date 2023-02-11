@@ -46,8 +46,20 @@ public class SniperScope : MonoBehaviour
         root.ChangeSensitivity(sensitivity);
 
         root.ToggleWeaponRender(!toggle);
-        playerCam.GetComponent<Camera>().fieldOfView = !toggle ? 75 : 20;
+        StartCoroutine(ToggleScopeRoutine(toggle ? 20 : 75));
+        // playerCam.GetComponent<Camera>().fieldOfView = !toggle ? 75 : 20;
         sniperScope.SetActive(toggle);
         scopeOn = !scopeOn;
+    }
+
+    IEnumerator ToggleScopeRoutine (float target)
+    {
+        float timeToStart = Time.time;
+        while(playerCam.GetComponent<Camera>().fieldOfView > target)
+        {
+            // transform.position = Vector3.Lerp(transform.position, target.position, (Time.time - timeToStart )* Speed ); //Here speed is the 1 or any number w$$anonymous$$ch decides the how fast it reach to one to other end.
+            playerCam.GetComponent<Camera>().fieldOfView = Mathf.Lerp(playerCam.GetComponent<Camera>().fieldOfView, 20, (Time.time - timeToStart ) * 5);
+            yield return null;
+        }
     }
 }
