@@ -61,5 +61,6 @@ public class SniperScope : MonoBehaviour
             playerCam.GetComponent<Camera>().fieldOfView = Mathf.Lerp(playerCam.GetComponent<Camera>().fieldOfView, 20, (Time.time - timeToStart ) * 5);
             yield return null;
         }
+        yield return null;
     }
 }
