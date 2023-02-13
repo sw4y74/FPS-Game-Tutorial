@@ -23,6 +23,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] public float sprintSpeed = 6f;
     [SerializeField] public float crouchSpeed = 2f;
     [SerializeField] float acceleration = 10f;
+    [Range(0.5f, 2.5f)]
+    [SerializeField] float slopeSpeedMultiplier = 1f;
 
     [Header("Jumping")]
     public float jumpForce = 5f;
@@ -52,30 +54,28 @@ public class PlayerMovement : MonoBehaviour
     RaycastHit slopeHit;
     [SerializeField] float slideMultiplier;
     [SerializeField] float slideAccelerationMultiplier;
+    [SerializeField] float slopeDistance;
+    [Range(1f, 85f)]
+    [SerializeField] float maxSlopeAngle = 40f;
 
     private bool OnSlope()
     {
-        if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight / 2 + 0.5f))
+        slopeDistance = playerHeight / 2 + 0.5f;
+        if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, slopeDistance, groundMask))
         {
-            if (slopeHit.normal != Vector3.up)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
+            return angle < maxSlopeAngle && angle != 0;
         }
         return false;
     }
 
-    private Vector3 CalculateSlope()
-    {
-        if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight / 2 + 0.5f))
+    private float GetSlopeAngle() {
+        if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, slopeDistance, groundMask))
         {
-            return slopeHit.normal;
+            float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
+            return angle;
         }
-        return Vector3.zero;
+        return 0;
     }
 
     private void Awake() {
@@ -108,7 +108,7 @@ public class PlayerMovement : MonoBehaviour
         ControlSpeed();
         ControlPlayerHeight();
 
-        slopeMoveDirection = Vector3.ProjectOnPlane(moveDirection, slopeHit.normal);
+        slopeMoveDirection = Vector3.ProjectOnPlane(moveDirection * slopeSpeedMultiplier, slopeHit.normal);
     }
 
     private void ControlPlayerHeight()
@@ -185,7 +185,11 @@ public class PlayerMovement : MonoBehaviour
     {
         if (isGrounded && !OnSlope())
         {
-            rb.AddForce(moveDirection.normalized * moveSpeed * movementMultiplier, ForceMode.Acceleration);
+            if (GetSlopeAngle() > maxSlopeAngle && GetSlopeAngle() != 0) {
+                rb.AddForce(Vector3.down * 50f, ForceMode.Force);
+            } else {
+                rb.AddForce(moveDirection.normalized * moveSpeed * movementMultiplier, ForceMode.Acceleration);
+            }
         }
         else if (isGrounded && OnSlope())
         {
@@ -195,6 +199,7 @@ public class PlayerMovement : MonoBehaviour
         {
             rb.AddForce(moveDirection.normalized * moveSpeed * movementMultiplier * airMultiplier, ForceMode.Acceleration);
         }
+        // rb.useGravity = !OnSlope();
     }
 
     void AnimatePlayer() {

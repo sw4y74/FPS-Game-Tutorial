@@ -13,6 +13,7 @@ public class SniperScope : MonoBehaviour
     float originalSensitivity;
 
     public bool scopeOn = false;
+    Coroutine toggleScopeRoutine;
 
     void Start()
     {
@@ -46,8 +47,9 @@ public class SniperScope : MonoBehaviour
         root.ChangeSensitivity(sensitivity);
 
         root.ToggleWeaponRender(!toggle);
-        StartCoroutine(ToggleScopeRoutine(toggle ? 20 : 75));
-        // playerCam.GetComponent<Camera>().fieldOfView = !toggle ? 75 : 20;
+        if (toggleScopeRoutine != null)
+            StopCoroutine(toggleScopeRoutine);
+        toggleScopeRoutine = StartCoroutine(ToggleScopeRoutine(toggle ? 20 : 75));
         sniperScope.SetActive(toggle);
         scopeOn = !scopeOn;
     }

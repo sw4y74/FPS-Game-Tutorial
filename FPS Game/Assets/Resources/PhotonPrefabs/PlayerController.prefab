@@ -2068,6 +2068,7 @@ MonoBehaviour:
   sprintSpeed: 6
   crouchSpeed: 2.5
   acceleration: 6
+  slopeSpeedMultiplier: 1.2
   jumpForce: 10
   jumpKey: 32
   sprintKey: 304
@@ -2080,6 +2081,8 @@ MonoBehaviour:
   groundDistance: 0.2
   slideMultiplier: 2
   slideAccelerationMultiplier: 0.2
+  slopeDistance: 0
+  maxSlopeAngle: 40
 --- !u!114 &-4997894186399376600
 MonoBehaviour:
   m_ObjectHideFlags: 0
