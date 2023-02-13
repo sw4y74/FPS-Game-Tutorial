@@ -2116,9 +2116,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   orientation: {fileID: 1488053958305132835}
-  wallDistance: 0.9
+  wallDistance: 0.5
   minimumJumpHeight: 1.5
-  wallRunGravity: 8.5
+  wallRunGravity: 4
   wallRunJumpForce: 4
   cam: {fileID: 1488053957094389952}
   wallRunfov: 80
