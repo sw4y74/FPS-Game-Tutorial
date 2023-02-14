@@ -17,6 +17,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float moveSpeed = 6f;
     [SerializeField] float airMultiplier = 0.4f;
     float movementMultiplier = 10f;
+    [Range(0.5f, 3f)]
+    [SerializeField] float movementThreshold = 0.5f; // Mainly for side to side recoil movement
     
     [Header("Sprinting")]
     [SerializeField] public float walkSpeed = 4f;
@@ -203,23 +205,23 @@ public class PlayerMovement : MonoBehaviour
     }
 
     void AnimatePlayer() {
-        float movementX = Input.GetAxis("Horizontal");
-        float movementY = Input.GetAxis("Vertical");
-        animationController.MovementAnimation(movementX, movementY);
+        animationController.MovementAnimation(horizontalMovement, verticalMovement);
     }
 
     public bool IsMoving()
     {
-        if (horizontalMovement != 0 || verticalMovement != 0)
-        {
-            // Player is moving
-            return true;
-        }
-        else
-        {
-            // Player is not moving
-            return false;
-        }
+        if (rb.velocity.magnitude > 2f+movementThreshold) return true;
+        else return false;
+        // if (horizontalMovement != 0 || verticalMovement != 0)
+        // {
+        //     // Player is moving
+        //     return true;
+        // }
+        // else
+        // {
+        //     // Player is not moving
+        //     return false;
+        // }
     }
 
     public bool IsSprinting() {

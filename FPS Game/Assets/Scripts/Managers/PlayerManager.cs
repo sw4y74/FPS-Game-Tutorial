@@ -65,4 +65,13 @@ public class PlayerManager : MonoBehaviour
 		//PhotonNetwork.Destroy(controller);
 		//CreateController();
 	}
+
+	public void FreezeTime(bool toggle) {
+		controller.GetComponent<PlayerController>().freezeTime = toggle;
+		controller.GetComponent<PlayerMovement>().enabled = !toggle;
+	}
+
+	public bool HasController() {
+		return controller != null;
+	}
 }

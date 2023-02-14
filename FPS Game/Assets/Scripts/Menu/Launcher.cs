@@ -261,6 +261,7 @@ public class Launcher : MonoBehaviourPunCallbacks
 	{
 		if (PhotonNetwork.IsMasterClient) {
 			PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "gamemode", mode } });
+			PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "gamemode", mode } });
 		}
 	}
 	

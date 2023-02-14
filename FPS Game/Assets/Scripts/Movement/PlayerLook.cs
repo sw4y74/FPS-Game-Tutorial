@@ -65,6 +65,8 @@ public class PlayerLook : MonoBehaviour
 
 	void Look()
 	{
+		if (cameraHolder == null)
+			return;
 		// transform.Rotate(Vector3.up * mouseInputX * mouseSensitivity);
 		yaw = (yaw + mouseInputX * PC.mouseSensitivity) % 360f;
 		rb.MoveRotation(Quaternion.Euler(0f, yaw, 0f));

@@ -74,6 +74,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
 	public Gun[] items;
 	public Gun[] itemsMP;
 	[System.NonSerialized] public bool aimingDownSights = false;
+	public bool freezeTime = false;
 
 	[Header("Loadout")]
 	[SerializeField] TMP_Text ammoText;
@@ -235,31 +236,32 @@ public class PlayerController : MonoBehaviourPunCallbacks
             }
         }
 
-        if (items[itemIndex].gun.automatic)
-        {
-            if (Input.GetMouseButton(0) && items[itemIndex].allowFire)
-            {
-                if (Cursor.visible)
-                {
-                    Cursor.lockState = CursorLockMode.Locked;
-                    Cursor.visible = false;
-                }
-                items[itemIndex].Use();
-            }
-        }
-        else
-        {
-            if (Input.GetMouseButtonDown(0) && items[itemIndex].allowFire)
-            {
-                if (Cursor.visible)
-                {
-                    Cursor.lockState = CursorLockMode.Locked;
-                    Cursor.visible = false;
-                }
-                items[itemIndex].Use();
-            }
-        }
-
+		if (!freezeTime) {
+			if (items[itemIndex].gun.automatic)
+			{
+				if (Input.GetMouseButton(0) && items[itemIndex].allowFire)
+				{
+					if (Cursor.visible)
+					{
+						Cursor.lockState = CursorLockMode.Locked;
+						Cursor.visible = false;
+					}
+					items[itemIndex].Use();
+				}
+			}
+			else
+			{
+				if (Input.GetMouseButtonDown(0) && items[itemIndex].allowFire)
+				{
+					if (Cursor.visible)
+					{
+						Cursor.lockState = CursorLockMode.Locked;
+						Cursor.visible = false;
+					}
+					items[itemIndex].Use();
+				}
+			}
+		}
         if (Input.GetKeyDown(KeyCode.R))
         {
             items[itemIndex].Reload();
