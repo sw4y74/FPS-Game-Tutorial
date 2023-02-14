@@ -2028,6 +2028,7 @@ MonoBehaviour:
   - {fileID: 6144891650230792105}
   itemsMP:
   - {fileID: 6239371314114254129}
+  freezeTime: 0
   ammoText: {fileID: 1961297457729827401}
   weaponSlots:
   - name: PrimaryWeapon
@@ -2064,7 +2065,7 @@ MonoBehaviour:
   orientation: {fileID: 1488053958305132835}
   moveSpeed: 4
   airMultiplier: 0.2
-  movementThreshold: 1
+  movementThreshold: 1.4
   walkSpeed: 5
   sprintSpeed: 6
   crouchSpeed: 2.5
