@@ -48,7 +48,8 @@ public class PlayerLook : MonoBehaviour
         LookInput();
 		Look();	
 
-        PC.itemHolder.transform.localPosition = m_WeaponBobLocalPosition;
+		if (PC.isActiveAndEnabled)
+        	PC.itemHolder.transform.localPosition = m_WeaponBobLocalPosition;
     }
 
     void LateUpdate()
