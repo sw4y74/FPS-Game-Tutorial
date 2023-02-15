@@ -191,8 +191,6 @@ public class Gun : Item
 				break;
 		}
 
-		Debug.Log("Bullets: " + bulletsAmount);
-
 		Vector3[] bulletPositions = new Vector3[bulletsAmount];
 		Vector3[] bulletNormals = new Vector3[bulletsAmount];
 		int layerMask = 1 << 10;
@@ -268,12 +266,9 @@ public class Gun : Item
 
 		gunAudioSource.PlayOneShot(gun.gunSound);
 
-		Debug.Log(hitPositions);
-		Debug.Log(hitNormals);
 		for (int i = 0; i < hitPositions.Length; i++)
 		{
 			Collider collider = Physics.OverlapSphere(hitPositions[i], 0.1f)[0];
-			Debug.Log(collider);
 			if(collider != null)
 			{
 				Quaternion rotation = hitNormals[i] == Vector3.zero
@@ -293,7 +288,6 @@ public class Gun : Item
 					TrailRenderer trail = Instantiate(bulletTrail, muzzlePos.position, Quaternion.identity);
 					StartCoroutine(SpawnTrail(trail, hitPositions[i]));
 				} else {
-					Debug.Log(transform.root.GetComponent<PlayerController>().itemsMP[index]);
 					Gun mpGun = transform.root.GetComponent<PlayerController>().itemsMP[index];
 					mpGun.SpawnTrailNetworked(hitPositions[i]);
 				}

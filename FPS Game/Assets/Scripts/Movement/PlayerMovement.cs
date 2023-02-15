@@ -210,6 +210,7 @@ public class PlayerMovement : MonoBehaviour
 
     public bool IsMoving()
     {
+        if (rb == null) return false;
         if (rb.velocity.magnitude > 2f+movementThreshold) return true;
         else return false;
         // if (horizontalMovement != 0 || verticalMovement != 0)

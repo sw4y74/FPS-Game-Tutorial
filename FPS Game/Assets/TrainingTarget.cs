@@ -25,13 +25,12 @@ public class TrainingTarget : MonoBehaviour, IDamageable
     }
 
     [PunRPC]
-    public void RPC_TakeDamage(float dmg, int viewID)
+    void RPC_TakeDamage(float dmg, int viewID)
     {
         TakeDamageActions(dmg);
     }
 
     public void TakeDamageActions(float dmg) {
-        Debug.Log("Target took " + dmg);
         health -= dmg;
         // TODO: do a ding
         if (health <= 0 && !isDead) {
@@ -43,6 +42,7 @@ public class TrainingTarget : MonoBehaviour, IDamageable
     IEnumerator TargetDieRoutine() {
         audioSource.PlayOneShot(ding);
         targetMaterial.color = Color.red;
+        Debug.Log(targetMaterial.color);
         yield return new WaitForSeconds(3f);
         ReInitialize();
     }
