@@ -130,8 +130,13 @@ public class RoomManager : MonoBehaviourPunCallbacks, IOnEventCallback
 		localPlayerManager.GetComponent<PlayerManager>().FreezeTime(true);
 		GameOverUI gameOverUI = FindObjectOfType<GameOverUI>();
 		gameOverUI.StartCoroutine(gameOverUI.SetFFAGameOverTextRoutine("Game Over! " + bestPlayer + " won with " + bestScore + " kills!"));
-		ReloadScene();
+		LeaveRoomRoutine();
     }
+
+	IEnumerator LeaveRoomRoutine() {
+		yield return new WaitForSeconds(5f);
+		PhotonNetwork.LeaveRoom();
+	}
 
     IEnumerator TeamElimRoutine() {
 		Debug.Log("Starting Team Elimination Gamemode");
