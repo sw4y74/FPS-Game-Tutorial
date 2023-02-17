@@ -243,7 +243,7 @@ public class Gun : Item
             {
                 Reload();
             }
-            PV.RPC("RPC_Shoot", RpcTarget.All, bulletPositions, bulletNormals);
+            PV.RPC("RPC_Shoot", RpcTarget.All, bulletPositions, bulletNormals, bulletsAmount);
 		}
 
     private void HandleSniperScope(bool scopeEnabled)
@@ -255,20 +255,18 @@ public class Gun : Item
     }
 
     [PunRPC]
-	void RPC_Shoot(Vector3[] hitPositions, Vector3[] hitNormals)
+	void RPC_Shoot(Vector3[] hitPositions, Vector3[] hitNormals, int bulletsAmount)
 	{
 		AudioSource gunAudioSource = root.gunAudioSource;
 
-		// muzzleFlash.Play();
 		muzzleFlashStraight.Play();
-/*		bulletTrail.transform.rotation = Quaternion.LookRotation(hitNormal);
-		bulletTrail.Play();*/
 
 		gunAudioSource.PlayOneShot(gun.gunSound);
 
-		for (int i = 0; i < hitPositions.Length; i++)
+		for (int i = 0; i < (bulletsAmount > 1 ? hitPositions.Length : 1); i++)
 		{
-			Collider collider = Physics.OverlapSphere(hitPositions[i], 0.1f)[0];
+			Collider collider = Physics.OverlapSphere(hitPositions[i], 0.15f)[0];
+			Debug.Log(collider);
 			if(collider != null)
 			{
 				Quaternion rotation = hitNormals[i] == Vector3.zero

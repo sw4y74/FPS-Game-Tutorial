@@ -42,7 +42,6 @@ public class TrainingTarget : MonoBehaviour, IDamageable
     IEnumerator TargetDieRoutine() {
         audioSource.PlayOneShot(ding);
         targetMaterial.color = Color.red;
-        Debug.Log(targetMaterial.color);
         yield return new WaitForSeconds(3f);
         ReInitialize();
     }

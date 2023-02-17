@@ -18,7 +18,9 @@ public class TargetSpawner : MonoBehaviour
     public float spawnDelay = 1f;
 
     private void Start() {
-        SpawnTarget();
+        if (PhotonNetwork.IsMasterClient) {
+            SpawnTarget();
+        }
     }
 
     void SpawnTarget() {

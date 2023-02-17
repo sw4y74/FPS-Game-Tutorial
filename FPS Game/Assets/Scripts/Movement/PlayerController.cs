@@ -9,6 +9,7 @@ using TMPro;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 using System.IO;
 using System;
+using UnityEngine.Events;
 
 public enum SlotType { Primary, Secondary, Grenade, Knife }
 
@@ -109,7 +110,11 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
 	PlayerAnimController animationController;
 	PlayerMovement playerMovement;
+	private UnityAction<int, int> OnPlayerKill;
 
+	private void OnDestroy() {
+		Debug.Log("Destroyed!!!");
+	}
 
     void Awake()
 	{
@@ -124,6 +129,11 @@ public class PlayerController : MonoBehaviourPunCallbacks
 		itemsMP = itemHolderMP.GetComponentsInChildren<Gun>();
 		killFeed = FindObjectOfType<KillFeed>();
 		animationController = GetComponent<PlayerAnimController>();
+	}
+
+	private void OnEnable() {
+		base.OnEnable();
+		OnPlayerKill += RoomManager.Instance.HandlePlayerKill;
 	}
 
 	void Start()
@@ -376,7 +386,6 @@ public class PlayerController : MonoBehaviourPunCallbacks
 	{
 		if(!PV.IsMine)
 			return;
-
 		currentHealth -= damage;
 
 		healthbarImage.fillAmount = currentHealth / maxHealth;
@@ -406,7 +415,11 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
 		if (photonID != -1)
 		{
-			PhotonNetwork.GetPhotonView(photonID).Owner.AddScore(1);
+			int killScore = 1;
+			OnPlayerKill?.Invoke(killScore, photonID);
+			PhotonNetwork.GetPhotonView(photonID).Owner.AddScore(killScore);
+			// RoomManager.Instance.CheckHighestScore();
+		
 			killer = PhotonNetwork.GetPhotonView(photonID).Owner.NickName;
 
 		} else killer = "gravity";

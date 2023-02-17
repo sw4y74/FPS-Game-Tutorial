@@ -8,7 +8,7 @@ public class PlayerManager : MonoBehaviour
 {
 	PhotonView PV;
 
-	GameObject controller;
+	GameObject PlayerGameObject;
 
 	DeathCam deathCam;
 
@@ -29,20 +29,28 @@ public class PlayerManager : MonoBehaviour
 	void CreateController()
 	{
 		Transform spawnpoint = SpawnManager.Instance.GetSpawnpoint();
-		controller = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "PlayerController"), spawnpoint.position, spawnpoint.rotation, 0, new object[] { PV.ViewID });
+		PlayerGameObject = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "PlayerController"), spawnpoint.position, spawnpoint.rotation, 0, new object[] { PV.ViewID });
+		PV.RPC("RPC_CreateController", RpcTarget.OthersBuffered, PlayerGameObject.GetPhotonView().ViewID);
+	}
+
+	[PunRPC]
+	void RPC_CreateController(int viewID)
+	{
+		PlayerGameObject = PhotonView.Find(viewID).gameObject;
+		Debug.Log(PlayerGameObject.name);
 	}
 
 	IEnumerator DieRoutine(string killer)
     {
 		float timeout = 3f;
 		//PV.RPC("RPC_DestroyViewModel", RpcTarget.Others);
-		Transform cameraTransform = controller.GetComponent<PlayerController>().firstPersonCamera.transform;
-		PhotonNetwork.Destroy(controller.transform.GetChild(0).gameObject);
-		controller.GetComponent<PlayerController>().enabled = false;
-		controller.GetComponent<PlayerMovement>().enabled = false;
-		controller.GetComponent<WallRun>().enabled = false;
-		controller.GetComponent<Throwable>().enabled = false;
-		controller.GetComponent<Footsteps>().enabled = false;
+		Transform cameraTransform = PlayerGameObject.GetComponent<PlayerController>().firstPersonCamera.transform;
+		PV.RPC("RPC_DestroyViewModel", RpcTarget.All);
+		PlayerGameObject.GetComponent<PlayerController>().enabled = false;
+		PlayerGameObject.GetComponent<PlayerMovement>().enabled = false;
+		PlayerGameObject.GetComponent<WallRun>().enabled = false;
+		PlayerGameObject.GetComponent<Throwable>().enabled = false;
+		PlayerGameObject.GetComponent<Footsteps>().enabled = false;
 
 		GameObject.FindGameObjectWithTag("DeathCam").GetComponent<AudioListener>().enabled = true;
 		GameObject.FindGameObjectWithTag("DeathCam").GetComponent<AudioLowPassFilter>().enabled = true;
@@ -52,7 +60,7 @@ public class PlayerManager : MonoBehaviour
 		deathCam.DisplayDeathInfo(timeout, killer);
 
 		yield return new WaitForSeconds(timeout);
-		PhotonNetwork.Destroy(controller);
+		PhotonNetwork.Destroy(PlayerGameObject);
 
 		GameObject.FindGameObjectWithTag("DeathCam").GetComponent<AudioListener>().enabled = false;
 		GameObject.FindGameObjectWithTag("DeathCam").GetComponent<AudioLowPassFilter>().enabled = false;
@@ -66,12 +74,18 @@ public class PlayerManager : MonoBehaviour
 		//CreateController();
 	}
 
+	[PunRPC]
+	void RPC_DestroyViewModel()
+	{
+		Destroy(PlayerGameObject.transform.GetChild(0).gameObject);
+	}
+
 	public void FreezeTime(bool toggle) {
-		controller.GetComponent<PlayerController>().freezeTime = toggle;
-		controller.GetComponent<PlayerMovement>().enabled = !toggle;
+		PlayerGameObject.GetComponent<PlayerController>().freezeTime = toggle;
+		PlayerGameObject.GetComponent<PlayerMovement>().enabled = !toggle;
 	}
 
 	public bool HasController() {
-		return controller != null;
+		return PlayerGameObject != null;
 	}
 }

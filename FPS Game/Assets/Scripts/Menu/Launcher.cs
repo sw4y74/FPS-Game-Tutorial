@@ -30,12 +30,10 @@ public class Launcher : MonoBehaviourPunCallbacks
 	[SerializeField] Button findRoomButton;
 	[SerializeField] Button nextMap;
 	[SerializeField] Button previousMap;
-	[SerializeField] List<Maps> maps = new List<Maps>();
 	[SerializeField] int numberOfPlayers = 4;
 	[SerializeField] int maxNoOfPlayers = 12;
 	
 	private int selectedMap;
-	[SerializeField] public List<GameMode> gameModes = new List<GameMode>();
 	[System.NonSerialized] public int selectedGameMode;
 
 	void Awake()
@@ -123,7 +121,9 @@ public class Launcher : MonoBehaviourPunCallbacks
 
 	public void StartGame()
 	{
-		PhotonNetwork.LoadLevel(maps[selectedMap].id);
+		PhotonNetwork.CurrentRoom.IsOpen = false;
+		PhotonNetwork.CurrentRoom.IsVisible = false;
+		PhotonNetwork.LoadLevel(RoomManager.Instance.maps[selectedMap].id);
 	}
 
 	public void LeaveRoom()
@@ -189,8 +189,8 @@ public class Launcher : MonoBehaviourPunCallbacks
     public void MapRight() 
     {
         selectedMap++;
-        if (selectedMap > maps.Count - 1) {
-            selectedMap = maps.Count - 1;
+        if (selectedMap > RoomManager.Instance.maps.Count - 1) {
+            selectedMap = RoomManager.Instance.maps.Count - 1;
         }
 		SetMap(selectedMap);
     }
@@ -207,20 +207,20 @@ public class Launcher : MonoBehaviourPunCallbacks
     public void GameModeRight() 
     {
         selectedGameMode++;
-        if (selectedGameMode > gameModes.Count - 1) {
-            selectedGameMode = gameModes.Count - 1;
+        if (selectedGameMode > RoomManager.Instance.gameModes.Count - 1) {
+            selectedGameMode = RoomManager.Instance.gameModes.Count - 1;
         }
 		SetGameMode(selectedGameMode);
     }
 
     public void UpdateMapLabel()
     {
-        mapLabel.text = maps[selectedMap].name;
+        mapLabel.text = RoomManager.Instance.maps[selectedMap].name;
     }
 
     private void UpdateGameModeLabel()
     {
-		gameModeLabel.text = gameModes[selectedGameMode].name;
+		gameModeLabel.text = RoomManager.Instance.gameModes[selectedGameMode].name;
     }
 
 	private void ToggleNavElements(bool toggle)
@@ -292,7 +292,7 @@ public class Launcher : MonoBehaviourPunCallbacks
     {
         foreach(Transform child in playerListContent)
 		{
-			child.GetComponent<PlayerListItem>().SetupGamemode(gameModes[selectedGameMode]);
+			child.GetComponent<PlayerListItem>().SetupGamemode(RoomManager.Instance.gameModes[selectedGameMode]);
 		}
     }
 }

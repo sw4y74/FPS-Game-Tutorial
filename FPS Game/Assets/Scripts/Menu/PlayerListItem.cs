@@ -75,7 +75,7 @@ public class PlayerListItem : MonoBehaviourPunCallbacks
     public override void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
     {
 		if (changedProps.ContainsKey("teamIdx")) {
-			if (targetPlayer == player && Launcher.Instance.gameModes[Launcher.Instance.selectedGameMode].type == GameModeType.team) {
+			if (targetPlayer == player && RoomManager.Instance.gameModes[Launcher.Instance.selectedGameMode].type == GameModeType.team) {
 				Debug.Log("OnPlayerPropertiesUpdate: " + targetPlayer.NickName + " changedProps: " + changedProps.ToStringFull());
 				int team = (int)changedProps["teamIdx"];
 				teamId = team;

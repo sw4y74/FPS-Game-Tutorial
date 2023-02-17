@@ -9248,7 +9248,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 647e8b511d2c95b45bf0c9487b1c340e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameModes:
+  - id: 0
+    name: Team Elimination
+    type: 0
+  - id: 1
+    name: Free for All
+    type: 1
+  maps:
+  - id: 1
+    name: Close Quarters
+    sprite: {fileID: 0}
+  - id: 2
+    name: Nuke
+    sprite: {fileID: 0}
+  - id: 3
+    name: Prototype
+    sprite: {fileID: 0}
+  - id: 4
+    name: Heights
+    sprite: {fileID: 0}
+  - id: 5
+    name: LaCanal
+    sprite: {fileID: 0}
+  - id: 6
+    name: TestMap
+    sprite: {fileID: 0}
   sensitivity: 20
+  FFAKillLimit: 2
 --- !u!4 &2024788088
 Transform:
   m_ObjectHideFlags: 0
@@ -9744,34 +9771,8 @@ MonoBehaviour:
   findRoomButton: {fileID: 477066598}
   nextMap: {fileID: 398128273}
   previousMap: {fileID: 1420118278}
-  maps:
-  - id: 1
-    name: Close Quarters
-    sprite: {fileID: 0}
-  - id: 2
-    name: Nuke
-    sprite: {fileID: 0}
-  - id: 3
-    name: Prototype
-    sprite: {fileID: 0}
-  - id: 4
-    name: Heights
-    sprite: {fileID: 0}
-  - id: 5
-    name: LaCanal
-    sprite: {fileID: 0}
-  - id: 6
-    name: TestMap
-    sprite: {fileID: 0}
   numberOfPlayers: 4
   maxNoOfPlayers: 12
-  gameModes:
-  - id: 0
-    name: Team Elimination
-    type: 0
-  - id: 1
-    name: Free for All
-    type: 1
 --- !u!114 &2125027183
 MonoBehaviour:
   m_ObjectHideFlags: 0

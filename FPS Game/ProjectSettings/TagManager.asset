@@ -8,6 +8,7 @@ TagManager:
   - DeathCam
   - ItemHolderMP
   - LocalPlayerManager
+  - GameOverItems
   layers:
   - Default
   - TransparentFX
