@@ -14,8 +14,9 @@ public class GameModeManager : MonoBehaviourPunCallbacks, IOnEventCallback
     [SerializeField] int FFAKillLimit = 15;
     [SerializeField] bool FFAKillLimitEnabled = false;
     [Range(0, 20)]
-    [SerializeField] int FFATimerMinutes = 4;
-    double FFATimer() { return FFATimerMinutes * 60; } // Multiply the minutes by 60 to get seconds
+    [SerializeField] double FFATimerMinutes = 4;
+    [SerializeField] bool DEV_FFATimerEnabled = true;
+    double FFATimer() { return DEV_FFATimerEnabled ? FFATimerMinutes * 60 : 200000; } // Multiply the minutes by 60 to get seconds
     public static readonly byte TeamElim_GameOverEventCode = 2;
     public static readonly byte FFA_GameOverEventCode = 1;
     [SerializeField] GameModeBase FFA;
@@ -102,7 +103,7 @@ public class GameModeManager : MonoBehaviourPunCallbacks, IOnEventCallback
         Debug.Log("FFA_GameOverEventHandler");
 		localPlayerManager.GetComponent<PlayerManager>().FreezeTime(true);
 		gameModeUI?.StartCoroutine(gameModeUI.SetFFAGameOverTextRoutine("Game Over! " + bestPlayer + " won with " + bestScore + " kills!"));
-		LeaveRoomRoutine();
+		StartCoroutine(LeaveRoomRoutine());
     }
 
     void HandleTimerCompleted() {
@@ -167,7 +168,9 @@ public class GameModeManager : MonoBehaviourPunCallbacks, IOnEventCallback
 
     IEnumerator LeaveRoomRoutine() {
 		yield return new WaitForSeconds(5f);
-		PhotonNetwork.LeaveRoom();
+        Cursor.lockState = CursorLockMode.None;
+		Cursor.visible = true;
+		FindObjectOfType<PauseMenu>().LoadMenu();
 	}
 
     public void OnEvent(EventData photonEvent)

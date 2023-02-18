@@ -112,10 +112,6 @@ public class PlayerController : MonoBehaviourPunCallbacks
 	PlayerMovement playerMovement;
 	private UnityAction<int, int> OnPlayerKill;
 
-	private void OnDestroy() {
-		Debug.Log("Destroyed!!!");
-	}
-
     void Awake()
 	{
 	
@@ -131,7 +127,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
 		animationController = GetComponent<PlayerAnimController>();
 	}
 
-	private void OnEnable() {
+	public override void OnEnable() {
 		base.OnEnable();
 		OnPlayerKill += GameModeManager.Instance.HandlePlayerKill;
 	}

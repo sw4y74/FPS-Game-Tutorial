@@ -421,7 +421,8 @@ MonoBehaviour:
   gameModeUI: {fileID: 9034369880259750872}
   FFAKillLimit: 15
   FFAKillLimitEnabled: 0
-  FFATimerMinutes: 1
+  FFATimerMinutes: 4
+  DEV_FFATimerEnabled: 0
   FFA: {fileID: 3505813171667728201}
   TeamElim: {fileID: 3625989271033354798}
 --- !u!114 &3505813171667728201
