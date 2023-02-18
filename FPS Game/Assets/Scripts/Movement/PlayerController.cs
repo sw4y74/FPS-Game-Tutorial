@@ -133,7 +133,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
 	private void OnEnable() {
 		base.OnEnable();
-		OnPlayerKill += RoomManager.Instance.HandlePlayerKill;
+		OnPlayerKill += GameModeManager.Instance.HandlePlayerKill;
 	}
 
 	void Start()
@@ -417,9 +417,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
 		{
 			int killScore = 1;
 			OnPlayerKill?.Invoke(killScore, photonID);
-			PhotonNetwork.GetPhotonView(photonID).Owner.AddScore(killScore);
-			// RoomManager.Instance.CheckHighestScore();
-		
+			PhotonNetwork.GetPhotonView(photonID).Owner.AddScore(killScore);		
 			killer = PhotonNetwork.GetPhotonView(photonID).Owner.NickName;
 
 		} else killer = "gravity";

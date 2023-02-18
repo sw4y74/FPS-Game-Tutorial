@@ -23,10 +23,10 @@ public class SpawnManager : MonoBehaviour
 	{
 		switch(gameMode)
 		{
-			case GameModeType.freeForAll:
+			case GameModeType.FFA:
 				spawnpoints = ffaSpawnpoints;
 				break;
-			case GameModeType.team:
+			case GameModeType.TeamElimination:
 				spawnpoints = teamElimSpawnpoints;
 				break;
 		}

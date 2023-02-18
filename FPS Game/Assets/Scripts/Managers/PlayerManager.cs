@@ -9,6 +9,7 @@ public class PlayerManager : MonoBehaviour
 	PhotonView PV;
 
 	GameObject PlayerGameObject;
+	public bool freezeTime = false;
 
 	DeathCam deathCam;
 
@@ -30,6 +31,7 @@ public class PlayerManager : MonoBehaviour
 	{
 		Transform spawnpoint = SpawnManager.Instance.GetSpawnpoint();
 		PlayerGameObject = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "PlayerController"), spawnpoint.position, spawnpoint.rotation, 0, new object[] { PV.ViewID });
+		if (freezeTime) FreezeTime(true);
 		PV.RPC("RPC_CreateController", RpcTarget.OthersBuffered, PlayerGameObject.GetPhotonView().ViewID);
 	}
 
@@ -81,6 +83,7 @@ public class PlayerManager : MonoBehaviour
 	}
 
 	public void FreezeTime(bool toggle) {
+		freezeTime = toggle;
 		PlayerGameObject.GetComponent<PlayerController>().freezeTime = toggle;
 		PlayerGameObject.GetComponent<PlayerMovement>().enabled = !toggle;
 	}

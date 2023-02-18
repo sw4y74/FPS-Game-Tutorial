@@ -266,7 +266,6 @@ public class Gun : Item
 		for (int i = 0; i < (bulletsAmount > 1 ? hitPositions.Length : 1); i++)
 		{
 			Collider collider = Physics.OverlapSphere(hitPositions[i], 0.15f)[0];
-			Debug.Log(collider);
 			if(collider != null)
 			{
 				Quaternion rotation = hitNormals[i] == Vector3.zero

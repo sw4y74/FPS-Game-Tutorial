@@ -12,10 +12,10 @@ enum TargetType
 public class TargetSpawner : MonoBehaviour
 {
     [SerializeField] TargetType targetType;
-    public int numTargets = 10;
-    public float spawnRadius = 10f;
-    public float spawnHeight = 5f;
-    public float spawnDelay = 1f;
+    // public int numTargets = 10;
+    // public float spawnRadius = 10f;
+    // public float spawnHeight = 5f;
+    // public float spawnDelay = 1f;
 
     private void Start() {
         if (PhotonNetwork.IsMasterClient) {

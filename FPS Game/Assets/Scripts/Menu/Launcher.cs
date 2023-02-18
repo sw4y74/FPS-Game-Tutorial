@@ -319,5 +319,5 @@ public class GameMode {
 
 public enum GameModeType
 {
-	team, freeForAll
+	TeamElimination, FFA
 }
