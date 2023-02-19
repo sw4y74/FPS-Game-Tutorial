@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using System.IO;
+using UnityEngine.Events;
 
 public class PlayerManager : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class PlayerManager : MonoBehaviour
 	public bool freezeTime = false;
 
 	DeathCam deathCam;
+	public UnityAction<int> OnPlayerKill;
 
 	void Awake()
 	{
@@ -24,6 +26,7 @@ public class PlayerManager : MonoBehaviour
 		if(PV.IsMine)
 		{
 			CreateController();
+			PhotonNetwork.SetLoaded(PhotonNetwork.LocalPlayer, true);
 		}
 	}
 
@@ -89,6 +92,6 @@ public class PlayerManager : MonoBehaviour
 	}
 
 	public bool HasController() {
-		return PlayerGameObject != null;
+		return PlayerGameObject != null && PlayerGameObject.GetComponent<PlayerController>().isActiveAndEnabled;
 	}
 }

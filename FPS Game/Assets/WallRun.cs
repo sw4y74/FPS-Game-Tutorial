@@ -67,12 +67,10 @@ public class WallRun : MonoBehaviour
             if (wallLeft)
             {
                 StartWallRun();
-                Debug.Log("wall running on the left");
             }
             else if (wallRight)
             {
                 StartWallRun();
-                Debug.Log("wall running on the right");
             }
             else
             {

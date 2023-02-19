@@ -4,6 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using UnityEngine.SceneManagement;
 using System.IO;
+using System.Linq;
 
 public class RoomManager : MonoBehaviourPunCallbacks
 {
@@ -11,10 +12,12 @@ public class RoomManager : MonoBehaviourPunCallbacks
 	public List<GameMode> gameModes = new List<GameMode>();
 	GameModeUI gameModeUI;
 	public List<Maps> maps = new List<Maps>();
+	public List<RoundTime> roundTimes = new List<RoundTime>();
 	GameObject localPlayerManager;
 	public float sensitivity;
 	public int selectedGameMode { get; set; }
 	public int selectedMap { get; set; }
+	public int selectedRoundTime { get; set; }
 
     void Awake()
 	{
@@ -48,28 +51,20 @@ public class RoomManager : MonoBehaviourPunCallbacks
 			StartCoroutine(InitializeGameRoutine());
 		}
 	}
-
-	void ReloadScene() {
-		PhotonNetwork.LoadLevel(maps[(int)PhotonNetwork.CurrentRoom.CustomProperties["map"]].id); // DOESNT WORK FOR SOME REASON
-	}
-
+	
 	IEnumerator InitializeGameRoutine() {
-		selectedGameMode = (int)PhotonNetwork.CurrentRoom.CustomProperties["gamemode"];
 		SpawnManager.Instance.SetSpawnpoints(gameModes[selectedGameMode].type); //set spawnpoints based on gamemode
 		localPlayerManager = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "PlayerManager"), Vector3.zero, Quaternion.identity); //spawn player manager -> then PM spawns player
 		yield return new WaitUntil(() => localPlayerManager.GetComponent<PlayerManager>().HasController());
-		yield return new WaitUntil(() => GameModeManager.Instance != null);
-		Debug.Log("GameModeManager Initialized");
-		switch (gameModes[selectedGameMode].type)
-		{
-			case GameModeType.TeamElimination:
-				GameModeManager.Instance.TeamElim_Initialize(localPlayerManager);
-				break;
-			case GameModeType.FFA:
-				GameModeManager.Instance.FFA_Initialize(localPlayerManager);
-				break;
-			default:
-				break;
-		}
+		localPlayerManager.GetComponent<PlayerManager>().FreezeTime(true);
+		yield return new WaitUntil(() => !WaitingForPlayers());
+		// HERE - might change to a RaiseEvent from master to initialize instead of letting every client check if players are loaded
+		GameModeManager.Instance.InitializeGameMode(gameModes[selectedGameMode].type, localPlayerManager);
+		yield return null;
+	}
+
+	bool WaitingForPlayers() {
+		bool waitingForPlayers = PhotonNetwork.PlayerList.ToList().Any(player => !player.IsLoaded());
+		return waitingForPlayers;
 	}
 }

@@ -110,7 +110,6 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
 	PlayerAnimController animationController;
 	PlayerMovement playerMovement;
-	private UnityAction<int, int> OnPlayerKill;
 
     void Awake()
 	{
@@ -127,10 +126,16 @@ public class PlayerController : MonoBehaviourPunCallbacks
 		animationController = GetComponent<PlayerAnimController>();
 	}
 
-	public override void OnEnable() {
-		base.OnEnable();
-		OnPlayerKill += GameModeManager.Instance.HandlePlayerKill;
-	}
+	// IEnumerator WaitForGameModeInit() {
+	// 	yield return new WaitUntil(() => GameModeManager.Instance.currentGameMode != null);
+	// 	OnPlayerKill += GameModeManager.Instance.currentGameMode.HandlePlayerKill;
+	// 	yield return null;
+	// }
+
+	// public override void OnEnable() {
+	// 	base.OnEnable();
+	// 	StartCoroutine(WaitForGameModeInit());
+	// }
 
 	void Start()
 	{
@@ -411,9 +416,8 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
 		if (photonID != -1)
 		{
-			int killScore = 1;
-			OnPlayerKill?.Invoke(killScore, photonID);
-			PhotonNetwork.GetPhotonView(photonID).Owner.AddScore(killScore);		
+			playerManager.OnPlayerKill?.Invoke(photonID);
+			PhotonNetwork.GetPhotonView(photonID).Owner.AddScore(1);		
 			killer = PhotonNetwork.GetPhotonView(photonID).Owner.NickName;
 
 		} else killer = "gravity";

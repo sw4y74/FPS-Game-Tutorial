@@ -32,7 +32,7 @@ MonoBehaviour:
   kbY: -0.6
   kbZ: 0.6
   snappiness: 22
-  returnSpeed: 8
+  returnSpeed: 6
   movementAccuracy: 0.5
   jumpAccuracy: 0.5
   noScopeAccuracy: 0.6

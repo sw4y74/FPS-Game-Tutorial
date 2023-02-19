@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using ExitGames.Client.Photon;
+using Photon.Pun;
 using UnityEngine;
 
 public class TeamElimination : GameModeBase
@@ -10,11 +12,32 @@ public class TeamElimination : GameModeBase
     public override void Init(GameObject localPlayer)
     {
         base.Init(localPlayer);
+        StartCoroutine(GameModeRoutine());
     }
 
-    protected override IEnumerator GameModeRoutine()
+    IEnumerator GameModeRoutine()
     {
-        base.GameModeRoutine();
+        Debug.LogError("TeamElimination not implemented");
         yield return null;
-    } 
+    }
+
+    public override void HandlePlayerKill(int photonID)
+    {
+        Debug.LogError("HandlePlayerKill not implemented");
+    }
+
+    public void OnEvent(EventData photonEvent)
+    {
+        if (photonEvent.Code == GameOverEventCode) Debug.LogError("To Implement: Handle GameOverEventCode");
+    }
+
+    public override void OnEnable()
+    {
+        PhotonNetwork.AddCallbackTarget(this);
+    }
+
+    public override void OnDisable()
+    {
+        PhotonNetwork.RemoveCallbackTarget(this);
+    }
 }

@@ -76,7 +76,6 @@ public class PlayerListItem : MonoBehaviourPunCallbacks
     {
 		if (changedProps.ContainsKey("teamIdx")) {
 			if (targetPlayer == player && RoomManager.Instance.gameModes[Launcher.Instance.selectedGameMode].type == GameModeType.TeamElimination) {
-				Debug.Log("OnPlayerPropertiesUpdate: " + targetPlayer.NickName + " changedProps: " + changedProps.ToStringFull());
 				int team = (int)changedProps["teamIdx"];
 				teamId = team;
 				text.color = team == 1 ? Color.yellow : Color.cyan;
