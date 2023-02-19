@@ -143,7 +143,7 @@ public class FreeForAll : GameModeBase, IOnEventCallback
 
     IEnumerator LeaveRoomRoutine() {
         localPlayerManager.GetComponent<PlayerManager>().OnPlayerKill -= HandlePlayerKill;
-		yield return new WaitForSeconds(5f);
+		yield return new WaitForSeconds(10f);
         Cursor.lockState = CursorLockMode.None;
 		Cursor.visible = true;
 		FindObjectOfType<PauseMenu>().LoadMenu();

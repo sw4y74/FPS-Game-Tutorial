@@ -6876,7 +6876,7 @@ PrefabInstance:
     - target: {fileID: 1523931940978597801, guid: 3e4a0879c2eda9949b424eea21a67de6,
         type: 3}
       propertyPath: FFAKillLimit
-      value: 1
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 1523931940978597801, guid: 3e4a0879c2eda9949b424eea21a67de6,
         type: 3}
