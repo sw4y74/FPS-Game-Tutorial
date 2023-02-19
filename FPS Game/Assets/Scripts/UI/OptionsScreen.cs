@@ -19,8 +19,6 @@ public class OptionsScreen : MonoBehaviour
         sensitivityLabel.text = RoomManager.Instance.sensitivity.ToString("F1");
         selectedResolution = PlayerPrefs.HasKey("resolution") ? PlayerPrefs.GetInt("resolution") : 1;
         selectedDisplayMode = PlayerPrefs.HasKey("displaymode") ? PlayerPrefs.GetInt("displaymode") : 0;
-        Debug.Log(selectedResolution);
-        Debug.Log(selectedDisplayMode);
         UpdateResLabel();
         UpdateDisplayModeLabel();
         if (PlayerPrefs.HasKey("sensitivity"))

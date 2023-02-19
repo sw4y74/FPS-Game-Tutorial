@@ -39,6 +39,7 @@ namespace Photon.Pun
         public static string Ready = "rdy";
         public static string Score = "scr";
         public static string Deaths = "dth";
+        public static string Loaded = "ldd";
     }
 
     public struct InstantiateParameters
@@ -383,6 +384,20 @@ namespace Photon.Pun
         public static bool IsReady(Player player)
         {
             return player.GetPropertyValue(PlayerProperties.Ready, false);
+        }
+
+        #endregion
+
+        #region PlayerLoadedState
+
+        public static void SetLoaded(this Player player, bool value)
+        {
+            player.SetPropertyValue(PlayerProperties.Loaded, value);
+        }
+
+        public static bool IsLoaded(this Player player)
+        {
+            return player.GetPropertyValue(PlayerProperties.Loaded, false);
         }
 
         #endregion
