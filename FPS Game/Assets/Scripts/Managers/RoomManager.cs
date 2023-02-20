@@ -51,7 +51,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
 			StartCoroutine(InitializeGameRoutine());
 		}
 	}
-	
+
 	IEnumerator InitializeGameRoutine() {
 		SpawnManager.Instance.SetSpawnpoints(gameModes[selectedGameMode].type); //set spawnpoints based on gamemode
 		localPlayerManager = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "PlayerManager"), Vector3.zero, Quaternion.identity); //spawn player manager -> then PM spawns player

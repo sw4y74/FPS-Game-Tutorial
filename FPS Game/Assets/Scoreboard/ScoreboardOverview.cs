@@ -22,7 +22,10 @@ public class ScoreboardOverview : MonoBehaviourPunCallbacks
 
     public override void OnLeftRoom()
     {
-		RemoveEntry(PhotonNetwork.LocalPlayer);
+		for (int i = 0; i < m_entries.Count; i++)
+		{
+			RemoveEntry(m_entries[i].Player);
+		}
 	}
 
     //creates entry foreach new player and updates the board
@@ -100,6 +103,7 @@ public class ScoreboardOverview : MonoBehaviourPunCallbacks
 	private void Start()
 	{
 		ToggleScoreBoard(false);
+		UpdateScoreboard();
 	}
 
 	private void Update()

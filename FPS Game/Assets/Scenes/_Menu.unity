@@ -3752,7 +3752,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0, y: 127.01233, z: 8.77e-43, w: 3.8593407}
+  m_BoundingSphereOverride: {x: 0, y: -3.365406e-29, z: 4.5905e-41, w: 0}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
@@ -4377,12 +4377,12 @@ PrefabInstance:
     - target: {fileID: 1669638030829674109, guid: b507b3659baa95b4baa0ce7b49c34c6b,
         type: 3}
       propertyPath: m_Name
-      value: ScoreboardCanvas
+      value: ScoreboardCanvasOLD
       objectReference: {fileID: 0}
     - target: {fileID: 1669638030829674109, guid: b507b3659baa95b4baa0ce7b49c34c6b,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b507b3659baa95b4baa0ce7b49c34c6b, type: 3}

@@ -19,11 +19,11 @@ public class GameModeUI : MonoBehaviour, IOnEventCallback
     ExitGames.Client.Photon.Hashtable timerValue;
     public Action OnTimerCompleted;
 
-    public IEnumerator SetFFAGameOverTextRoutine(string text)
+    public IEnumerator SetFFAGameOverTextRoutine(string text, float delay)
     {
         FFAGameOverText.text = text;
         FFAGameOverText.gameObject.SetActive(true);
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(delay-1);
         FFAGameOverText.gameObject.SetActive(false);
     }
 

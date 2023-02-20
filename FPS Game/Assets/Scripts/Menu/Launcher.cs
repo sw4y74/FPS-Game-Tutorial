@@ -82,7 +82,6 @@ public class Launcher : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
 	{
 		Debug.Log("Joined Room");
-		Debug.Log(selectedMap);
 		ToggleNavElements(false);
 		SetMap(selectedMap);
 		SetGameMode(selectedGameMode);

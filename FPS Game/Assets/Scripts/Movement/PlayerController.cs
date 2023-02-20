@@ -141,13 +141,6 @@ public class PlayerController : MonoBehaviourPunCallbacks
 	{
 		if(PV.IsMine)
         {
-			foreach (var item in PhotonNetwork.PlayerList)
-			{
-				if (item.GetTeam() != -1)
-				{
-					Debug.Log(item.GetTeam());
-				}
-			}
             headCollider.enabled = false;
 
             if (PlayerPrefs.HasKey("sensitivity"))

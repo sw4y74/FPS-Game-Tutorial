@@ -193,6 +193,7 @@ public class Gun : Item
 
 		Vector3[] bulletPositions = new Vector3[bulletsAmount];
 		Vector3[] bulletNormals = new Vector3[bulletsAmount];
+		bool[] hitIsPlayer = new bool[bulletsAmount];
 		int layerMask = 1 << 10;
 		layerMask = ~layerMask;
 
@@ -234,6 +235,12 @@ public class Gun : Item
                     hit.collider.gameObject.GetComponent<IDamageable>()?.TakeDamage(damage, PV.ViewID);
                     bulletPositions[i] = hit.point;
                     bulletNormals[i] = hit.normal;
+					Collider collider = Physics.OverlapSphere(hit.point, 0.15f)[0];
+					if (!collider.transform.root.tag.Equals("Player") && !collider.transform.root.tag.Equals("LocalPlayer")) {
+						hitIsPlayer[i] = false;
+					} else {
+						hitIsPlayer[i] = true;
+					}
                 }
             }
 
@@ -243,7 +250,7 @@ public class Gun : Item
             {
                 Reload();
             }
-            PV.RPC("RPC_Shoot", RpcTarget.All, bulletPositions, bulletNormals, bulletsAmount);
+            PV.RPC("RPC_Shoot", RpcTarget.All, bulletPositions, bulletNormals, bulletsAmount, hitIsPlayer);
 		}
 
     private void HandleSniperScope(bool scopeEnabled)
@@ -255,7 +262,7 @@ public class Gun : Item
     }
 
     [PunRPC]
-	void RPC_Shoot(Vector3[] hitPositions, Vector3[] hitNormals, int bulletsAmount)
+	void RPC_Shoot(Vector3[] hitPositions, Vector3[] hitNormals, int bulletsAmount, bool[] hitPositionIsPlayer)
 	{
 		AudioSource gunAudioSource = root.gunAudioSource;
 
@@ -263,31 +270,27 @@ public class Gun : Item
 
 		gunAudioSource.PlayOneShot(gun.gunSound);
 
-		for (int i = 0; i < (bulletsAmount > 1 ? hitPositions.Length : 1); i++)
+		for (int i = 0; i < hitPositions.Length; i++)
 		{
-			Collider collider = Physics.OverlapSphere(hitPositions[i], 0.15f)[0];
-			if(collider != null)
+			Quaternion rotation = hitNormals[i] == Vector3.zero
+								? Quaternion.identity
+								: Quaternion.LookRotation(hitNormals[i]);
+			
+			if (!hitPositionIsPlayer[i])
 			{
-				Quaternion rotation = hitNormals[i] == Vector3.zero
-									? Quaternion.identity
-									: Quaternion.LookRotation(hitNormals[i]);
-				
-				if (!collider.transform.root.tag.Equals("Player") && !collider.transform.root.tag.Equals("LocalPlayer"))
-				{
-					GameObject bulletImpactObj = Instantiate(bulletImpactPrefab, hitPositions[i] + hitNormals[i] * 0.001f, 
-					rotation * bulletImpactPrefab.transform.rotation);
-					Destroy(bulletImpactObj, 10f);
-					bulletImpactObj.transform.SetParent(collider.transform);				
-				}
-				
-				if (PV.IsMine)
-				{
-					TrailRenderer trail = Instantiate(bulletTrail, muzzlePos.position, Quaternion.identity);
-					StartCoroutine(SpawnTrail(trail, hitPositions[i]));
-				} else {
-					Gun mpGun = transform.root.GetComponent<PlayerController>().itemsMP[index];
-					mpGun.SpawnTrailNetworked(hitPositions[i]);
-				}
+				GameObject bulletImpactObj = Instantiate(bulletImpactPrefab, hitPositions[i] + hitNormals[i] * 0.001f, 
+				rotation * bulletImpactPrefab.transform.rotation);
+				Destroy(bulletImpactObj, 10f);
+				// bulletImpactObj.transform.SetParent(collider.transform);				
+			}
+			
+			if (PV.IsMine)
+			{
+				TrailRenderer trail = Instantiate(bulletTrail, muzzlePos.position, Quaternion.identity);
+				StartCoroutine(SpawnTrail(trail, hitPositions[i]));
+			} else {
+				Gun mpGun = transform.root.GetComponent<PlayerController>().itemsMP[index];
+				mpGun.SpawnTrailNetworked(hitPositions[i]);
 			}
 		}
 	}

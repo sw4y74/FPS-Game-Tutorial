@@ -12,6 +12,7 @@ public class FreeForAll : GameModeBase, IOnEventCallback
     double FFATimerMinutes = 4;
     [SerializeField] bool DEV_FFATimerEnabled = true;
     [SerializeField] int freezeTime = 3;
+    [SerializeField] float leaveRoomDelay = 10f;
 
     double FFATimer() { return DEV_FFATimerEnabled ? FFATimerMinutes * 60 : 200000; }
     public readonly byte GameOverEventCode = 1;
@@ -101,7 +102,7 @@ public class FreeForAll : GameModeBase, IOnEventCallback
         string bestPlayer = (string)data[1];
         Debug.Log("FFA_GameOverEventHandler");
 		localPlayerManager.GetComponent<PlayerManager>().FreezeTime(true);
-		gameModeUI?.StartCoroutine(gameModeUI.SetFFAGameOverTextRoutine("Game Over! " + bestPlayer + " won with " + bestScore + " kills!"));
+		gameModeUI?.StartCoroutine(gameModeUI.SetFFAGameOverTextRoutine("Game Over! " + bestPlayer + " won with " + bestScore + " kills!", leaveRoomDelay));
 		StartCoroutine(LeaveRoomRoutine());
     }
 
@@ -143,7 +144,7 @@ public class FreeForAll : GameModeBase, IOnEventCallback
 
     IEnumerator LeaveRoomRoutine() {
         localPlayerManager.GetComponent<PlayerManager>().OnPlayerKill -= HandlePlayerKill;
-		yield return new WaitForSeconds(10f);
+		yield return new WaitForSeconds(leaveRoomDelay);
         Cursor.lockState = CursorLockMode.None;
 		Cursor.visible = true;
 		FindObjectOfType<PauseMenu>().LoadMenu();

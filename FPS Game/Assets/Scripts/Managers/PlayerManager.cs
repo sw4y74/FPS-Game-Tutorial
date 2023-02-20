@@ -42,7 +42,6 @@ public class PlayerManager : MonoBehaviour
 	void RPC_CreateController(int viewID)
 	{
 		PlayerGameObject = PhotonView.Find(viewID).gameObject;
-		Debug.Log(PlayerGameObject.name);
 	}
 
 	IEnumerator DieRoutine(string killer)
