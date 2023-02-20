@@ -34,13 +34,12 @@ MonoBehaviour:
   - ClickRpc
   - DestroyRpc
   - RPC_AddKillFeedItem
+  - RPC_CreateController
+  - RPC_DestroyViewModel
   - RPC_Footsteps
   - RPC_Shoot
   - RPC_TakeDamage
   - RPC_Throw
-  - RPC_DestroyViewModel
-  - RPC_CreateController
-  - RPC_GameOver
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1
