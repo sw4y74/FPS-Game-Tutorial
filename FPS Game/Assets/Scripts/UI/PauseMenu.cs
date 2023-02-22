@@ -114,10 +114,12 @@ public class PauseMenu : MonoBehaviour
         foreach(Gun gun in guns)
         {
             GameObject item;
-            if (gun.gun.primaryWeapon)
+            if (gun.gun.weaponSlot == WeaponSlotType.primary)
                 item = Instantiate(panelItem, primaryWeaponsParent);
-            else item = Instantiate(panelItem, secondaryWeaponsParent);
-
+            else if (gun.gun.weaponSlot == WeaponSlotType.secondary)
+                item = Instantiate(panelItem, secondaryWeaponsParent);
+            else item = null;
+            if (item == null) continue;
             item.GetComponent<LoadoutItem>().gun = gun;
             item.GetComponentInChildren<TextMeshProUGUI>().text = gun.gun.name;
             panelItems.Add(item);
@@ -126,7 +128,7 @@ public class PauseMenu : MonoBehaviour
 
     public void ChangeWeapon(int weaponIndex)
     {
-        if (guns[weaponIndex].gun.primaryWeapon) primaryWeapon = weaponIndex;
+        if (guns[weaponIndex].gun.weaponSlot == WeaponSlotType.primary) primaryWeapon = weaponIndex;
         else secondaryWeapon = weaponIndex;
     }
 

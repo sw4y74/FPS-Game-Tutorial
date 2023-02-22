@@ -21,6 +21,7 @@ MonoBehaviour:
   maxAmmo: 30
   firstShootAccurate: 0
   primaryWeapon: 1
+  knife: 0
   recoilX: -4
   recoilY: 2.4
   recoilZ: 0.01

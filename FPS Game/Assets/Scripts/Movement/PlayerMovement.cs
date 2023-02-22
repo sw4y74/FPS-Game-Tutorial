@@ -17,12 +17,16 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float moveSpeed = 6f;
     [SerializeField] float airMultiplier = 0.4f;
     float movementMultiplier = 10f;
+    [Range(0.5f, 3f)]
+    [SerializeField] float movementThreshold = 0.5f; // Mainly for side to side recoil movement
     
     [Header("Sprinting")]
     [SerializeField] public float walkSpeed = 4f;
     [SerializeField] public float sprintSpeed = 6f;
     [SerializeField] public float crouchSpeed = 2f;
     [SerializeField] float acceleration = 10f;
+    [Range(0.5f, 2.5f)]
+    [SerializeField] float slopeSpeedMultiplier = 1f;
 
     [Header("Jumping")]
     public float jumpForce = 5f;
@@ -50,30 +54,30 @@ public class PlayerMovement : MonoBehaviour
     Rigidbody rb;
 
     RaycastHit slopeHit;
+    [SerializeField] float slideMultiplier;
+    [SerializeField] float slideAccelerationMultiplier;
+    [SerializeField] float slopeDistance;
+    [Range(1f, 85f)]
+    [SerializeField] float maxSlopeAngle = 40f;
 
     private bool OnSlope()
     {
-        if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight / 2 + 0.5f))
+        slopeDistance = playerHeight / 2 + 0.5f;
+        if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, slopeDistance, groundMask))
         {
-            if (slopeHit.normal != Vector3.up)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
+            return angle < maxSlopeAngle && angle != 0;
         }
         return false;
     }
 
-    private Vector3 CalculateSlope()
-    {
-        if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight / 2 + 0.5f))
+    private float GetSlopeAngle() {
+        if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, slopeDistance, groundMask))
         {
-            return slopeHit.normal;
+            float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
+            return angle;
         }
-        return Vector3.zero;
+        return 0;
     }
 
     private void Awake() {
@@ -106,16 +110,16 @@ public class PlayerMovement : MonoBehaviour
         ControlSpeed();
         ControlPlayerHeight();
 
-        slopeMoveDirection = Vector3.ProjectOnPlane(moveDirection, slopeHit.normal);
+        slopeMoveDirection = Vector3.ProjectOnPlane(moveDirection * slopeSpeedMultiplier, slopeHit.normal);
     }
 
     private void ControlPlayerHeight()
     {
         if (GetComponent<Crouch>().isCrouching)
         {
-            playerHeight = 1.2f;
+            playerHeight = 1.55f;
             playerCollider.height = playerHeight;
-            playerCollider.center = new Vector3(0, 0.555f, 0);
+            playerCollider.center = new Vector3(0, 0.735f, 0);
         }
         else
         {
@@ -135,10 +139,11 @@ public class PlayerMovement : MonoBehaviour
 
     void Jump()
     {
+        float gunWeight = 1 - GetComponent<PlayerController>().CurrentlyEquippedItem().gun.weight / 300;
         if (Input.GetKeyDown(jumpKey) && isGrounded)
         {
             rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
-            rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+            rb.AddForce(transform.up * jumpForce * gunWeight, ForceMode.Impulse);
         }
     }
 
@@ -146,7 +151,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (GetComponent<Crouch>().isCrouching && isGrounded)
         {
-            moveSpeed = Mathf.Lerp(moveSpeed, crouchSpeed, acceleration * Time.deltaTime);
+            moveSpeed = Mathf.Lerp(moveSpeed, crouchSpeed, acceleration * (moveSpeed > crouchSpeed * 1.2f ? slideAccelerationMultiplier : 1f) * Time.deltaTime);
         }
         else if (Input.GetKey(sprintKey) && isGrounded && !GetComponent<Crouch>().isCrouching)
         {
@@ -156,6 +161,7 @@ public class PlayerMovement : MonoBehaviour
         {
             moveSpeed = Mathf.Lerp(moveSpeed, walkSpeed, acceleration * Time.deltaTime);
         }
+        moveSpeed *= 1 - GetComponent<PlayerController>().CurrentlyEquippedItem().gun.weight / 1000;
     }
 
     void ControlDrag()
@@ -181,7 +187,11 @@ public class PlayerMovement : MonoBehaviour
     {
         if (isGrounded && !OnSlope())
         {
-            rb.AddForce(moveDirection.normalized * moveSpeed * movementMultiplier, ForceMode.Acceleration);
+            if (GetSlopeAngle() > maxSlopeAngle && GetSlopeAngle() != 0) {
+                rb.AddForce(Vector3.down * 50f, ForceMode.Force);
+            } else {
+                rb.AddForce(moveDirection.normalized * moveSpeed * movementMultiplier, ForceMode.Acceleration);
+            }
         }
         else if (isGrounded && OnSlope())
         {
@@ -191,26 +201,28 @@ public class PlayerMovement : MonoBehaviour
         {
             rb.AddForce(moveDirection.normalized * moveSpeed * movementMultiplier * airMultiplier, ForceMode.Acceleration);
         }
+        // rb.useGravity = !OnSlope();
     }
 
     void AnimatePlayer() {
-        float movementX = Input.GetAxis("Horizontal");
-        float movementY = Input.GetAxis("Vertical");
-        animationController.MovementAnimation(movementX, movementY);
+        animationController.MovementAnimation(horizontalMovement, verticalMovement);
     }
 
     public bool IsMoving()
     {
-        if (horizontalMovement != 0 || verticalMovement != 0)
-        {
-            // Player is moving
-            return true;
-        }
-        else
-        {
-            // Player is not moving
-            return false;
-        }
+        if (rb == null) return false;
+        if (rb.velocity.magnitude > 2f+movementThreshold) return true;
+        else return false;
+        // if (horizontalMovement != 0 || verticalMovement != 0)
+        // {
+        //     // Player is moving
+        //     return true;
+        // }
+        // else
+        // {
+        //     // Player is not moving
+        //     return false;
+        // }
     }
 
     public bool IsSprinting() {

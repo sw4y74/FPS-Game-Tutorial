@@ -45,11 +45,11 @@ public class PlayerListItem : MonoBehaviourPunCallbacks
 	{
 		switch (gamemode.type)
 		{
-			case GameModeType.team:
+			case GameModeType.TeamElimination:
 				ToggleChangeTeamButtons(teamId == 1 ? true : false, teamId == 0 ? true : false);
 				text.color = teamId == 1 ? Color.yellow : Color.cyan;
 				break;
-			case GameModeType.freeForAll:
+			case GameModeType.FFA:
 				ToggleChangeTeamButtons(false, false);
 				text.color = Color.white;
 				break;
@@ -75,8 +75,7 @@ public class PlayerListItem : MonoBehaviourPunCallbacks
     public override void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
     {
 		if (changedProps.ContainsKey("teamIdx")) {
-			if (targetPlayer == player && Launcher.Instance.gameModes[Launcher.Instance.selectedGameMode].type == GameModeType.team) {
-				Debug.Log("OnPlayerPropertiesUpdate: " + targetPlayer.NickName + " changedProps: " + changedProps.ToStringFull());
+			if (targetPlayer == player && RoomManager.Instance.gameModes[Launcher.Instance.selectedGameMode].type == GameModeType.TeamElimination) {
 				int team = (int)changedProps["teamIdx"];
 				teamId = team;
 				text.color = team == 1 ? Color.yellow : Color.cyan;

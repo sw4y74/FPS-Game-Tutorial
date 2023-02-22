@@ -1221,7 +1221,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 8757445831351867435}
         m_TargetAssemblyTypeName: OptionsScreen, Assembly-CSharp
-        m_MethodName: ResRight
+        m_MethodName: ResLeft
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5280,7 +5280,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 8757445831351867435}
         m_TargetAssemblyTypeName: OptionsScreen, Assembly-CSharp
-        m_MethodName: ResLeft
+        m_MethodName: ResRight
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

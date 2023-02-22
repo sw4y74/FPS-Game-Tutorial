@@ -18,6 +18,8 @@ public class Launcher : MonoBehaviourPunCallbacks
 	[SerializeField] TMP_Text roomNameText;
 	[SerializeField] TMP_Text mapLabel;
 	[SerializeField] TMP_Text gameModeLabel;
+	[SerializeField] TMP_Text roundTimeLabel;
+	[SerializeField] TMP_Text killTargetLabel;
 	[SerializeField] TMP_Text numberOfPlayersText;
 	[SerializeField] Transform roomListContent;
 	[SerializeField] GameObject roomListItemPrefab;
@@ -26,19 +28,22 @@ public class Launcher : MonoBehaviourPunCallbacks
 	[SerializeField] GameObject startGameButton;
 	[SerializeField] GameObject[] mapSelectionButtons;
 	[SerializeField] GameObject[] gameModeSelectionButtons;
+	[SerializeField] GameObject[] roundTimeSelectionButtons;
+	[SerializeField] GameObject[] killTargetSelectionButtons;
 	[SerializeField] Button createRoomButton;
 	[SerializeField] Button findRoomButton;
 	[SerializeField] Button nextMap;
 	[SerializeField] Button previousMap;
-	[SerializeField] List<Maps> maps = new List<Maps>();
 	[SerializeField] int numberOfPlayers = 4;
 	[SerializeField] int maxNoOfPlayers = 12;
 	
 	private int selectedMap;
-	[SerializeField] public List<GameMode> gameModes = new List<GameMode>();
 	[System.NonSerialized] public int selectedGameMode;
+	int selectedRoundTime;
+	int selectedKillTarget;
+    private GameObject[] gameModeControls;
 
-	void Awake()
+    void Awake()
 	{
 		Instance = this;
 	}
@@ -49,6 +54,8 @@ public class Launcher : MonoBehaviourPunCallbacks
 		PhotonNetwork.ConnectUsingSettings();
 		selectedMap = 0;
 		selectedGameMode = 0;
+		selectedRoundTime = 0;
+		selectedKillTarget = 0;
 		UpdateNoOfPlayersText();
 	}
 
@@ -79,10 +86,11 @@ public class Launcher : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
 	{
 		Debug.Log("Joined Room");
-		Debug.Log(selectedMap);
 		ToggleNavElements(false);
 		SetMap(selectedMap);
 		SetGameMode(selectedGameMode);
+		SetRoundTime(selectedRoundTime);
+		SetKillTarget(selectedKillTarget);
 		MenuManager.Instance.OpenMenu("room");
 		roomNameText.text = PhotonNetwork.CurrentRoom.Name;
 
@@ -107,11 +115,27 @@ public class Launcher : MonoBehaviourPunCallbacks
 		{
 			item.SetActive(PhotonNetwork.IsMasterClient);
 		}
+		foreach (GameObject item in roundTimeSelectionButtons)
+		{
+			item.SetActive(PhotonNetwork.IsMasterClient);
+		}
 	}
 
 	public override void OnMasterClientSwitched(Player newMasterClient)
 	{
 		startGameButton.SetActive(PhotonNetwork.IsMasterClient);
+		foreach (GameObject item in mapSelectionButtons)
+		{
+			item.SetActive(PhotonNetwork.IsMasterClient);
+		}
+		foreach (GameObject item in gameModeSelectionButtons)
+		{
+			item.SetActive(PhotonNetwork.IsMasterClient);
+		}
+		foreach (GameObject item in roundTimeSelectionButtons)
+		{
+			item.SetActive(PhotonNetwork.IsMasterClient);
+		}
 	}
 
 	public override void OnCreateRoomFailed(short returnCode, string message)
@@ -123,7 +147,9 @@ public class Launcher : MonoBehaviourPunCallbacks
 
 	public void StartGame()
 	{
-		PhotonNetwork.LoadLevel(maps[selectedMap].id);
+		PhotonNetwork.CurrentRoom.IsOpen = false;
+		PhotonNetwork.CurrentRoom.IsVisible = false;
+		PhotonNetwork.LoadLevel(RoomManager.Instance.maps[selectedMap].id);
 	}
 
 	public void LeaveRoom()
@@ -175,6 +201,8 @@ public class Launcher : MonoBehaviourPunCallbacks
 		newPlayerItem.ChangeTeam(0);
 		SetMap(selectedMap);
 		SetGameMode(selectedGameMode);
+		SetRoundTime(selectedRoundTime);
+		SetKillTarget(selectedKillTarget);
 	}
 
 	public void MapLeft() 
@@ -189,8 +217,8 @@ public class Launcher : MonoBehaviourPunCallbacks
     public void MapRight() 
     {
         selectedMap++;
-        if (selectedMap > maps.Count - 1) {
-            selectedMap = maps.Count - 1;
+        if (selectedMap > RoomManager.Instance.maps.Count - 1) {
+            selectedMap = RoomManager.Instance.maps.Count - 1;
         }
 		SetMap(selectedMap);
     }
@@ -207,20 +235,82 @@ public class Launcher : MonoBehaviourPunCallbacks
     public void GameModeRight() 
     {
         selectedGameMode++;
-        if (selectedGameMode > gameModes.Count - 1) {
-            selectedGameMode = gameModes.Count - 1;
+        if (selectedGameMode > RoomManager.Instance.gameModes.Count - 1) {
+            selectedGameMode = RoomManager.Instance.gameModes.Count - 1;
         }
 		SetGameMode(selectedGameMode);
     }
 
-    public void UpdateMapLabel()
+	public void RoundTimeLeft() 
     {
-        mapLabel.text = maps[selectedMap].name;
+        selectedRoundTime--;
+        if(selectedRoundTime < 0) {
+            selectedRoundTime = 0;
+        }
+		SetRoundTime(selectedRoundTime);
     }
 
-    private void UpdateGameModeLabel()
+    public void RoundTimeRight() 
     {
-		gameModeLabel.text = gameModes[selectedGameMode].name;
+        selectedRoundTime++;
+        if (selectedRoundTime > RoomManager.Instance.roundTimes.Count - 1) {
+            selectedRoundTime = RoomManager.Instance.roundTimes.Count - 1;
+        }
+		SetRoundTime(selectedRoundTime);
+    }
+
+	public void KillTargetLeft() 
+    {
+        selectedKillTarget--;
+        if(selectedKillTarget < 0) {
+            selectedKillTarget = 0;
+        }
+		SetKillTarget(selectedKillTarget);
+    }
+
+    public void KillTargetRight() 
+    {
+        selectedKillTarget++;
+        if (selectedKillTarget > RoomManager.Instance.killTargets.Count - 1) {
+            selectedKillTarget = RoomManager.Instance.killTargets.Count - 1;
+        }
+		SetKillTarget(selectedKillTarget);
+    }
+
+    public void UpdateMapLabel()
+    {
+        mapLabel.text = RoomManager.Instance.maps[selectedMap].name;
+    }
+
+    private void UpdateGameModeUI()
+    {
+		foreach(Transform child in playerListContent)
+		{
+			child.GetComponent<PlayerListItem>().SetupGamemode(RoomManager.Instance.gameModes[selectedGameMode]);
+		}
+		gameModeLabel.text = RoomManager.Instance.gameModes[selectedGameMode].name;
+    }
+
+	private void UpdateGameModeControls()
+    {
+		foreach (GameMode item in RoomManager.Instance.gameModes)
+		{
+			if (item.gameModeControlUI != null)
+				item.gameModeControlUI.SetActive(false);
+		}
+		if (RoomManager.Instance.gameModes[selectedGameMode].gameModeControlUI != null)
+			RoomManager.Instance.gameModes[selectedGameMode].gameModeControlUI.SetActive(true);
+    }
+
+	public void UpdateRoundTimeLabel()
+    {
+		double time = RoomManager.Instance.roundTimes[selectedRoundTime].timeSeconds;
+        roundTimeLabel.text = GameModeUI.FormatTimer(time);
+    }
+
+	public void UpdateKillTargetLabel()
+    {
+        killTargetLabel.text = RoomManager.Instance.killTargets[selectedKillTarget].killTarget.ToString();
     }
 
 	private void ToggleNavElements(bool toggle)
@@ -263,6 +353,23 @@ public class Launcher : MonoBehaviourPunCallbacks
 			PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "gamemode", mode } });
 		}
 	}
+
+	public void SetRoundTime(int roundTime)
+	{
+		if (PhotonNetwork.IsMasterClient) {
+			PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "roundtime", roundTime } });
+			RoomManager.Instance.selectedRoundTime = roundTime;
+		}
+	}
+
+	public void SetKillTarget(int killTarget)
+	{
+		if (PhotonNetwork.IsMasterClient) {
+			PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "killtarget", killTarget } });
+			RoomManager.Instance.selectedKillTarget = killTarget;
+		}
+	}
+	
 	
 	public void SetMap(int map)
 	{
@@ -273,25 +380,31 @@ public class Launcher : MonoBehaviourPunCallbacks
 
 	public override void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
     {
-		Debug.Log("OnPlayerPropertiesUpdate: " + targetPlayer.NickName + " changedProps: " + changedProps.ToStringFull());
+		// Debug.Log("OnPlayerPropertiesUpdate: " + targetPlayer.NickName + " changedProps: " + changedProps.ToStringFull());
 		if (changedProps.ContainsKey("map")) {
 			int map = (int)changedProps["map"];
 			selectedMap = map;
+			RoomManager.Instance.selectedMap = map;
 			UpdateMapLabel();
 		}
 		if (changedProps.ContainsKey("gamemode")) {
 			int gameMode = (int)changedProps["gamemode"];
 			selectedGameMode = gameMode;
-			UpdateGameModeLabel();
+			RoomManager.Instance.selectedGameMode = gameMode;
 			UpdateGameModeUI();
+			UpdateGameModeControls();
 		}
-    }
-
-    private void UpdateGameModeUI()
-    {
-        foreach(Transform child in playerListContent)
-		{
-			child.GetComponent<PlayerListItem>().SetupGamemode(gameModes[selectedGameMode]);
+		if (changedProps.ContainsKey("roundtime")) {
+			int roundTime = (int)changedProps["roundtime"];
+			selectedRoundTime = roundTime;
+			RoomManager.Instance.selectedRoundTime = roundTime;
+			UpdateRoundTimeLabel();
+		}
+		if (changedProps.ContainsKey("killtarget")) {
+			int killTarget = (int)changedProps["killtarget"];
+            selectedKillTarget = killTarget;
+			RoomManager.Instance.selectedKillTarget = killTarget;
+			UpdateKillTargetLabel();
 		}
     }
 }
@@ -309,14 +422,33 @@ public class GameMode {
 	public int id;
 	public string name;
 	public GameModeType type;
-	public GameMode(int id, string name, GameModeType type) {
+	public GameObject gameModeControlUI;
+	public GameMode(int id, string name, GameModeType type, GameObject gameModeControlUI) {
 		this.id = id;
 		this.name = name;
 		this.type = type;
+		this.gameModeControlUI = gameModeControlUI;
 	}
 }
 
-public enum GameModeType
-{
-	team, freeForAll
+[System.Serializable]
+public class RoundTime {
+	public int id;
+	[Range(0.1f, 5000)]
+	public double timeSeconds;
+	public RoundTime(int id, double timeSeconds) {
+		this.id = id;
+		this.timeSeconds = timeSeconds;
+	}
+}
+
+[System.Serializable]
+public class KillTarget {
+	public int id;
+	[Range(1, 300)]
+	public int killTarget;
+	public KillTarget(int id, int killTarget) {
+		this.id = id;
+		this.killTarget = killTarget;
+	}
 }

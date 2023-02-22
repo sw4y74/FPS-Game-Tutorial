@@ -12,11 +12,6 @@ public class Kickback : MonoBehaviour
     private Vector3 currentPosition;
     private Vector3 targetPosition;
 
-    //hipfire
-    [SerializeField] private float recoilX;
-    [SerializeField] private float recoilY;
-    [SerializeField] private float recoilZ;
-
     //knockback
     [SerializeField] private float knockbackZ;
 
@@ -25,6 +20,8 @@ public class Kickback : MonoBehaviour
 
     void Update()
     {
+        returnSpeed = transform.root.gameObject.GetComponent<PlayerController>().CurrentlyEquippedItem().gun.returnSpeed;
+        snappiness = transform.root.gameObject.GetComponent<PlayerController>().CurrentlyEquippedItem().gun.snappiness;
         targetRotation = Vector3.Lerp(targetRotation, Vector3.zero, returnSpeed * Time.deltaTime);
         currentRotation = Vector3.Slerp(currentRotation, targetRotation, snappiness * Time.fixedDeltaTime);
         targetPosition = Vector3.Lerp(targetPosition, Vector3.zero, returnSpeed * Time.deltaTime);
@@ -34,7 +31,7 @@ public class Kickback : MonoBehaviour
         transform.localPosition = currentPosition;
     }
 
-    public void KickbackFire(float knockbackZ)
+    public void KickbackFire(float knockbackZ, float recoilX, float recoilY, float recoilZ)
     {
         targetRotation += new Vector3(recoilX, Random.Range(-recoilY, recoilY), Random.Range(-recoilZ, recoilZ));
         targetPosition += new Vector3(0f, 0f, Random.Range(-knockbackZ - -(knockbackZ/5), -knockbackZ));

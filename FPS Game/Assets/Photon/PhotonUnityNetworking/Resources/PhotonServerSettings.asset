@@ -25,7 +25,7 @@ MonoBehaviour:
     AuthMode: 0
     EnableLobbyStatistics: 0
     NetworkLogging: 1
-  DevRegion: us
+  DevRegion: eu
   PunLogging: 0
   EnableSupportLogger: 0
   RunInBackground: 1
@@ -34,6 +34,8 @@ MonoBehaviour:
   - ClickRpc
   - DestroyRpc
   - RPC_AddKillFeedItem
+  - RPC_CreateController
+  - RPC_DestroyViewModel
   - RPC_Footsteps
   - RPC_Shoot
   - RPC_TakeDamage

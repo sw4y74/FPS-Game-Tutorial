@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -22,6 +23,7 @@ public class WallRun : MonoBehaviour
     [SerializeField] private float wallRunfovTime;
     [SerializeField] private float camTilt;
     [SerializeField] private float camTiltTime;
+    [SerializeField] LayerMask localPlayerLayer;
 
     public float tilt { get; private set; }
 
@@ -33,9 +35,14 @@ public class WallRun : MonoBehaviour
 
     private Rigidbody rb;
 
+    [Header("Run Control")]
+    [SerializeField] private float wallJumpCooldown = 0f;
+    [SerializeField] private int wallJumpCount = 0;
+
     bool CanWallRun()
     {
-        return !Physics.Raycast(transform.position, Vector3.down, minimumJumpHeight);
+        if (GetComponent<PlayerController>().aimingDownSights) return false;
+        return !Physics.Raycast(transform.position, Vector3.down, minimumJumpHeight, ~localPlayerLayer);
     }
 
     private void Start()
@@ -52,6 +59,7 @@ public class WallRun : MonoBehaviour
 
     private void Update()
     {
+        HandleWallJumpCD();
         CheckWall();
 
         if (CanWallRun() && Input.GetKey(KeyCode.LeftShift))
@@ -59,12 +67,10 @@ public class WallRun : MonoBehaviour
             if (wallLeft)
             {
                 StartWallRun();
-                Debug.Log("wall running on the left");
             }
             else if (wallRight)
             {
                 StartWallRun();
-                Debug.Log("wall running on the right");
             }
             else
             {
@@ -74,6 +80,33 @@ public class WallRun : MonoBehaviour
         else
         {
             StopWallRun();
+            ResetJumpCountIfGrounded();
+        }
+    }
+
+    private void ResetJumpCountIfGrounded()
+    {
+        wallJumpCount = GetComponent<PlayerMovement>().isGrounded ? 0 : wallJumpCount;
+        
+    }
+
+    private void HandleWallJumpCD()
+    {
+        if (wallJumpCooldown > 0)
+            wallJumpCooldown -= 0.1f;
+    }
+
+    private float WallJumpForceLimit() {
+        switch (wallJumpCount)
+        {
+            case 0:
+                return 1f;
+            case 1:
+                return 0.8f;
+            case 2:
+                return 0.6f;
+            default:
+                return 0f;
         }
     }
 
@@ -97,13 +130,15 @@ public class WallRun : MonoBehaviour
             {
                 Vector3 wallRunJumpDirection = transform.up + leftWallHit.normal;
                 rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
-                rb.AddForce(wallRunJumpDirection * wallRunJumpForce * 100, ForceMode.Force);
+                rb.AddForce(wallRunJumpDirection * wallRunJumpForce * 100 * WallJumpForceLimit(), ForceMode.Force);
+                wallJumpCount++;
             }
             else if (wallRight)
             {
                 Vector3 wallRunJumpDirection = transform.up + rightWallHit.normal;
                 rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z); 
-                rb.AddForce(wallRunJumpDirection * wallRunJumpForce * 100, ForceMode.Force);
+                rb.AddForce(wallRunJumpDirection * wallRunJumpForce * 100 * WallJumpForceLimit(), ForceMode.Force);
+                wallJumpCount++;
             }
         }
     }
@@ -112,7 +147,9 @@ public class WallRun : MonoBehaviour
     {
         rb.useGravity = true;
 
-        cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, fov, wallRunfovTime * Time.deltaTime);
+        if (!GetComponent<PlayerController>().aimingDownSights) {
+            cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, fov, wallRunfovTime * Time.deltaTime);
+        }
         tilt = Mathf.Lerp(tilt, 0, camTiltTime * Time.deltaTime);
     }
 }

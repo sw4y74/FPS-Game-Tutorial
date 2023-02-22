@@ -35,7 +35,7 @@ public class Crouch : MonoBehaviour
         if (isCrouching && !Input.GetKey(KeyCode.LeftControl)) 
         {
 
-            if (!Physics.Raycast(transform.position, Vector3.up, out RaycastHit hit, GetComponent<PlayerMovement>().playerCollider.height+0.1f, ~layerToIgnore))
+            if (!Physics.Raycast(transform.position, Vector3.up, out RaycastHit hit, GetComponent<PlayerMovement>().playerCollider.height+0.05f, ~layerToIgnore))
             {
                     //standup
                     // GetComponent<CharacterController>().height = 1.9f;

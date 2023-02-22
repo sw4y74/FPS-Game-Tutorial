@@ -3,16 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum WeaponType { sniperRifle, pistol, smg, assaultRifle, shotgun }
+public enum WeaponSlotType { primary, secondary, melee }
 
 [CreateAssetMenu(menuName = "FPS/New Gun")]
 public class GunInfo : ItemInfo
 {
-	[Range(0.0f, 200.0f)]
+	[Range(0.0f, 400.0f)]
 	public float damage;
 
 	public WeaponType weaponType;
 
-	[Range(0.0f, 50.0f)]
+	[Range(0.0f, 200.0f)]
 	public float weight;
 
 	[Header("Weapon properties")]
@@ -20,12 +21,12 @@ public class GunInfo : ItemInfo
 	public float fireRate;
 	public int maxAmmo;
 	public bool firstShootAccurate;
-	public bool primaryWeapon = true;
+	public WeaponSlotType weaponSlot;
 
 	[Header("Recoil")]
-	[SerializeField] public float recoilX;
-	[SerializeField] public float recoilY;
-	[SerializeField] public float recoilZ;
+	public float recoilX;
+	public float recoilY;
+	public float recoilZ;
 
 	[Header("Spread")]
 	[Range(5f, 100f)]
@@ -34,7 +35,12 @@ public class GunInfo : ItemInfo
 	public float spreadX;
 
 	[Header("Kickback")]
-	[SerializeField] public float kickbackZ;
+	public float kickbackZ;
+	public float kbX = -2.6f;
+    public float kbY = -0.6f;
+    public float kbZ = 0.6f;
+    public float snappiness = 18f;
+    public float returnSpeed = 7f;
 
 	[Header("Weapon movement accuracy")]
 	[Range(0.0f, 20.0f)]
