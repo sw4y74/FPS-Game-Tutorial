@@ -58,12 +58,12 @@ public class FreeForAll : GameModeBase, IOnEventCallback
         string bestPlayer = "";
         foreach (Photon.Realtime.Player player in PhotonNetwork.PlayerList)
         {
-            if (player.GetScore() > bestScore)
+            if (player.GetScore() > bestScore && player.GetScore() > 0)
             {
                 bestScore = player.GetScore();
-                bestPlayer = player.NickName;
-            } else if (player.GetScore() == bestScore) {
-                bestPlayer += " and " + player.NickName;
+                bestPlayer = player.NickName + " wins!";
+            }else if (player.GetScore() == bestScore) {
+                bestPlayer += "'" + bestPlayer + "' and '" + player.NickName;
             }
         }
         return (bestScore, bestPlayer);
@@ -76,12 +76,12 @@ public class FreeForAll : GameModeBase, IOnEventCallback
         
         foreach (Photon.Realtime.Player player in PhotonNetwork.PlayerList)
         {
-            if (player.GetScore() > bestScore)
+            if (player.GetScore() > bestScore && player.GetScore() > 0)
             {
                 bestScore = player.GetScore();
-                bestPlayer = player.NickName;
+                bestPlayer = player.NickName + " wins!";
             } else if (player.GetScore() == bestScore) {
-                bestPlayer += " and " + player.NickName;
+                bestPlayer += "'" + bestPlayer + "' and '" + player.NickName;
             }
         }
 
@@ -102,7 +102,7 @@ public class FreeForAll : GameModeBase, IOnEventCallback
         string bestPlayer = (string)data[1];
         Debug.Log("FFA_GameOverEventHandler");
 		localPlayerManager.GetComponent<PlayerManager>().FreezeTime(true);
-		gameModeUI?.StartCoroutine(gameModeUI.SetFFAGameOverTextRoutine("Game Over! " + bestPlayer + " won with " + bestScore + " kills!", leaveRoomDelay));
+		gameModeUI?.StartCoroutine(gameModeUI.SetFFAGameOverTextRoutine(bestPlayer, leaveRoomDelay));
 		StartCoroutine(LeaveRoomRoutine());
     }
 

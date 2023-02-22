@@ -22,14 +22,14 @@ public class GameModeUI : MonoBehaviour, IOnEventCallback
     public IEnumerator SetFFAGameOverTextRoutine(string text, float delay)
     {
         FFAGameOverText.text = text;
-        FFAGameOverText.gameObject.SetActive(true);
+        FFAGameOverText.transform.parent.gameObject.SetActive(true);
         yield return new WaitForSeconds(delay-1);
-        FFAGameOverText.gameObject.SetActive(false);
+        FFAGameOverText.transform.parent.gameObject.SetActive(false);
     }
 
     public void FFA_StartTimer(double _timer = 240) {
         timer = _timer;
-        FFATimerText.gameObject.SetActive(true);
+        FFATimerText.transform.parent.gameObject.SetActive(true);
         if (PhotonNetwork.LocalPlayer.IsMasterClient)
          {
              timerValue = new ExitGames.Client.Photon.Hashtable();
