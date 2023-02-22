@@ -6920,6 +6920,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameModeManager
       objectReference: {fileID: 0}
+    - target: {fileID: 2452273201121381255, guid: 1211c67badf18aa42b2df83e9532322c,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 2713512301422126259, guid: 1211c67badf18aa42b2df83e9532322c,
         type: 3}
       propertyPath: m_SizeDelta.x

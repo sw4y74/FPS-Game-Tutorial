@@ -7,7 +7,7 @@ using System;
 using Photon.Realtime;
 using ExitGames.Client.Photon;
 
-public class GameModeUI : MonoBehaviour, IOnEventCallback
+public class GameModeUI : MonoBehaviour
 {
     [SerializeField] TMP_Text FFAGameOverText;
     [SerializeField] TMP_Text FFATimerText;
@@ -74,15 +74,13 @@ public class GameModeUI : MonoBehaviour, IOnEventCallback
         return niceTime;
     }
 
+    public void RestartTimer() {
+        startTimer = false;
+        timerCompleted = false;
+    }
+
     void Update()
     {
         FFA_Timer();
-    }
-
-    public void OnEvent(EventData photonEvent)
-    {
-        if (photonEvent.Code == 51) {
-
-        }
     }
 }

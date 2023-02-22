@@ -60,7 +60,7 @@ PrefabInstance:
     - target: {fileID: 483896321101332862, guid: a9aa08291d84a2b4da5534c78c512ad6,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 5
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 550702487245775357, guid: a9aa08291d84a2b4da5534c78c512ad6,
         type: 3}
@@ -258,7 +258,12 @@ PrefabInstance:
     - target: {fileID: 2139251220154318794, guid: a9aa08291d84a2b4da5534c78c512ad6,
         type: 3}
       propertyPath: m_Name
-      value: GameModeManager
+      value: GameModeManager Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 2532068849247132091, guid: a9aa08291d84a2b4da5534c78c512ad6,
+        type: 3}
+      propertyPath: freezeTime
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 2849331147576504028, guid: a9aa08291d84a2b4da5534c78c512ad6,
         type: 3}
@@ -314,6 +319,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -150
+      objectReference: {fileID: 0}
+    - target: {fileID: 3378558119486937218, guid: a9aa08291d84a2b4da5534c78c512ad6,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3378558119486937218, guid: a9aa08291d84a2b4da5534c78c512ad6,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3932594531119395250, guid: a9aa08291d84a2b4da5534c78c512ad6,
         type: 3}

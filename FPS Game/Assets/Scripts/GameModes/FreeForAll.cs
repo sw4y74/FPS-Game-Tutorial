@@ -30,9 +30,11 @@ public class FreeForAll : GameModeBase, IOnEventCallback
         yield return new WaitUntil(() => localPlayerManager.GetComponent<PlayerManager>().HasController());
         localPlayerManager.GetComponent<PlayerManager>().OnPlayerKill += HandlePlayerKill;
         localPlayerManager.GetComponent<PlayerManager>().FreezeTime(true);
+        gameModeUI.FFA_StartTimer(freezeTime);
 		yield return new WaitForSeconds(freezeTime);
 		localPlayerManager.GetComponent<PlayerManager>().FreezeTime(false);
         Debug.Log("Starting FFA Gamemode");
+        gameModeUI.RestartTimer();
         gameModeUI.FFA_StartTimer(FFATimer());
 		gameModeUI.OnTimerCompleted += HandleTimerCompleted;
 
@@ -58,11 +60,15 @@ public class FreeForAll : GameModeBase, IOnEventCallback
         string bestPlayer = "";
         foreach (Photon.Realtime.Player player in PhotonNetwork.PlayerList)
         {
-            if (player.GetScore() > bestScore && player.GetScore() > 0)
+            if (player.GetScore() == 0) {
+                continue;
+            } 
+            else if (player.GetScore() > bestScore)
             {
                 bestScore = player.GetScore();
                 bestPlayer = player.NickName + " wins!";
-            }else if (player.GetScore() == bestScore) {
+            }
+            else if (player.GetScore() == bestScore) {
                 bestPlayer += "'" + bestPlayer + "' and '" + player.NickName;
             }
         }
