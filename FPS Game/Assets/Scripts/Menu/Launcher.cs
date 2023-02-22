@@ -19,6 +19,7 @@ public class Launcher : MonoBehaviourPunCallbacks
 	[SerializeField] TMP_Text mapLabel;
 	[SerializeField] TMP_Text gameModeLabel;
 	[SerializeField] TMP_Text roundTimeLabel;
+	[SerializeField] TMP_Text killTargetLabel;
 	[SerializeField] TMP_Text numberOfPlayersText;
 	[SerializeField] Transform roomListContent;
 	[SerializeField] GameObject roomListItemPrefab;
@@ -28,6 +29,7 @@ public class Launcher : MonoBehaviourPunCallbacks
 	[SerializeField] GameObject[] mapSelectionButtons;
 	[SerializeField] GameObject[] gameModeSelectionButtons;
 	[SerializeField] GameObject[] roundTimeSelectionButtons;
+	[SerializeField] GameObject[] killTargetSelectionButtons;
 	[SerializeField] Button createRoomButton;
 	[SerializeField] Button findRoomButton;
 	[SerializeField] Button nextMap;
@@ -38,6 +40,7 @@ public class Launcher : MonoBehaviourPunCallbacks
 	private int selectedMap;
 	[System.NonSerialized] public int selectedGameMode;
 	int selectedRoundTime;
+	int selectedKillTarget;
     private GameObject[] gameModeControls;
 
     void Awake()
@@ -52,6 +55,7 @@ public class Launcher : MonoBehaviourPunCallbacks
 		selectedMap = 0;
 		selectedGameMode = 0;
 		selectedRoundTime = 0;
+		selectedKillTarget = 0;
 		UpdateNoOfPlayersText();
 	}
 
@@ -86,6 +90,7 @@ public class Launcher : MonoBehaviourPunCallbacks
 		SetMap(selectedMap);
 		SetGameMode(selectedGameMode);
 		SetRoundTime(selectedRoundTime);
+		SetKillTarget(selectedKillTarget);
 		MenuManager.Instance.OpenMenu("room");
 		roomNameText.text = PhotonNetwork.CurrentRoom.Name;
 
@@ -197,6 +202,7 @@ public class Launcher : MonoBehaviourPunCallbacks
 		SetMap(selectedMap);
 		SetGameMode(selectedGameMode);
 		SetRoundTime(selectedRoundTime);
+		SetKillTarget(selectedKillTarget);
 	}
 
 	public void MapLeft() 
@@ -253,6 +259,24 @@ public class Launcher : MonoBehaviourPunCallbacks
 		SetRoundTime(selectedRoundTime);
     }
 
+	public void KillTargetLeft() 
+    {
+        selectedKillTarget--;
+        if(selectedKillTarget < 0) {
+            selectedKillTarget = 0;
+        }
+		SetKillTarget(selectedKillTarget);
+    }
+
+    public void KillTargetRight() 
+    {
+        selectedKillTarget++;
+        if (selectedKillTarget > RoomManager.Instance.killTargets.Count - 1) {
+            selectedKillTarget = RoomManager.Instance.killTargets.Count - 1;
+        }
+		SetKillTarget(selectedKillTarget);
+    }
+
     public void UpdateMapLabel()
     {
         mapLabel.text = RoomManager.Instance.maps[selectedMap].name;
@@ -280,7 +304,13 @@ public class Launcher : MonoBehaviourPunCallbacks
 
 	public void UpdateRoundTimeLabel()
     {
-        roundTimeLabel.text = RoomManager.Instance.roundTimes[selectedRoundTime].timeMinutes.ToString() + "m";
+		double time = RoomManager.Instance.roundTimes[selectedRoundTime].timeSeconds;
+        roundTimeLabel.text = GameModeUI.FormatTimer(time);
+    }
+
+	public void UpdateKillTargetLabel()
+    {
+        killTargetLabel.text = RoomManager.Instance.killTargets[selectedKillTarget].killTarget.ToString();
     }
 
 	private void ToggleNavElements(bool toggle)
@@ -331,6 +361,15 @@ public class Launcher : MonoBehaviourPunCallbacks
 			RoomManager.Instance.selectedRoundTime = roundTime;
 		}
 	}
+
+	public void SetKillTarget(int killTarget)
+	{
+		if (PhotonNetwork.IsMasterClient) {
+			PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "killtarget", killTarget } });
+			RoomManager.Instance.selectedKillTarget = killTarget;
+		}
+	}
+	
 	
 	public void SetMap(int map)
 	{
@@ -361,6 +400,12 @@ public class Launcher : MonoBehaviourPunCallbacks
 			RoomManager.Instance.selectedRoundTime = roundTime;
 			UpdateRoundTimeLabel();
 		}
+		if (changedProps.ContainsKey("killtarget")) {
+			int killTarget = (int)changedProps["killtarget"];
+            selectedKillTarget = killTarget;
+			RoomManager.Instance.selectedKillTarget = killTarget;
+			UpdateKillTargetLabel();
+		}
     }
 }
 
@@ -388,9 +433,22 @@ public class GameMode {
 
 [System.Serializable]
 public class RoundTime {
-	[Range(0.1f, 60)]
-	public double timeMinutes;
-	public RoundTime(double timeMinutes) {
-		this.timeMinutes = timeMinutes;
+	public int id;
+	[Range(0.1f, 5000)]
+	public double timeSeconds;
+	public RoundTime(int id, double timeSeconds) {
+		this.id = id;
+		this.timeSeconds = timeSeconds;
+	}
+}
+
+[System.Serializable]
+public class KillTarget {
+	public int id;
+	[Range(1, 300)]
+	public int killTarget;
+	public KillTarget(int id, int killTarget) {
+		this.id = id;
+		this.killTarget = killTarget;
 	}
 }

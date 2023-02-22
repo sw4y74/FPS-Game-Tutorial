@@ -13,11 +13,14 @@ public class RoomManager : MonoBehaviourPunCallbacks
 	GameModeUI gameModeUI;
 	public List<Maps> maps = new List<Maps>();
 	public List<RoundTime> roundTimes = new List<RoundTime>();
+	public List<KillTarget> killTargets = new List<KillTarget>();
 	GameObject localPlayerManager;
 	public float sensitivity;
-	public int selectedGameMode { get; set; }
+
+    public int selectedGameMode { get; set; }
 	public int selectedMap { get; set; }
 	public int selectedRoundTime { get; set; }
+	public int selectedKillTarget { get; set; }
 
     void Awake()
 	{

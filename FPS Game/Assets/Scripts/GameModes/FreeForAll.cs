@@ -9,19 +9,19 @@ public class FreeForAll : GameModeBase, IOnEventCallback
 {
     [SerializeField] int FFAKillLimit = 15;
     [SerializeField] bool FFAKillLimitEnabled = false;
-    double FFATimerMinutes = 4;
+    double FFATimerSeconds = 4;
     [SerializeField] bool DEV_FFATimerEnabled = true;
     [SerializeField] int freezeTime = 3;
     [SerializeField] float leaveRoomDelay = 10f;
 
-    double FFATimer() { return DEV_FFATimerEnabled ? FFATimerMinutes * 60 : 200000; }
+    double FFATimer() { return DEV_FFATimerEnabled ? FFATimerSeconds : 200000; }
     public readonly byte GameOverEventCode = 1;
 
     public override void Init(GameObject localPlayer)
     {
         base.Init(localPlayer);
-        FFATimerMinutes = RoomManager.Instance.roundTimes[RoomManager.Instance.selectedRoundTime].timeMinutes;
-        Debug.Log("FFATimerMinutes: " + FFATimerMinutes);
+        FFATimerSeconds = RoomManager.Instance.roundTimes[RoomManager.Instance.selectedRoundTime].timeSeconds;
+        FFAKillLimit = RoomManager.Instance.killTargets[RoomManager.Instance.selectedKillTarget].killTarget;
         StartCoroutine(GameModeRoutine());
     }
 

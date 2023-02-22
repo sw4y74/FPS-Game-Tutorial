@@ -67,7 +67,7 @@ public class GameModeUI : MonoBehaviour, IOnEventCallback
         else FFATimerText.text = FormatTimer(timer - timerIncrementValue);
     }
 
-    string FormatTimer(double time) {
+    public static string FormatTimer(double time) {
         int minutes = (int)Math.Floor(time / 60F);
         int seconds = (int)Math.Floor(time - minutes * 60);
         string niceTime = string.Format("{0:0}:{1:00}", minutes, seconds);

@@ -1233,7 +1233,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6878677152316956792}
-  - component: {fileID: 6144891650230792105}
+  - component: {fileID: 1466434085335643139}
   - component: {fileID: 7747038211246595677}
   m_Layer: 8
   m_Name: knife
@@ -1257,7 +1257,7 @@ Transform:
   m_Father: {fileID: 4800001798413963843}
   m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6144891650230792105
+--- !u!114 &1466434085335643139
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1272,19 +1272,17 @@ MonoBehaviour:
   itemInfo: {fileID: 11400000, guid: 06de031e3826cbd4ba45ebb2b928a46f, type: 2}
   itemGameObject: {fileID: 4758192282832940506}
   cam: {fileID: 1488053957094389952}
-  bulletImpactPrefab: {fileID: 6521945633980296980, guid: 794ff6a8eb713d24cb1273ac24b3f7fb,
-    type: 3}
+  bulletImpactPrefab: {fileID: 0}
   index: 9
-  allowFire: 0
-  Recoil: {fileID: 4263803701383608840}
+  allowFire: 1
+  Recoil: {fileID: 0}
   Kickback: {fileID: 0}
   firstShootAccurate: 0
   spreadCooldown: 0
   reloading: 0
   muzzleFlash: {fileID: 0}
   muzzleFlashStraight: {fileID: 0}
-  bulletTrail: {fileID: 6709346206462671823, guid: 6ec333d508a523f45b85a2e959483f29,
-    type: 3}
+  bulletTrail: {fileID: 0}
   muzzlePos: {fileID: 0}
 --- !u!114 &7747038211246595677
 MonoBehaviour:
@@ -2025,9 +2023,25 @@ MonoBehaviour:
   GunsAnimator: {fileID: 0}
   gunAudioSource: {fileID: 2430679136952116067}
   items:
-  - {fileID: 6144891650230792105}
+  - {fileID: 3001897240328242948}
+  - {fileID: 2304542873713311087}
+  - {fileID: 5279227436780404055}
+  - {fileID: 2963510313060397582}
+  - {fileID: 760008542486244223}
+  - {fileID: 8438724449917095936}
+  - {fileID: 1278057244118955064}
+  - {fileID: 8811508403716194539}
+  - {fileID: 8211283800338464770}
   itemsMP:
-  - {fileID: 6239371314114254129}
+  - {fileID: 3001897240328242948}
+  - {fileID: 2304542873713311087}
+  - {fileID: 5279227436780404055}
+  - {fileID: 2963510313060397582}
+  - {fileID: 760008542486244223}
+  - {fileID: 8438724449917095936}
+  - {fileID: 1278057244118955064}
+  - {fileID: 8811508403716194539}
+  - {fileID: 8211283800338464770}
   freezeTime: 0
   ammoText: {fileID: 1961297457729827401}
   weaponSlots:
@@ -2042,7 +2056,7 @@ MonoBehaviour:
   - name: Knife
     weaponIndex: 9
     slotType: 3
-    gunInstance: {fileID: 6144891650230792105}
+    gunInstance: {fileID: 0}
   LastCharacterPosition: {x: 0, y: 0, z: 0}
   playerCharacterVelocity: {x: 0, y: 0, z: 0}
   headCollider: {fileID: 2419653239342796545}
@@ -8289,8 +8303,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4774846684143726458}
-  - component: {fileID: 6239371314114254129}
   - component: {fileID: 5789483680280946869}
+  - component: {fileID: 4005833884276148471}
   m_Layer: 0
   m_Name: knife
   m_TagString: Untagged
@@ -8313,35 +8327,6 @@ Transform:
   m_Father: {fileID: 8730722306873082516}
   m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6239371314114254129
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8128699591870267885}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a549d564930c8f045b462dc9d36d84cb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  itemInfo: {fileID: 11400000, guid: 06de031e3826cbd4ba45ebb2b928a46f, type: 2}
-  itemGameObject: {fileID: 3439165251270448028}
-  cam: {fileID: 1488053957094389952}
-  bulletImpactPrefab: {fileID: 6521945633980296980, guid: 794ff6a8eb713d24cb1273ac24b3f7fb,
-    type: 3}
-  index: 0
-  allowFire: 0
-  Recoil: {fileID: 4263803701383608840}
-  Kickback: {fileID: 0}
-  firstShootAccurate: 0
-  spreadCooldown: 0
-  reloading: 0
-  muzzleFlash: {fileID: 0}
-  muzzleFlashStraight: {fileID: 0}
-  bulletTrail: {fileID: 6709346206462671823, guid: 6ec333d508a523f45b85a2e959483f29,
-    type: 3}
-  muzzlePos: {fileID: 0}
 --- !u!114 &5789483680280946869
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8364,6 +8349,33 @@ MonoBehaviour:
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &4005833884276148471
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8128699591870267885}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a549d564930c8f045b462dc9d36d84cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemInfo: {fileID: 11400000, guid: 06de031e3826cbd4ba45ebb2b928a46f, type: 2}
+  itemGameObject: {fileID: 3439165251270448028}
+  cam: {fileID: 1488053957094389952}
+  bulletImpactPrefab: {fileID: 0}
+  index: 9
+  allowFire: 1
+  Recoil: {fileID: 0}
+  Kickback: {fileID: 0}
+  firstShootAccurate: 0
+  spreadCooldown: 0
+  reloading: 0
+  muzzleFlash: {fileID: 0}
+  muzzleFlashStraight: {fileID: 0}
+  bulletTrail: {fileID: 0}
+  muzzlePos: {fileID: 0}
 --- !u!1 &8350068330123293868
 GameObject:
   m_ObjectHideFlags: 0
@@ -15591,7 +15603,7 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: e53ef7ddb9a1a8647a5beaf6dec6bcb4,
         type: 3}
       propertyPath: m_Name
-      value: local_root
+      value: root
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: e53ef7ddb9a1a8647a5beaf6dec6bcb4,
         type: 3}
